@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TC_-_Ingress_Template",
+    "app_name": "RF_SCF_-_Potentially_Abused_Domains",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
