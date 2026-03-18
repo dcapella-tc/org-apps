@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import gzip
+import re
 import os
 from typing import Any, Dict, List, Optional
 
@@ -121,7 +122,7 @@ class App(JobApp):
     def run(self):
         """Run main App logic."""
         # Get the 1,000 most recent records, newest first
-        records = self.latest_records(limit=1000)
+        records = self.latest_records(limit=5000)
 
         if not records:
             self.log.info("No records returned from latest_records; skipping batch import.")
@@ -171,10 +172,35 @@ class App(JobApp):
             errors.extend(item.get('errors', []))
             successes.extend(item.get('successes', []))
         if errors:
+            known_errors = []
             self.tcex.log.error('App.run: batch submission failed with %d errors', len(errors))
-            for i,error in enumerate(errors):
-                if i == 10: break
+
+            error_count = 0
+            for error in errors:
+                error_count += 1
+                if error_count == 100: break
+                error_reason = error.get('errorReason', '').split('is not valid. ')[1]
+                known_error = re.sub(r"'[^']*'", '', error_reason).strip()
+                if known_error in known_errors:
+                    continue
+                known_errors.append(known_error)
                 self.tcex.log.error('App.run: batch submission error: %s', error)
+                
+                
+                # if 'not valid' in error:
+                #     known_errors.append('not valid')
+                # elif 'exclusion list' in error:
+                #     known_errors.append('exclusion list')
+                # elif 'already exists' in error:
+                #     known_errors.append('already exists')
+                # elif 'attribute' in error:
+                #     known_errors.append('attribute')
+                # elif 'tag' in error:
+                #     known_errors.append('tag')
+
+            # for i,error in enumerate(errors):
+            #     if i == 10: break
+            #     self.tcex.log.error('App.run: batch submission error: %s', error)
             # self.tcex.log.debug('App.run: batch submission errors: %s', json.dumps(errors, indent=4))
 
         if successes:
