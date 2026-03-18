@@ -7,6 +7,7 @@ import gzip
 import re
 import os
 from typing import Any, Dict, List, Optional
+import time
 
 import ijson
 from tcex import TcEx
@@ -103,7 +104,7 @@ class App(JobApp):
         super().__init__(_tcex)
 
         # properties
-        self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+        # self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
 
     def setup(self):
         """Perform prep/setup logic."""
@@ -119,8 +120,8 @@ class App(JobApp):
             self.log.error(f"Failed to stream latest records: {exc}")
             return []
 
-    def run(self):
-        """Run main App logic."""
+    def batch_run(self):
+        """Run the batch import logic."""
         # Get the 1,000 most recent records, newest first
         records = self.latest_records(limit=5000)
 
@@ -187,24 +188,21 @@ class App(JobApp):
                 self.tcex.log.error('App.run: batch submission error: %s', error)
                 
                 
-                # if 'not valid' in error:
-                #     known_errors.append('not valid')
-                # elif 'exclusion list' in error:
-                #     known_errors.append('exclusion list')
-                # elif 'already exists' in error:
-                #     known_errors.append('already exists')
-                # elif 'attribute' in error:
-                #     known_errors.append('attribute')
-                # elif 'tag' in error:
-                #     known_errors.append('tag')
-
-            # for i,error in enumerate(errors):
-            #     if i == 10: break
-            #     self.tcex.log.error('App.run: batch submission error: %s', error)
-            # self.tcex.log.debug('App.run: batch submission errors: %s', json.dumps(errors, indent=4))
 
         if successes:
             self.tcex.log.info('App.run: batch submission successful with %d items', len(successes))
             self.tcex.log.info('App.run: batch submission success: %s', successes[0])
+
+    def run(self):
+        """Run main App logic."""
+        max_runs = 100
+        for i in range(max_runs):
+            try:
+                self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+                self.batch_run()
+            except Exception as exc:
+                self.tcex.log.error(f"Failed to run batch: {exc}")
+                time.sleep(1)
+
 
 
