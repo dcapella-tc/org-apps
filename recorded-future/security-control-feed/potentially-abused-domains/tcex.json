@@ -5,10 +5,10 @@
       ".gitignore",
       ".pre-commit-config.yaml",
       "app_spec.yaml",
+      "count_recent_days.py",
+      "example",
       "local-*",
       "pyproject.toml",
-      "example",
-      "count_recent_days.py",
       "sample_pad_file.py"
     ]
   },

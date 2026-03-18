@@ -104,9 +104,38 @@ class App(JobApp):
         # Get the 1,000 most recent records, newest first
         records = self.latest_records(limit=1000)
 
-        # TODO: your logic here, e.g. create batch indicators from `records`
-        # for r in records:
-        #     ...
+        if not records:
+            self.log.info("No records returned from latest_records; skipping batch import.")
+            self.tcex.exit(0, "No records to import.")
 
-        self.log.info(f"Retrieved {len(records)} latest record(s).")
-        self.exit_message = "Successfully retrieved latest records sample."
+        for record in records:
+            summary_domain = record.get("domain")
+            summary_apex = record.get("apex_domain")
+            timestamp = record.get("timestamp", None)
+
+            if not summary_domain:
+                continue
+
+            # Create Host indicator for the full domain (subdomain)
+            domain = self.batch.indicator('Host', summary_domain)
+            apex = self.batch.indicator('Host', summary_apex)
+
+            # subdomain
+            domain.tag('Subdomain')
+            domain.tag(f'Apex Domain:{summary_apex}')
+            domain.attribute('Last Seen', timestamp)
+            domain.attribute('Description', 'The full observed hostname (FQDN) identified in the source data. Represents the specific subdomain associated with the record.', True)
+            
+            # apex domain
+            apex.tag('Apex Domain')
+            apex.tag(f'Subdomain:{summary_domain}')
+            apex.attribute('Description', 'The base registrable domain associated with the observed hostname. Represents the parent domain from which the subdomain is derived.', True)
+
+            # both indicators
+            for indicator in [domain, apex]:
+                indicator.tag('Potentially Abused Domain')
+                indicator.attribute('Source', 'Potentially Abused Domains', True)
+                self.batch.save(indicator)
+
+        batch_response = self.batch.submit_all()
+        self.batch.close()
