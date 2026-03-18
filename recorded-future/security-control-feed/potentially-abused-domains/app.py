@@ -1,9 +1,78 @@
 """ThreatConnect Job App"""
 
+from __future__ import annotations
+
+import datetime as dt
+import gzip
+import os
+from typing import Any, Dict, List, Optional
+
+import ijson
 from tcex import TcEx
 from tcex.exit import ExitCode
 
 from job_app import JobApp  # Import default Job App Class (Required)
+
+
+EXAMPLE_GZ_PATH = os.path.join("example", "Potentially Abused Domains (1).gz")
+
+
+def _parse_timestamp_to_datetime(value: str) -> Optional[dt.datetime]:
+    """Parse a timestamp string into a UTC datetime, or return None on failure."""
+    if not value:
+        return None
+
+    ts = value.rstrip("Z")
+    try:
+        # Handles ISO-like strings with optional fractional seconds
+        return dt.datetime.fromisoformat(ts)
+    except ValueError:
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+            try:
+                return dt.datetime.strptime(ts, fmt)
+            except ValueError:
+                continue
+    return None
+
+
+def stream_latest_records(input_path: str, limit: int = 1000) -> List[Dict[str, Any]]:
+    """Stream at most ``limit`` records from the gzipped JSON, ordered by timestamp desc.
+
+    The gzipped file is expected to contain a single top-level JSON object with a large
+    ``results`` array, where each item has a ``timestamp`` field. We stream
+    ``results.item`` via ijson, stop once we have ``limit`` valid timestamped records,
+    then sort them by timestamp in descending order.
+    """
+    if limit <= 0:
+        raise ValueError("limit must be a positive integer.")
+
+    if not os.path.isfile(input_path):
+        raise FileNotFoundError(f"Input file does not exist: {input_path}")
+
+    collected: List[tuple[dt.datetime, Dict[str, Any]]] = []
+
+    # Binary mode for ijson
+    with gzip.open(input_path, mode="rb") as f_in:
+        for record in ijson.items(f_in, "results.item"):
+            if not isinstance(record, dict):
+                continue
+
+            ts_value = record.get("timestamp")
+            parsed_ts = (
+                _parse_timestamp_to_datetime(ts_value)
+                if isinstance(ts_value, str)
+                else None
+            )
+            if parsed_ts is None:
+                continue
+
+            collected.append((parsed_ts, record))
+            if len(collected) >= limit:
+                break
+
+    # Sort newest first
+    collected.sort(key=lambda item: item[0], reverse=True)
+    return [record for _, record in collected]
 
 
 class App(JobApp):
@@ -22,67 +91,22 @@ class App(JobApp):
         # to be made by only providing the API endpoint/path.
         # self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
 
+    def latest_records(self, limit: int = 1000) -> List[Dict[str, Any]]:
+        """Return up to ``limit`` records ordered by timestamp descending."""
+        try:
+            return stream_latest_records(EXAMPLE_GZ_PATH, limit=limit)
+        except Exception as exc:  # defensive
+            self.log.error(f"Failed to stream latest records: {exc}")
+            return []
+
     def run(self):
         """Run main App logic."""
-        # with self.tcex.session.external as s:
-        #     # https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.json
-        #     r = s.get('/downloads/ipblocklist_recommended.json')
+        # Get the 1,000 most recent records, newest first
+        records = self.latest_records(limit=1000)
 
-        #     if r.ok:
-        #         ti_data = r.json()
+        # TODO: your logic here, e.g. create batch indicators from `records`
+        # for r in records:
+        #     ...
 
-        #         # Example JSON
-        #         # {
-        #         #   "ip_address": "178.128.23.9",
-        #         #   "port": 4125,
-        #         #   "status": "online",
-        #         #   "hostname": null,
-        #         #   "as_number": 14061,
-        #         #   "as_name": "DIGITALOCEAN-ASN",
-        #         #   "country": "SG",
-        #         #   "first_seen": "2021-05-16 19:49:33",
-        #         #   "last_online": "2023-04-29",
-        #         #   "malware": "Dridex"
-        #         # }
-
-        #         for ti in ti_data:
-        #             # create batch entry
-        #             ip_address = ti['ip_address']
-        #             address = self.batch.address(ip_address, rating='4.0', confidence='100')
-
-        #             # map first seen to "First Seen" attribute
-        #             first_seen = ti.get('first_seen')
-        #             if first_seen:
-        #                 first_seen = self.tcex.util.any_to_datetime(first_seen).strftime(
-        #                     '%Y-%m-%dT%H:%M:%SZ'
-        #                 )
-        #                 address.attribute('First Seen', first_seen)
-
-        #             # map last online to "Last Seen" attribute
-        #             last_online = ti.get('last_online')
-        #             if last_online:
-        #                 last_online = self.tcex.util.any_to_datetime(last_online).strftime(
-        #                     '%Y-%m-%dT%H:%M:%SZ'
-        #                 )
-        #                 address.attribute('Last Seen', last_online)
-
-        #             # map port to "Port" attribute
-        #             port = ti.get('port')
-        #             if port:
-        #                 address.attribute('Port', port)
-
-        #             # map malware to "Malware" tag
-        #             malware = ti.get('malware')
-        #             if malware:
-        #                 address.tag(malware)
-
-        #             # optionally save object to disk to save on memory usage
-        #             self.batch.save(address)
-        #     else:
-        #         self.tcex.exit.exit(ExitCode.SUCCESS, 'Failed to download data.')
-
-        # # submit batch job
-        # batch_status = self.batch.submit_all()
-        # self.log.info(f'batch-status={batch_status}')
-
-        # self.exit_message = 'Downloaded data and create batch job.'
+        self.log.info(f"Retrieved {len(records)} latest record(s).")
+        self.exit_message = "Successfully retrieved latest records sample."
