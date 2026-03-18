@@ -178,6 +178,7 @@ class App(JobApp):
 
         def _process_record(record: Dict[str, Any]) -> Optional[dt.datetime]:
             """Create ThreatConnect indicators for one record; return parsed timestamp."""
+            
             summary_domain = record.get("domain")
             summary_apex = record.get("apex_domain")
             raw_timestamp = record.get("timestamp")
@@ -194,7 +195,7 @@ class App(JobApp):
                 else None
             )
 
-            if not summary_domain:
+            if not summary_domain and not summary_apex:
                 return parsed_ts
 
             # Create Host indicator for the full domain (subdomain)
@@ -244,7 +245,7 @@ class App(JobApp):
                 self.log.info(
                     "No records returned from latest_records; skipping initial_run batch import."
                 )
-                self.tcex.exit(0, "No records to import.")
+                self.tcex.exit.exit(ExitCode.SUCCESS, "No records to import.")
                 # self.log.info(
                 #     "No more records returned from latest_records; stopping initial_run pagination."
                 # )
@@ -285,7 +286,7 @@ class App(JobApp):
                 self.log.info(
                     "No records returned from latest_records; skipping batch import."
                 )
-                self.tcex.exit(0, "No records to import.")
+                self.tcex.exit.exit(ExitCode.SUCCESS, "No records to import.")
                 # self.log.info(
                 #     "No more records returned; stopping since-date pagination."
                 # )
@@ -310,33 +311,34 @@ class App(JobApp):
             #     # )
             #     # break
             # cursor = max_processed_ts
-        else:
-            # Single batch: incremental_new (with or without cutoff).
-            since = cutoff if mode == "incremental_new" else None
-            until = None
+        # else:
+        #     # Single batch: incremental_new (with or without cutoff).
+        #     since = cutoff if mode == "incremental_new" else None
+        #     until = None
 
-            records = self.latest_records(limit=100, since=since, until=until)
-            if not records:
-                self.log.info("No records returned from latest_records; skipping batch import.")
-                self.tcex.exit(0, "No records to import.")
+        #     records = self.latest_records(limit=100, since=since, until=until)
+        #     if not records:
+        #         self.log.info("No records returned from latest_records; skipping batch import.")
+        #         self.tcex.exit(0, "No records to import.")
 
-            for record in records:
-                parsed_ts = _process_record(record)
-                if parsed_ts is None:
-                    continue
-                if min_processed_ts is None or parsed_ts < min_processed_ts:
-                    min_processed_ts = parsed_ts
-                if max_processed_ts is None or parsed_ts > max_processed_ts:
-                    max_processed_ts = parsed_ts
+        #     for record in records:
+        #         parsed_ts = _process_record(record)
+        #         if parsed_ts is None:
+        #             continue
+        #         if min_processed_ts is None or parsed_ts < min_processed_ts:
+        #             min_processed_ts = parsed_ts
+        #         if max_processed_ts is None or parsed_ts > max_processed_ts:
+        #             max_processed_ts = parsed_ts
 
         batch_response = self.batch.submit_all()
+        self.tcex.log.debug(f"batch_response: {batch_response}")
         self.batch.close()
 
         errors = []
-        successes = []
+        success = 0
         for item in batch_response:
             errors.extend(item.get('errors', []))
-            successes.extend(item.get('successes', []))
+            success += item.get('successCount', 0)
         if errors:
             known_errors = []
             self.tcex.log.error('App.run: batch submission failed with %d errors', len(errors))
@@ -351,12 +353,13 @@ class App(JobApp):
                     continue
                 known_errors.append(known_error)
                 self.tcex.log.error('App.run: batch submission error: %s', error)
-                
-                
+        else:
+            self.tcex.log.debug("No errors found.")
 
-        if successes:
-            self.tcex.log.info('App.run: batch submission successful with %d items', len(successes))
-            self.tcex.log.info('App.run: batch submission success: %s', successes[0])
+        if success:
+            self.tcex.log.debug('App.run: batch submission successful with %d items', success)
+        else:
+            self.tcex.log.debug("No successes found.")
 
         if mode == "incremental_new":
             return max_processed_ts
@@ -372,6 +375,7 @@ class App(JobApp):
         mode = "initial_run"
         if self.in_.initial_run:
             mode = "initial_run"
+            self.tcex.log.debug(f"mode: {mode}")
         else:
             # Non-initial run: if since_date is set, fetch from that date toward now.
             since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
@@ -384,12 +388,13 @@ class App(JobApp):
                     self.log.warning(
                         "since_date could not be parsed; since_date required for non-initial run."
                     )
-                    self.tcex.exit(0, "since_date required for non-initial run; no records imported.")
+                    self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
             else:
                 self.log.info("since_date not set; required for non-initial run.")
-                self.tcex.exit(0, "since_date required for non-initial run; no records imported.")
+                self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
 
         for i in range(max_runs):
+            self.tcex.log.debug(f"run: {i+1} of {max_runs}")
             try:
                 self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
                 cutoff = self.batch_run(cutoff=cutoff, mode=mode)
@@ -398,6 +403,8 @@ class App(JobApp):
                     self.tcex.exit.exit(ExitCode.FAILURE, 'Could not retrieve indicator types from ThreatConnect API.')
                 self.tcex.log.error(f"Failed to run batch: {exc}")
                 time.sleep(1)
+
+        self.tcex.log.debug("Batch run(s) complete.")
 
 
 
