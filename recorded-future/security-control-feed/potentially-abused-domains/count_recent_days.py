@@ -1,18 +1,28 @@
 """Count records per day over the last N days from the gzipped domains file.
 
 This script streams the large
-`example/Potentially Abused Domains (1).gz` file line-by-line, parses each
-record as JSON, extracts the `timestamp` field, and counts how many records
-fall on each of the last N calendar days (default 30).
+`example/Potentially Abused Domains (1).gz` file, which contains a single
+top-level JSON object with a large ``results`` array (matching the structure of
+``sample_potentially_abused_domains.json``). It uses the ``ijson`` streaming
+JSON parser to iterate over each item in the ``results`` array without loading
+the entire document into memory.
 
-Only **aggregated per-day counts** are kept in memory and written out to a
-small text file; individual records are never stored.
+For each result object, it extracts the ``timestamp`` field and counts how many
+records fall on each of the last N calendar days (default 30). Only aggregated
+per-day counts are kept in memory and written out to a small text file;
+individual records are never stored.
+
+Dependencies
+------------
+- Requires the ``ijson`` package for streaming JSON parsing:
+
+  pip install ijson
 
 Assumptions
 -----------
-- Input is newline-delimited JSON (one JSON object per line).
-- Each JSON object has a `timestamp` field in an ISO-like UTC format such as
-  `YYYY-MM-DDTHH:MM:SS.sssZ` (e.g., `2026-02-24T15:18:45.000Z`).
+- The gzipped JSON has a top-level object with a ``results`` array.
+- Each result object has a ``timestamp`` field in an ISO-like UTC format such
+  as ``YYYY-MM-DDTHH:MM:SS.sssZ`` (e.g., ``2026-02-24T15:18:45.000Z``).
 - Timestamps are treated as UTC; we truncate to the UTC date component.
 
 Example usage
@@ -35,10 +45,11 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import gzip
-import json
 import os
 import sys
 from typing import Dict
+
+import ijson
 
 
 DEFAULT_INPUT = os.path.join("example", "Potentially Abused Domains (1).gz")
@@ -84,7 +95,7 @@ def count_recent_days(
     today = dt.datetime.utcnow().date()
     counts: Dict[int, int] = {offset: 0 for offset in range(days)}
 
-    processed = 0
+    processed_items = 0
     skipped_parse = 0
     skipped_range = 0
 
@@ -93,19 +104,16 @@ def count_recent_days(
             print(msg, file=sys.stderr)
 
     _log(
-        f"Reading from '{input_path}', counting records for last {days} day(s) "
+        f"Reading from '{input_path}', streaming 'results' items for last {days} day(s) "
         f"relative to {today.isoformat()} (UTC)."
     )
 
-    with gzip.open(input_path, mode="rt", encoding="utf-8", errors="replace") as f_in:
-        for line in f_in:
-            processed += 1
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                record = json.loads(line)
-            except json.JSONDecodeError:
+    # Open gzipped JSON in binary mode for ijson streaming.
+    with gzip.open(input_path, mode="rb") as f_in:
+        for record in ijson.items(f_in, "results.item"):
+            processed_items += 1
+
+            if not isinstance(record, dict):
                 skipped_parse += 1
                 continue
 
@@ -123,7 +131,7 @@ def count_recent_days(
                 skipped_range += 1
 
     _log(
-        f"Finished streaming. Processed={processed}, "
+        f"Finished streaming. Processed_items={processed_items}, "
         f"skipped_parse_or_missing_ts={skipped_parse}, "
         f"skipped_out_of_range={skipped_range}."
     )

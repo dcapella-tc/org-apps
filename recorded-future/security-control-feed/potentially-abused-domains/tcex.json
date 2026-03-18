@@ -7,7 +7,9 @@
       "app_spec.yaml",
       "local-*",
       "pyproject.toml",
-      "example"
+      "example",
+      "count_recent_days.py",
+      "sample_pad_file.py"
     ]
   },
   "template_name": "ingress",
