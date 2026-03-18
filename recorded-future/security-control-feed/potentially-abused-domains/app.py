@@ -178,7 +178,7 @@ class App(JobApp):
         until = cutoff if mode == "paginate_older" else None
 
         # Get up to N relevant records, newest first
-        records = self.latest_records(limit=5000, since=since, until=until)
+        records = self.latest_records(limit=100, since=since, until=until)
         if not records:
             self.log.info("No records returned from latest_records; skipping batch import.")
             self.tcex.exit(0, "No records to import.")
