@@ -273,13 +273,45 @@ class App(JobApp):
 
                 # Next page should be strictly older than what we just processed.
                 cutoff_cursor = page_min_processed_ts
+        elif mode == "incremental_new" and cutoff is not None:
+            # From given date toward now: paginate with since=cursor, until=None; cursor advances to max_processed_ts.
+            batch_pages = int(self.in_.batch_limit)
+            if batch_pages <= 0:
+                batch_pages = 100
+            cursor: Optional[dt.datetime] = _normalize_datetime_to_naive_utc(cutoff)
+            for page_index in range(batch_pages):
+                records = self.latest_records(limit=100, since=cursor, until=None)
+                if not records:
+                    if page_index == 0:
+                        self.log.info(
+                            "No records returned from latest_records; skipping batch import."
+                        )
+                        self.tcex.exit(0, "No records to import.")
+                    self.log.info(
+                        "No more records returned; stopping since-date pagination."
+                    )
+                    break
+
+                for record in records:
+                    parsed_ts = _process_record(record)
+                    if parsed_ts is None:
+                        continue
+                    if min_processed_ts is None or parsed_ts < min_processed_ts:
+                        min_processed_ts = parsed_ts
+                    if max_processed_ts is None or parsed_ts > max_processed_ts:
+                        max_processed_ts = parsed_ts
+
+                if max_processed_ts is None:
+                    self.log.info(
+                        "incremental_new pagination could not determine max timestamp; stopping."
+                    )
+                    break
+                cursor = max_processed_ts
         else:
-            # For incremental mode, cutoff is the lower bound.
-            # For pagination mode, cutoff is the upper bound.
+            # Single batch: paginate_older (cutoff as upper bound) or incremental_new without cutoff.
             since = cutoff if mode == "incremental_new" else None
             until = cutoff if mode == "paginate_older" else None
 
-            # Get up to N relevant records, newest first
             records = self.latest_records(limit=100, since=since, until=until)
             if not records:
                 self.log.info("No records returned from latest_records; skipping batch import.")
@@ -331,7 +363,26 @@ class App(JobApp):
         """Run main App logic."""
         max_runs = 1
         cutoff: Optional[dt.datetime] = None
-        mode = "initial_run" if self.in_.initial_run else "paginate_older"
+        if self.in_.initial_run:
+            mode = "initial_run"
+        else:
+            # Non-initial run: if since_date is set, fetch from that date toward now.
+            since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
+            if since_date_str:
+                parsed_since = _parse_timestamp_to_datetime(since_date_str)
+                if parsed_since is not None:
+                    cutoff = _normalize_datetime_to_naive_utc(parsed_since)
+                    mode = "incremental_new"
+                else:
+                    self.log.warning(
+                        "since_date could not be parsed; using single batch of newest records."
+                    )
+                    mode = "paginate_older"
+                    cutoff = None
+            else:
+                mode = "paginate_older"
+                cutoff = None
+
         for i in range(max_runs):
             try:
                 self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)

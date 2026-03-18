@@ -13,6 +13,8 @@ class AppBaseModel(AppOrganizationModel):
     initial_run: bool = False
     # Max number of pages to process during the initial import.
     batch_limit: Integer = Integer(50)
+    # For non-initial run: fetch records with timestamp after this date (ISO datetime or date). Optional.
+    since_date: String = ""
 
 
 class AppInputs:
