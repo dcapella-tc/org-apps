@@ -67,6 +67,7 @@ def stream_latest_records(
     input_path: str,
     limit: int = 1000,
     min_timestamp: Optional[dt.datetime] = None,
+    max_timestamp: Optional[dt.datetime] = None,
 ) -> List[Dict[str, Any]]:
     """Stream at most ``limit`` records from the gzipped JSON, ordered by timestamp desc.
 
@@ -74,6 +75,9 @@ def stream_latest_records(
     ``results`` array, where each item has a ``timestamp`` field. We stream
     ``results.item`` via ijson, stop once we have ``limit`` valid timestamped records,
     then sort them by timestamp in descending order.
+
+    If ``min_timestamp`` is provided, records with ``timestamp <= min_timestamp`` are skipped.
+    If ``max_timestamp`` is provided, records with ``timestamp >= max_timestamp`` are skipped.
     """
     if limit <= 0:
         raise ValueError("limit must be a positive integer.")
@@ -83,6 +87,8 @@ def stream_latest_records(
 
     if min_timestamp is not None:
         min_timestamp = _normalize_datetime_to_naive_utc(min_timestamp)
+    if max_timestamp is not None:
+        max_timestamp = _normalize_datetime_to_naive_utc(max_timestamp)
 
     collected: List[tuple[dt.datetime, Dict[str, Any]]] = []
 
@@ -105,6 +111,9 @@ def stream_latest_records(
             # Skip records that are older-or-equal to what we've already processed.
             if min_timestamp is not None and parsed_ts <= min_timestamp:
                 continue
+            # Skip records that are newer-or-equal to what we've already processed.
+            if max_timestamp is not None and parsed_ts >= max_timestamp:
+                continue
 
             collected.append((parsed_ts, record))
             if len(collected) >= limit:
@@ -117,8 +126,6 @@ def stream_latest_records(
 
 class App(JobApp):
     """Job App"""
-
-    _state_filename = "last_processed_timestamp.txt"
 
     def __init__(self, _tcex: TcEx):
         """Initialize class properties."""
@@ -133,80 +140,50 @@ class App(JobApp):
         # to be made by only providing the API endpoint/path.
         # self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
 
-    def _state_file_path(self) -> str:
-        # Store next to this module so repeated job executions share the same state.
-        try:
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-        except NameError:
-            base_dir = os.getcwd()
-        return os.path.join(base_dir, self._state_filename)
-
-    def _load_last_processed_timestamp(self) -> Optional[dt.datetime]:
-        state_path = self._state_file_path()
-        if not os.path.isfile(state_path):
-            return None
-
-        try:
-            with open(state_path, mode="r", encoding="utf-8") as f_in:
-                raw = f_in.read().strip()
-        except OSError as exc:
-            self.log.error(f"Failed reading state file {state_path}: {exc}")
-            return None
-
-        if not raw:
-            return None
-
-        parsed = _parse_timestamp_to_datetime(raw)
-        if parsed is None:
-            self.log.warning(f"State file has invalid timestamp '{raw}'; resetting state.")
-            return None
-
-        return _normalize_datetime_to_naive_utc(parsed)
-
-    def _store_last_processed_timestamp(self, timestamp_dt: dt.datetime) -> None:
-        timestamp_dt = _normalize_datetime_to_naive_utc(timestamp_dt)
-        iso_str = timestamp_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        state_path = self._state_file_path()
-        tmp_path = state_path + ".tmp"
-        try:
-            with open(tmp_path, mode="w", encoding="utf-8") as f_out:
-                f_out.write(iso_str + "\n")
-            os.replace(tmp_path, state_path)
-            self.log.info(f"Stored last processed timestamp: {iso_str}")
-        except OSError as exc:
-            self.log.error(f"Failed writing state file {state_path}: {exc}")
-
-    def latest_records(self, limit: int = 1000, since: Optional[dt.datetime] = None) -> List[Dict[str, Any]]:
+    def latest_records(
+        self,
+        limit: int = 1000,
+        since: Optional[dt.datetime] = None,
+        until: Optional[dt.datetime] = None,
+    ) -> List[Dict[str, Any]]:
         """Return up to ``limit`` records ordered by timestamp descending."""
         try:
-            return stream_latest_records(EXAMPLE_GZ_PATH, limit=limit, min_timestamp=since)
+            return stream_latest_records(
+                EXAMPLE_GZ_PATH,
+                limit=limit,
+                min_timestamp=since,
+                max_timestamp=until,
+            )
         except Exception as exc:  # defensive
             self.log.error(f"Failed to stream latest records: {exc}")
             return []
 
-    def batch_run(self):
-        """Run the batch import logic."""
-        last_processed = self._load_last_processed_timestamp()
-        if last_processed is not None:
-            self.log.info(
-                "Skipping records with timestamp <= %s",
-                last_processed.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            )
+    def batch_run(
+        self,
+        cutoff: Optional[dt.datetime] = None,
+        mode: str = "paginate_older",
+    ) -> Optional[dt.datetime]:
+        """Run a batch import step and return the next cutoff timestamp.
 
-        # Get the 1,000 most recent records, newest first
-        records = self.latest_records(limit=5000, since=last_processed)
+        Modes:
+        - `incremental_new`: fetch records with `timestamp > cutoff` and return the batch max timestamp.
+        - `paginate_older`: fetch records with `timestamp < cutoff` and return the batch min timestamp.
+        """
+        if mode not in {"incremental_new", "paginate_older"}:
+            raise ValueError(f"Unsupported mode: {mode}")
 
+        # For incremental mode, cutoff is the lower bound.
+        # For pagination mode, cutoff is the upper bound.
+        since = cutoff if mode == "incremental_new" else None
+        until = cutoff if mode == "paginate_older" else None
+
+        # Get up to N relevant records, newest first
+        records = self.latest_records(limit=5000, since=since, until=until)
         if not records:
-            if last_processed is not None:
-                self.log.info(
-                    "No new records since %s; skipping batch import.",
-                    last_processed.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                )
-            else:
-                self.log.info("No records returned from latest_records; skipping batch import.")
+            self.log.info("No records returned from latest_records; skipping batch import.")
             self.tcex.exit(0, "No records to import.")
 
+        min_processed_ts: Optional[dt.datetime] = None
         max_processed_ts: Optional[dt.datetime] = None
 
         for record in records:
@@ -214,12 +191,13 @@ class App(JobApp):
             summary_apex = record.get("apex_domain")
             raw_timestamp = record.get("timestamp")
 
-            # Track the newest timestamp we attempted to process so we can advance the cutoff,
-            # even if some records are skipped later (e.g., missing required fields).
+            # Track min/max timestamps we attempted to process so the next batch can avoid overlap.
             if isinstance(raw_timestamp, str):
                 parsed_ts = _parse_timestamp_to_datetime(raw_timestamp)
                 if parsed_ts is not None:
                     parsed_ts = _normalize_datetime_to_naive_utc(parsed_ts)
+                    if min_processed_ts is None or parsed_ts < min_processed_ts:
+                        min_processed_ts = parsed_ts
                     if max_processed_ts is None or parsed_ts > max_processed_ts:
                         max_processed_ts = parsed_ts
 
@@ -283,18 +261,19 @@ class App(JobApp):
             self.tcex.log.info('App.run: batch submission successful with %d items', len(successes))
             self.tcex.log.info('App.run: batch submission success: %s', successes[0])
 
-        # Advance the cutoff so future runs do not re-fetch the same records.
-        # This is done after submission so we only "commit" when batch processing has been attempted.
-        if max_processed_ts is not None:
-            self._store_last_processed_timestamp(max_processed_ts)
+        if mode == "incremental_new":
+            return max_processed_ts
+        return min_processed_ts
 
     def run(self):
         """Run main App logic."""
         max_runs = 100
+        cutoff: Optional[dt.datetime] = None
+        mode = "paginate_older"
         for i in range(max_runs):
             try:
                 self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
-                self.batch_run()
+                cutoff = self.batch_run(cutoff=cutoff, mode=mode)
             except Exception as exc:
                 self.tcex.log.error(f"Failed to run batch: {exc}")
                 time.sleep(1)
