@@ -35,6 +35,25 @@ def _parse_timestamp_to_datetime(value: str) -> Optional[dt.datetime]:
     return None
 
 
+def format_timestamp_iso8601(timestamp_str: str) -> Optional[str]:
+    """Normalize a timestamp string to ISO 8601 format with trailing Z.
+
+    Returns None if the input cannot be parsed.
+    """
+    if not isinstance(timestamp_str, str) or not timestamp_str:
+        return None
+
+    parsed = _parse_timestamp_to_datetime(timestamp_str)
+    if parsed is None:
+        return None
+
+    # Ensure naive datetimes are treated as UTC and append Z
+    if parsed.tzinfo is not None:
+        parsed = parsed.astimezone(dt.timezone.utc).replace(tzinfo=None)
+
+    return parsed.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def stream_latest_records(input_path: str, limit: int = 1000) -> List[Dict[str, Any]]:
     """Stream at most ``limit`` records from the gzipped JSON, ordered by timestamp desc.
 
@@ -111,7 +130,12 @@ class App(JobApp):
         for record in records:
             summary_domain = record.get("domain")
             summary_apex = record.get("apex_domain")
-            timestamp = record.get("timestamp", None)
+            raw_timestamp = record.get("timestamp")
+            last_seen = (
+                format_timestamp_iso8601(raw_timestamp)
+                if isinstance(raw_timestamp, str)
+                else None
+            )
 
             if not summary_domain:
                 continue
@@ -123,7 +147,8 @@ class App(JobApp):
             # subdomain
             domain.tag('Subdomain')
             domain.tag(f'Apex Domain:{summary_apex}')
-            domain.attribute('Last Seen', timestamp)
+            if last_seen:
+                domain.attribute('Last Seen', last_seen)
             domain.attribute('Description', 'The full observed hostname (FQDN) identified in the source data. Represents the specific subdomain associated with the record.', True)
             
             # apex domain
@@ -139,3 +164,21 @@ class App(JobApp):
 
         batch_response = self.batch.submit_all()
         self.batch.close()
+
+        errors = []
+        successes = []
+        for item in batch_response:
+            errors.extend(item.get('errors', []))
+            successes.extend(item.get('successes', []))
+        if errors:
+            self.tcex.log.error('App.run: batch submission failed with %d errors', len(errors))
+            for i,error in enumerate(errors):
+                if i == 10: break
+                self.tcex.log.error('App.run: batch submission error: %s', error)
+            # self.tcex.log.debug('App.run: batch submission errors: %s', json.dumps(errors, indent=4))
+
+        if successes:
+            self.tcex.log.info('App.run: batch submission successful with %d items', len(successes))
+            self.tcex.log.info('App.run: batch submission success: %s', successes[0])
+
+
