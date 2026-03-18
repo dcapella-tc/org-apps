@@ -23,6 +23,29 @@
       ]
     },
     {
+      "default": false,
+      "label": "Initial Run (newest->oldest)",
+      "name": "initial_run",
+      "note": "When enabled, this execution imports records starting from the most recent timestamps and paginates older within the execution.",
+      "sequence": 2,
+      "type": "Boolean"
+    },
+    {
+      "default": "50",
+      "label": "Initial Run Batch Limit (pages)",
+      "name": "batch_limit",
+      "note": "Maximum number of pages (100 records per page) to process during initial_run.",
+      "sequence": 3,
+      "type": "Choice",
+      "validValues": [
+        "10",
+        "25",
+        "50",
+        "100",
+        "200"
+      ]
+    },
+    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",

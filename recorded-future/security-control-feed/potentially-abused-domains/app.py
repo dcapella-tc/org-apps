@@ -169,38 +169,25 @@ class App(JobApp):
         Modes:
         - `incremental_new`: fetch records with `timestamp > cutoff` and return the batch max timestamp.
         - `paginate_older`: fetch records with `timestamp < cutoff` and return the batch min timestamp.
+        - `initial_run`: one-time backfill mode that starts from newest records and paginates older.
         """
-        if mode not in {"incremental_new", "paginate_older"}:
+        if mode not in {"incremental_new", "paginate_older", "initial_run"}:
             raise ValueError(f"Unsupported mode: {mode}")
-
-        # For incremental mode, cutoff is the lower bound.
-        # For pagination mode, cutoff is the upper bound.
-        since = cutoff if mode == "incremental_new" else None
-        until = cutoff if mode == "paginate_older" else None
-
-        # Get up to N relevant records, newest first
-        records = self.latest_records(limit=100, since=since, until=until)
-        if not records:
-            self.log.info("No records returned from latest_records; skipping batch import.")
-            self.tcex.exit(0, "No records to import.")
 
         min_processed_ts: Optional[dt.datetime] = None
         max_processed_ts: Optional[dt.datetime] = None
 
-        for record in records:
+        def _process_record(record: Dict[str, Any]) -> Optional[dt.datetime]:
+            """Create ThreatConnect indicators for one record; return parsed timestamp."""
             summary_domain = record.get("domain")
             summary_apex = record.get("apex_domain")
             raw_timestamp = record.get("timestamp")
 
-            # Track min/max timestamps we attempted to process so the next batch can avoid overlap.
+            parsed_ts: Optional[dt.datetime] = None
             if isinstance(raw_timestamp, str):
                 parsed_ts = _parse_timestamp_to_datetime(raw_timestamp)
                 if parsed_ts is not None:
                     parsed_ts = _normalize_datetime_to_naive_utc(parsed_ts)
-                    if min_processed_ts is None or parsed_ts < min_processed_ts:
-                        min_processed_ts = parsed_ts
-                    if max_processed_ts is None or parsed_ts > max_processed_ts:
-                        max_processed_ts = parsed_ts
 
             last_seen = (
                 format_timestamp_iso8601(raw_timestamp)
@@ -209,29 +196,103 @@ class App(JobApp):
             )
 
             if not summary_domain:
-                continue
+                return parsed_ts
 
             # Create Host indicator for the full domain (subdomain)
-            domain = self.batch.indicator('Host', summary_domain)
-            apex = self.batch.indicator('Host', summary_apex)
+            domain = self.batch.indicator("Host", summary_domain)
+            apex = self.batch.indicator("Host", summary_apex)
 
             # subdomain
-            domain.tag('Subdomain')
-            domain.tag(f'Apex Domain:{summary_apex}')
+            domain.tag("Subdomain")
+            domain.tag(f"Apex Domain:{summary_apex}")
             if last_seen:
-                domain.attribute('Last Seen', last_seen)
-            domain.attribute('Description', 'The full observed hostname (FQDN) identified in the source data. Represents the specific subdomain associated with the record.', True)
-            
+                domain.attribute("Last Seen", last_seen)
+            domain.attribute(
+                "Description",
+                "The full observed hostname (FQDN) identified in the source data. Represents the specific subdomain associated with the record.",
+                True,
+            )
+
             # apex domain
-            apex.tag('Apex Domain')
-            apex.tag(f'Subdomain:{summary_domain}')
-            apex.attribute('Description', 'The base registrable domain associated with the observed hostname. Represents the parent domain from which the subdomain is derived.', True)
+            apex.tag("Apex Domain")
+            apex.tag(f"Subdomain:{summary_domain}")
+            apex.attribute(
+                "Description",
+                "The base registrable domain associated with the observed hostname. Represents the parent domain from which the subdomain is derived.",
+                True,
+            )
 
             # both indicators
             for indicator in [domain, apex]:
-                indicator.tag('Potentially Abused Domain')
-                indicator.attribute('Source', 'Potentially Abused Domains', True)
+                indicator.tag("Potentially Abused Domain")
+                indicator.attribute("Source", "Potentially Abused Domains", True)
                 self.batch.save(indicator)
+
+            return parsed_ts
+
+        if mode == "initial_run":
+            batch_pages = int(self.in_.batch_limit)
+            if batch_pages <= 0:
+                raise ValueError("batch_limit must be a positive integer.")
+
+            # Cursor is the oldest timestamp we've processed so far; next page fetches older (< cursor).
+            cutoff_cursor: Optional[dt.datetime] = None
+            for page_index in range(batch_pages):
+                # Get up to N relevant records, newest first
+                records = self.latest_records(limit=100, since=None, until=cutoff_cursor)
+                if not records:
+                    if page_index == 0:
+                        self.log.info(
+                            "No records returned from latest_records; skipping initial_run batch import."
+                        )
+                        self.tcex.exit(0, "No records to import.")
+                    self.log.info(
+                        "No more records returned from latest_records; stopping initial_run pagination."
+                    )
+                    break
+
+                page_min_processed_ts: Optional[dt.datetime] = None
+                for record in records:
+                    parsed_ts = _process_record(record)
+                    if parsed_ts is None:
+                        continue
+
+                    if min_processed_ts is None or parsed_ts < min_processed_ts:
+                        min_processed_ts = parsed_ts
+                    if max_processed_ts is None or parsed_ts > max_processed_ts:
+                        max_processed_ts = parsed_ts
+                    if page_min_processed_ts is None or parsed_ts < page_min_processed_ts:
+                        page_min_processed_ts = parsed_ts
+
+                if page_min_processed_ts is None:
+                    # Avoid looping forever if timestamps are unexpectedly missing.
+                    self.log.info(
+                        "initial_run pagination could not determine a page minimum timestamp; stopping."
+                    )
+                    break
+
+                # Next page should be strictly older than what we just processed.
+                cutoff_cursor = page_min_processed_ts
+        else:
+            # For incremental mode, cutoff is the lower bound.
+            # For pagination mode, cutoff is the upper bound.
+            since = cutoff if mode == "incremental_new" else None
+            until = cutoff if mode == "paginate_older" else None
+
+            # Get up to N relevant records, newest first
+            records = self.latest_records(limit=100, since=since, until=until)
+            if not records:
+                self.log.info("No records returned from latest_records; skipping batch import.")
+                self.tcex.exit(0, "No records to import.")
+
+            for record in records:
+                parsed_ts = _process_record(record)
+                if parsed_ts is None:
+                    continue
+                if min_processed_ts is None or parsed_ts < min_processed_ts:
+                    min_processed_ts = parsed_ts
+                if max_processed_ts is None or parsed_ts > max_processed_ts:
+                    max_processed_ts = parsed_ts
 
         batch_response = self.batch.submit_all()
         self.batch.close()
@@ -270,7 +331,7 @@ class App(JobApp):
         """Run main App logic."""
         max_runs = 1
         cutoff: Optional[dt.datetime] = None
-        mode = "paginate_older"
+        mode = "initial_run" if self.in_.initial_run else "paginate_older"
         for i in range(max_runs):
             try:
                 self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
