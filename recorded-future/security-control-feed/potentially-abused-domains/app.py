@@ -56,7 +56,18 @@ def format_timestamp_iso8601(timestamp_str: str) -> Optional[str]:
     return parsed.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def stream_latest_records(input_path: str, limit: int = 1000) -> List[Dict[str, Any]]:
+def _normalize_datetime_to_naive_utc(value: dt.datetime) -> dt.datetime:
+    """Convert an aware datetime to naive UTC; keep naive datetimes as-is."""
+    if value.tzinfo is not None:
+        return value.astimezone(dt.timezone.utc).replace(tzinfo=None)
+    return value
+
+
+def stream_latest_records(
+    input_path: str,
+    limit: int = 1000,
+    min_timestamp: Optional[dt.datetime] = None,
+) -> List[Dict[str, Any]]:
     """Stream at most ``limit`` records from the gzipped JSON, ordered by timestamp desc.
 
     The gzipped file is expected to contain a single top-level JSON object with a large
@@ -69,6 +80,9 @@ def stream_latest_records(input_path: str, limit: int = 1000) -> List[Dict[str, 
 
     if not os.path.isfile(input_path):
         raise FileNotFoundError(f"Input file does not exist: {input_path}")
+
+    if min_timestamp is not None:
+        min_timestamp = _normalize_datetime_to_naive_utc(min_timestamp)
 
     collected: List[tuple[dt.datetime, Dict[str, Any]]] = []
 
@@ -86,6 +100,11 @@ def stream_latest_records(input_path: str, limit: int = 1000) -> List[Dict[str, 
             )
             if parsed_ts is None:
                 continue
+            parsed_ts = _normalize_datetime_to_naive_utc(parsed_ts)
+
+            # Skip records that are older-or-equal to what we've already processed.
+            if min_timestamp is not None and parsed_ts <= min_timestamp:
+                continue
 
             collected.append((parsed_ts, record))
             if len(collected) >= limit:
@@ -98,6 +117,8 @@ def stream_latest_records(input_path: str, limit: int = 1000) -> List[Dict[str, 
 
 class App(JobApp):
     """Job App"""
+
+    _state_filename = "last_processed_timestamp.txt"
 
     def __init__(self, _tcex: TcEx):
         """Initialize class properties."""
@@ -112,27 +133,96 @@ class App(JobApp):
         # to be made by only providing the API endpoint/path.
         # self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
 
-    def latest_records(self, limit: int = 1000) -> List[Dict[str, Any]]:
+    def _state_file_path(self) -> str:
+        # Store next to this module so repeated job executions share the same state.
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+        except NameError:
+            base_dir = os.getcwd()
+        return os.path.join(base_dir, self._state_filename)
+
+    def _load_last_processed_timestamp(self) -> Optional[dt.datetime]:
+        state_path = self._state_file_path()
+        if not os.path.isfile(state_path):
+            return None
+
+        try:
+            with open(state_path, mode="r", encoding="utf-8") as f_in:
+                raw = f_in.read().strip()
+        except OSError as exc:
+            self.log.error(f"Failed reading state file {state_path}: {exc}")
+            return None
+
+        if not raw:
+            return None
+
+        parsed = _parse_timestamp_to_datetime(raw)
+        if parsed is None:
+            self.log.warning(f"State file has invalid timestamp '{raw}'; resetting state.")
+            return None
+
+        return _normalize_datetime_to_naive_utc(parsed)
+
+    def _store_last_processed_timestamp(self, timestamp_dt: dt.datetime) -> None:
+        timestamp_dt = _normalize_datetime_to_naive_utc(timestamp_dt)
+        iso_str = timestamp_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        state_path = self._state_file_path()
+        tmp_path = state_path + ".tmp"
+        try:
+            with open(tmp_path, mode="w", encoding="utf-8") as f_out:
+                f_out.write(iso_str + "\n")
+            os.replace(tmp_path, state_path)
+            self.log.info(f"Stored last processed timestamp: {iso_str}")
+        except OSError as exc:
+            self.log.error(f"Failed writing state file {state_path}: {exc}")
+
+    def latest_records(self, limit: int = 1000, since: Optional[dt.datetime] = None) -> List[Dict[str, Any]]:
         """Return up to ``limit`` records ordered by timestamp descending."""
         try:
-            return stream_latest_records(EXAMPLE_GZ_PATH, limit=limit)
+            return stream_latest_records(EXAMPLE_GZ_PATH, limit=limit, min_timestamp=since)
         except Exception as exc:  # defensive
             self.log.error(f"Failed to stream latest records: {exc}")
             return []
 
     def batch_run(self):
         """Run the batch import logic."""
+        last_processed = self._load_last_processed_timestamp()
+        if last_processed is not None:
+            self.log.info(
+                "Skipping records with timestamp <= %s",
+                last_processed.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            )
+
         # Get the 1,000 most recent records, newest first
-        records = self.latest_records(limit=5000)
+        records = self.latest_records(limit=5000, since=last_processed)
 
         if not records:
-            self.log.info("No records returned from latest_records; skipping batch import.")
+            if last_processed is not None:
+                self.log.info(
+                    "No new records since %s; skipping batch import.",
+                    last_processed.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                )
+            else:
+                self.log.info("No records returned from latest_records; skipping batch import.")
             self.tcex.exit(0, "No records to import.")
+
+        max_processed_ts: Optional[dt.datetime] = None
 
         for record in records:
             summary_domain = record.get("domain")
             summary_apex = record.get("apex_domain")
             raw_timestamp = record.get("timestamp")
+
+            # Track the newest timestamp we attempted to process so we can advance the cutoff,
+            # even if some records are skipped later (e.g., missing required fields).
+            if isinstance(raw_timestamp, str):
+                parsed_ts = _parse_timestamp_to_datetime(raw_timestamp)
+                if parsed_ts is not None:
+                    parsed_ts = _normalize_datetime_to_naive_utc(parsed_ts)
+                    if max_processed_ts is None or parsed_ts > max_processed_ts:
+                        max_processed_ts = parsed_ts
+
             last_seen = (
                 format_timestamp_iso8601(raw_timestamp)
                 if isinstance(raw_timestamp, str)
@@ -192,6 +282,11 @@ class App(JobApp):
         if successes:
             self.tcex.log.info('App.run: batch submission successful with %d items', len(successes))
             self.tcex.log.info('App.run: batch submission success: %s', successes[0])
+
+        # Advance the cutoff so future runs do not re-fetch the same records.
+        # This is done after submission so we only "commit" when batch processing has been attempted.
+        if max_processed_ts is not None:
+            self._store_last_processed_timestamp(max_processed_ts)
 
     def run(self):
         """Run main App logic."""
