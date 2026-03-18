@@ -12,6 +12,7 @@ import time
 import ijson
 from tcex import TcEx
 from tcex.exit import ExitCode
+from tcex.exit.exit import Exit
 
 from job_app import JobApp  # Import default Job App Class (Required)
 
@@ -267,7 +268,7 @@ class App(JobApp):
 
     def run(self):
         """Run main App logic."""
-        max_runs = 100
+        max_runs = 1
         cutoff: Optional[dt.datetime] = None
         mode = "paginate_older"
         for i in range(max_runs):
@@ -275,6 +276,8 @@ class App(JobApp):
                 self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
                 cutoff = self.batch_run(cutoff=cutoff, mode=mode)
             except Exception as exc:
+                if "Could not retrieve indicator types from ThreatConnect API." in str(exc):
+                    self.tcex.exit.exit(ExitCode.FAILURE, 'Could not retrieve indicator types from ThreatConnect API.')
                 self.tcex.log.error(f"Failed to run batch: {exc}")
                 time.sleep(1)
 
