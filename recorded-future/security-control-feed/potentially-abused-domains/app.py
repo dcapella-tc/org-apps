@@ -199,8 +199,10 @@ class App(JobApp):
                 return parsed_ts
 
             # Create Host indicator for the full domain (subdomain)
-            domain = self.batch.indicator("Host", summary_domain)
-            apex = self.batch.indicator("Host", summary_apex)
+            # confidence = self.in_.tc_confidence
+            # threat_rating = self.in_.tc_threat_rating
+            domain = self.batch.indicator("Host", summary_domain, confidence=self.in_.tc_confidence, rating=self.in_.tc_threat_rating)
+            apex = self.batch.indicator("Host", summary_apex, confidence=self.in_.tc_confidence, rating=self.in_.tc_threat_rating)
 
             # subdomain
             domain.tag("Subdomain")
