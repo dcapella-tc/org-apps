@@ -10,6 +10,7 @@
       "local-*",
       "pyproject.toml",
       "sample_pad_file.py"
+      ,"app_inputs.json"
     ]
   },
   "template_name": "ingress",
