@@ -4,13 +4,13 @@
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
+      "app_inputs.json",
       "app_spec.yaml",
       "count_recent_days.py",
       "example",
       "local-*",
       "pyproject.toml",
       "sample_pad_file.py"
-      ,"app_inputs.json"
     ]
   },
   "template_name": "ingress",
