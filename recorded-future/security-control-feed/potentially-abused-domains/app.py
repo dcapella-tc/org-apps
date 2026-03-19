@@ -340,12 +340,16 @@ class App(JobApp):
                 if 'Found duplicate indicator in batch job file' in error_reason:
                     if 'Found duplicate indicator in batch job file' in known_errors:
                         continue
-                    known_errors.append('Found duplicate indicator in batch job file')
+                    known_error = 'Found duplicate indicator in batch job file'
                 else:
+                    try:
+                        error_reason = error_reason.split('is not valid. ')[1]
+                    except:
+                        pass
                     known_error = re.sub(r"'[^']*'", '', error_reason).strip()
                     if known_error in known_errors:
                         continue
-                    known_errors.append(known_error)
+                known_errors.append(known_error)
                 self.tcex.log.error('App.run: batch submission error: %s', error)
         else:
             self.tcex.log.info("No errors found.")
