@@ -1,15 +1,15 @@
 {
   "allowOnDemand": true,
-  "displayName": "Batch Template",
+  "displayName": "Recorded Future SCF - Potentially Abused Domains",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
     "fileParams"
   ],
-  "labels": [],
+  "labels": ["Unsupported", "Recorded Future", "Security Control Feeds", "Domains"],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "A template of a working ingress Organization App.",
+  "note": "Recorded Future Security Control Feeds - Potentially Abused Domains (Ingress)",
   "params": [
     {
       "label": "ThreatConnect Owner",
