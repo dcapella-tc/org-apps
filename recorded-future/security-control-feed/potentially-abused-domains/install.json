@@ -23,11 +23,23 @@
       ]
     }
     ,{
+      "label": "Recorded Future API Token",
+      "name": "rf_api_token",
+      "note": "The API token for the Recorded Future API.",
+      "required": true,
+      "sequence": 3,
+      "type": "String"
+      ,"validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    }
+    ,{
       "default": 50,
       "label": "ThreatConnect Confidence",
       "name": "tc_confidence",
       "note": "The confidence level of the indicators.",
-      "sequence": 2,
+      "sequence": 40,
       "type": "String"
     }
     ,{
@@ -35,7 +47,7 @@
       "label": "ThreatConnect Threat Rating",
       "name": "tc_threat_rating",
       "note": "The threat rating of the indicators.",
-      "sequence": 3,
+      "sequence": 50,
       "type": "String"
     }
     ,{
@@ -43,7 +55,7 @@
       "label": "Initial Run (newest->oldest)",
       "name": "initial_run",
       "note": "When enabled, this execution imports records starting from the most recent timestamps and paginates older within the execution.",
-      "sequence": 4,
+      "sequence": 96,
       "type": "Boolean"
     },
     {
@@ -51,7 +63,7 @@
       "label": "Initial Run Batch Limit",
       "name": "batch_limit",
       "note": "Maximum number of pages (~10,000 records per page) to process during initial_run.",
-      "sequence": 5,
+      "sequence": 97,
       "type": "Choice",
       "validValues": [
         "1",
@@ -64,7 +76,7 @@
       "name": "since_date",
       "note": "Used only when Initial Run is off. Records with timestamp after this date will be imported (ISO datetime or date, e.g. 2025-01-15T00:00:00Z or 2025-01-15). Optional; if empty, a single batch of newest records is fetched.",
       "required": false,
-      "sequence": 6,
+      "sequence": 98,
       "type": "String"
     },
     {
