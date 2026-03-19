@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import datetime as dt
 import gzip
-import re
 import os
-from typing import Any, Dict, List, Optional
+import re
+import tempfile
 import time
+from typing import Any, Dict, List, Optional
+from urllib.parse import quote
 
 import ijson
 from tcex import TcEx
@@ -18,6 +20,32 @@ from job_app import JobApp  # Import default Job App Class (Required)
 
 
 EXAMPLE_GZ_PATH = os.path.join("example", "Potentially Abused Domains (1).gz")
+PAD_FEED_ENDPOINT = '/public/prevent/new_domains_ctl.json.gz'
+
+
+def _download_pad_gz(app: 'App') -> str:
+    """Download Potentially Abused Domains .gz from Recorded Future; return path to temp file."""
+    encoded_path = quote(PAD_FEED_ENDPOINT, safe='')
+    base_url = app.tcex.session.external.base_url or 'https://api.recordedfuture.com/fusion/v3/files/'
+    url = base_url.rstrip('/') + '/' + encoded_path
+    headers = {
+        'Accept': 'application/octet-stream',
+        'X-RFToken': app.in_.rf_api_token.value,
+    }
+    try:
+        resp = app.tcex.session.external.get(url, headers=headers)
+    except Exception as exc:
+        app.log.error(f"Failed to download PAD feed: {exc}")
+        app.tcex.exit.exit(ExitCode.FAILURE, f'Download failed: {exc}')
+    if not resp.ok:
+        app.log.error("PAD feed download failed: %s %s", resp.status_code, resp.reason)
+        app.tcex.exit.exit(ExitCode.FAILURE, f'Recorded Future returned {resp.status_code} {resp.reason}')
+    tmp = tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.gz')
+    try:
+        tmp.write(resp.content)
+    finally:
+        tmp.close()
+    return tmp.name
 
 
 def _parse_timestamp_to_datetime(value: str) -> Optional[dt.datetime]:
@@ -140,6 +168,7 @@ class App(JobApp):
         # setting the base url allow for subsequent API call
         # to be made by only providing the API endpoint/path.
         # self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
+        self.tcex.session.external.base_url = 'https://api.recordedfuture.com/fusion/v3/files/'
 
     def latest_records(
         self,
@@ -150,7 +179,7 @@ class App(JobApp):
         """Return up to ``limit`` records ordered by timestamp descending."""
         try:
             return stream_latest_records(
-                EXAMPLE_GZ_PATH,
+                self._pad_gz_path,
                 limit=limit,
                 min_timestamp=since,
                 max_timestamp=until,
@@ -327,44 +356,52 @@ class App(JobApp):
 
     def run(self):
         """Run main App logic."""
-        max_runs = self.in_.batch_limit
-        if max_runs <= 0:
-            max_runs = 1
+        self._pad_gz_path = _download_pad_gz(self)
+        try:
+            max_runs = self.in_.batch_limit
+            if max_runs <= 0:
+                max_runs = 1
 
-        cutoff: Optional[dt.datetime] = None
-        mode = "initial_run"
-        if self.in_.initial_run:
+            cutoff: Optional[dt.datetime] = None
             mode = "initial_run"
-            self.tcex.log.debug(f"mode: {mode}")
-        else:
-            # Non-initial run: if since_date is set, fetch from that date toward now.
-            since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
-            if since_date_str:
-                parsed_since = _parse_timestamp_to_datetime(since_date_str)
-                if parsed_since is not None:
-                    cutoff = _normalize_datetime_to_naive_utc(parsed_since)
-                    mode = "incremental_new"
-                else:
-                    self.log.warning(
-                        "since_date could not be parsed; since_date required for non-initial run."
-                    )
-                    self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
+            if self.in_.initial_run:
+                mode = "initial_run"
+                self.tcex.log.debug(f"mode: {mode}")
             else:
-                self.log.info("since_date not set; required for non-initial run.")
-                self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
+                # Non-initial run: if since_date is set, fetch from that date toward now.
+                since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
+                if since_date_str:
+                    parsed_since = _parse_timestamp_to_datetime(since_date_str)
+                    if parsed_since is not None:
+                        cutoff = _normalize_datetime_to_naive_utc(parsed_since)
+                        mode = "incremental_new"
+                    else:
+                        self.log.warning(
+                            "since_date could not be parsed; since_date required for non-initial run."
+                        )
+                        self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
+                else:
+                    self.log.info("since_date not set; required for non-initial run.")
+                    self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
 
-        for i in range(max_runs):
-            self.tcex.log.debug(f"run: {i+1} of {max_runs}")
-            try:
-                self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
-                cutoff = self.batch_run(cutoff=cutoff, mode=mode)
-            except Exception as exc:
-                if "Could not retrieve indicator types from ThreatConnect API." in str(exc):
-                    self.tcex.exit.exit(ExitCode.FAILURE, 'Could not retrieve indicator types from ThreatConnect API.')
-                self.tcex.log.error(f"Failed to run batch: {exc}")
-                time.sleep(1)
+            for i in range(max_runs):
+                self.tcex.log.debug(f"run: {i+1} of {max_runs}")
+                try:
+                    self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+                    cutoff = self.batch_run(cutoff=cutoff, mode=mode)
+                except Exception as exc:
+                    if "Could not retrieve indicator types from ThreatConnect API." in str(exc):
+                        self.tcex.exit.exit(ExitCode.FAILURE, 'Could not retrieve indicator types from ThreatConnect API.')
+                    self.tcex.log.error(f"Failed to run batch: {exc}")
+                    time.sleep(1)
 
-        self.tcex.log.debug("Batch run(s) complete.")
+            self.tcex.log.debug("Batch run(s) complete.")
+        finally:
+            if getattr(self, '_pad_gz_path', None) and os.path.isfile(self._pad_gz_path):
+                try:
+                    os.unlink(self._pad_gz_path)
+                except OSError as exc:
+                    self.log.warning("Could not remove temp PAD file %s: %s", self._pad_gz_path, exc)
 
 
 
