@@ -15,6 +15,8 @@ class AppBaseModel(AppOrganizationModel):
     batch_limit: Integer = Integer(50)
     # For non-initial run: fetch records with timestamp after this date (ISO datetime or date). Optional.
     since_date: String = String("")
+    tc_confidence: Integer = Integer(100)
+    tc_threat_rating: Integer = Integer(5)
 
 
 class AppInputs:
