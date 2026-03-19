@@ -132,8 +132,8 @@ class App(JobApp):
         """Initialize class properties."""
         super().__init__(_tcex)
 
-        # properties
-        # self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+        
+        
 
     def setup(self):
         """Perform prep/setup logic."""
@@ -231,9 +231,9 @@ class App(JobApp):
             return parsed_ts
 
         if mode == "initial_run":
-            # batch_pages = int(self.in_.batch_limit)
-            # if batch_pages <= 0:
-            #     raise ValueError("batch_limit must be a positive integer.")
+            
+            
+            
 
             # Cursor is the oldest timestamp we've processed so far; next page fetches older (< cursor).
             cutoff_cursor: Optional[dt.datetime] = None
@@ -241,15 +241,15 @@ class App(JobApp):
             # Get up to N relevant records, newest first
             records = self.latest_records(limit=100, since=None, until=cutoff_cursor)
             if not records:
-                # if page_index == 0:
+                
                 self.log.info(
                     "No records returned from latest_records; skipping initial_run batch import."
                 )
                 self.tcex.exit.exit(ExitCode.SUCCESS, "No records to import.")
-                # self.log.info(
-                #     "No more records returned from latest_records; stopping initial_run pagination."
-                # )
-                # break
+                
+                
+                
+                
 
             page_min_processed_ts: Optional[dt.datetime] = None
             for record in records:
@@ -264,33 +264,19 @@ class App(JobApp):
                 if page_min_processed_ts is None or parsed_ts < page_min_processed_ts:
                     page_min_processed_ts = parsed_ts
 
-            # if page_min_processed_ts is None:
-            #     # Avoid looping forever if timestamps are unexpectedly missing.
-            #     self.log.info(
-            #         "initial_run pagination could not determine a page minimum timestamp; stopping."
-            #     )
-            #     # break
-
-            # # Next page should be strictly older than what we just processed.
-            # cutoff_cursor = page_min_processed_ts
         elif mode == "incremental_new" and cutoff is not None:
-            # From given date toward now: paginate with since=cursor, until=None; cursor advances to max_processed_ts.
-            # batch_pages = int(self.in_.batch_limit)
-            # if batch_pages <= 0:
-            #     batch_pages = 100
             cursor: Optional[dt.datetime] = _normalize_datetime_to_naive_utc(cutoff)
-            # for page_index in range(batch_pages):
             records = self.latest_records(limit=100, since=cursor, until=None)
             if not records:
-                # if page_index == 0:
+                
                 self.log.info(
                     "No records returned from latest_records; skipping batch import."
                 )
                 self.tcex.exit.exit(ExitCode.SUCCESS, "No records to import.")
-                # self.log.info(
-                #     "No more records returned; stopping since-date pagination."
-                # )
-                # break
+                
+                
+                
+                
 
             for record in records:
                 parsed_ts = _process_record(record)
@@ -301,34 +287,6 @@ class App(JobApp):
                 if max_processed_ts is None or parsed_ts > max_processed_ts:
                     max_processed_ts = parsed_ts
 
-            # if max_processed_ts is None:
-            #     self.log.info(
-            #         "incremental_new pagination could not determine max timestamp; stopping."
-            #     )
-            #     self.tcex.exit(0, "No records to import.")
-            #     # self.log.info(
-            #     #     "incremental_new pagination could not determine max timestamp; stopping."
-            #     # )
-            #     # break
-            # cursor = max_processed_ts
-        # else:
-        #     # Single batch: incremental_new (with or without cutoff).
-        #     since = cutoff if mode == "incremental_new" else None
-        #     until = None
-
-        #     records = self.latest_records(limit=100, since=since, until=until)
-        #     if not records:
-        #         self.log.info("No records returned from latest_records; skipping batch import.")
-        #         self.tcex.exit(0, "No records to import.")
-
-        #     for record in records:
-        #         parsed_ts = _process_record(record)
-        #         if parsed_ts is None:
-        #             continue
-        #         if min_processed_ts is None or parsed_ts < min_processed_ts:
-        #             min_processed_ts = parsed_ts
-        #         if max_processed_ts is None or parsed_ts > max_processed_ts:
-        #             max_processed_ts = parsed_ts
 
         batch_response = self.batch.submit_all()
         self.tcex.log.debug(f"batch_response: {batch_response}")
