@@ -336,19 +336,24 @@ class App(JobApp):
             for error in errors:
                 error_count += 1
                 if error_count == 100: break
-                error_reason = error.get('errorReason', '').split('is not valid. ')[1]
-                known_error = re.sub(r"'[^']*'", '', error_reason).strip()
-                if known_error in known_errors:
-                    continue
-                known_errors.append(known_error)
+                error_reason = error.get('errorReason', '')
+                if 'Found duplicate indicator in batch job file' in error_reason:
+                    if 'Found duplicate indicator in batch job file' in known_errors:
+                        continue
+                    known_errors.append('Found duplicate indicator in batch job file')
+                else:
+                    known_error = re.sub(r"'[^']*'", '', error_reason).strip()
+                    if known_error in known_errors:
+                        continue
+                    known_errors.append(known_error)
                 self.tcex.log.error('App.run: batch submission error: %s', error)
         else:
-            self.tcex.log.debug("No errors found.")
+            self.tcex.log.info("No errors found.")
 
         if success:
-            self.tcex.log.debug('App.run: batch submission successful with %d items', success)
+            self.tcex.log.info('App.run: batch submission successful with %d items', success)
         else:
-            self.tcex.log.debug("No successes found.")
+            self.tcex.log.warning("No successes found.")
 
         if mode == "incremental_new":
             return max_processed_ts
@@ -386,13 +391,14 @@ class App(JobApp):
 
             for i in range(max_runs):
                 self.tcex.log.debug(f"run: {i+1} of {max_runs}")
+                self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
                 try:
-                    self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
                     cutoff = self.batch_run(cutoff=cutoff, mode=mode)
                 except Exception as exc:
                     if "Could not retrieve indicator types from ThreatConnect API." in str(exc):
                         self.tcex.exit.exit(ExitCode.FAILURE, 'Could not retrieve indicator types from ThreatConnect API.')
                     self.tcex.log.error(f"Failed to run batch: {exc}")
+                    self.batch.close()
                     time.sleep(1)
 
             self.tcex.log.debug("Batch run(s) complete.")
