@@ -375,7 +375,6 @@ class App(JobApp):
             mode = "initial_run"
             if self.in_.initial_run:
                 mode = "initial_run"
-                self.tcex.log.debug(f"mode: {mode}")
             else:
                 # Non-initial run: if since_date is set, fetch from that date toward now.
                 since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
@@ -399,13 +398,17 @@ class App(JobApp):
                 try:
                     cutoff = self.batch_run(cutoff=cutoff, mode=mode)
                 except Exception as exc:
+                    self.batch.close()
                     if "Could not retrieve indicator types from ThreatConnect API." in str(exc):
                         self.tcex.exit.exit(ExitCode.FAILURE, 'Could not retrieve indicator types from ThreatConnect API.')
                     self.tcex.log.error(f"Failed to run batch: {exc}")
-                    self.batch.close()
                     time.sleep(1)
 
-            self.tcex.log.debug("Batch run(s) complete.")
+            if mode == "initial_run":
+                self.tcex.app.results_tc('initial_run', False)
+            last_run = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            self.tcex.app.results_tc('since_date', last_run)
+            self.tcex.log.info("Batch run(s) complete.")
         finally:
             if getattr(self, '_pad_gz_path', None) and os.path.isfile(self._pad_gz_path):
                 try:
