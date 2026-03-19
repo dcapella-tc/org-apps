@@ -270,7 +270,7 @@ class App(JobApp):
             cutoff_cursor: Optional[dt.datetime] = None
             # for page_index in range(batch_pages):
             # Get up to N relevant records, newest first
-            records = self.latest_records(limit=100, since=None, until=cutoff_cursor)
+            records = self.latest_records(limit=5000, since=None, until=cutoff_cursor)
             if not records:
                 
                 self.log.info(
@@ -297,7 +297,7 @@ class App(JobApp):
 
         elif mode == "incremental_new" and cutoff is not None:
             cursor: Optional[dt.datetime] = _normalize_datetime_to_naive_utc(cutoff)
-            records = self.latest_records(limit=100, since=cursor, until=None)
+            records = self.latest_records(limit=5000, since=cursor, until=None)
             if not records:
                 
                 self.log.info(
