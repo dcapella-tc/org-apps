@@ -28,7 +28,7 @@ Each indicator is tagged as a "Potentially Abused Domain" and enriched with tags
 | `tc_confidence` | String | Confidence value applied to created indicators. |
 | `tc_threat_rating` | String | Threat rating value applied to created indicators. |
 | `initial_run` | Boolean | When enabled, the app runs in `initial_run` mode. |
-| `batch_limit` | Choice (e.g. `1`, `10`, `100`) | Number of batch submissions executed during the run. In `initial_run`, each submission re-imports the latest 100 records from the feed (current implementation). |
+| `batch_limit` | Choice (e.g. `1`, `10`, `100`) | Number of batch submissions executed during the run. In `initial_run`, each submission re-imports the latest 5,000 (~10,000 iocs)~ records from the feed (current implementation). |
 | `since_date` | String (optional) | Used only when `initial_run` is off. Records with timestamps after this date are imported (ISO 8601 datetime or date). |
 
 ## Operation / Run Modes
