@@ -373,24 +373,27 @@ class App(JobApp):
 
             cutoff: Optional[dt.datetime] = None
             mode = "initial_run"
-            if self.in_.initial_run:
-                mode = "initial_run"
-            else:
-                # Non-initial run: if since_date is set, fetch from that date toward now.
-                since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
-                if since_date_str:
-                    parsed_since = _parse_timestamp_to_datetime(since_date_str)
-                    if parsed_since is not None:
-                        cutoff = _normalize_datetime_to_naive_utc(parsed_since)
-                        mode = "incremental_new"
-                    else:
-                        self.log.warning(
-                            "since_date could not be parsed; since_date required for non-initial run."
-                        )
-                        self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
+            # since_date now drives mode selection:
+            # - empty => initial backfill behavior
+            # - populated => incremental behavior from since_date toward now
+            since_date_str = str(getattr(self.in_, "since_date", "") or "").strip()
+            if since_date_str:
+                parsed_since = _parse_timestamp_to_datetime(since_date_str)
+                if parsed_since is not None:
+                    cutoff = _normalize_datetime_to_naive_utc(parsed_since)
+                    mode = "incremental_new"
                 else:
-                    self.log.info("since_date not set; required for non-initial run.")
-                    self.tcex.exit.exit(ExitCode.SUCCESS, "since_date required for non-initial run; no records imported.")
+                    self.log.warning(
+                        "since_date could not be parsed; no records imported."
+                    )
+                    self.tcex.exit.exit(
+                        ExitCode.SUCCESS,
+                        "since_date is invalid; no records imported.",
+                    )
+            else:
+                self.log.info(
+                    "since_date not set; running initial backfill behavior."
+                )
 
             for i in range(max_runs):
                 self.tcex.log.debug(f"run: {i+1} of {max_runs}")
@@ -404,8 +407,6 @@ class App(JobApp):
                     self.tcex.log.error(f"Failed to run batch: {exc}")
                     time.sleep(1)
 
-            if mode == "initial_run":
-                self.tcex.app.results_tc('initial_run', False)
             last_run = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.tcex.app.results_tc('since_date', last_run)
             self.tcex.log.info("Batch run(s) complete.")

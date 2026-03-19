@@ -11,11 +11,11 @@ class AppBaseModel(AppOrganizationModel):
     tc_owner: String
     rf_api_token: Sensitive
 
-    # If true, this execution performs a one-time import from newest->oldest.
-    initial_run: bool = False
-    # Max number of pages to process during the initial import.
+    # Max number of pages to process during the import run.
     batch_limit: Integer = Integer(50)
-    # For non-initial run: fetch records with timestamp after this date (ISO datetime or date). Optional.
+    # Mode selector:
+    # - empty since_date => initial backfill behavior
+    # - populated since_date => incremental behavior (timestamp > since_date)
     since_date: String = String("")
     tc_confidence: String = String("50")
     tc_threat_rating: String = String("3")

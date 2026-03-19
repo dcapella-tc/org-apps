@@ -51,19 +51,11 @@
       "type": "String"
     }
     ,{
-      "default": false,
-      "label": "Initial Run (newest->oldest)",
-      "name": "initial_run",
-      "note": "When enabled, this execution imports records starting from the most recent timestamps and paginates older within the execution.",
-      "sequence": 96,
-      "type": "Boolean"
-    },
-    {
       "default": "10",
-      "label": "Initial Run Batch Limit",
+      "label": "Batch Limit",
       "name": "batch_limit",
-      "note": "Maximum number of pages (~10,000 records per page) to process during initial_run.",
-      "sequence": 97,
+      "note": "Maximum number of pages (~10,000 records per page) to process in either mode (empty since_date backfill or populated since_date incremental).",
+      "sequence": 96,
       "type": "Choice",
       "validValues": [
         "1",
@@ -72,11 +64,11 @@
       ]
     },
     {
-      "label": "Last Run",
+      "label": "Since Date (Last Run Cursor)",
       "name": "since_date",
-      "note": "Used only when Initial Run is off. Records with timestamp after this date will be imported (ISO datetime or date, e.g. 2025-01-15T00:00:00Z or 2025-01-15). Optional; if empty, a single batch of newest records is fetched.",
+      "note": "Mode selector. If empty, run starts from newest records (initial/backfill behavior). If populated, only records with timestamp after this date are imported (ISO datetime or date, e.g. 2025-01-15T00:00:00Z or 2025-01-15).",
       "required": false,
-      "sequence": 98,
+      "sequence": 97,
       "type": "String"
     },
     {
