@@ -1,15 +1,19 @@
 {
   "allowOnDemand": true,
-  "displayName": "Batch Template",
+  "displayName": "Known Tor Infrastructure (Recorded Future)",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
     "fileParams"
   ],
-  "labels": [],
+  "labels": [
+    "Tor",
+    "Recorded Future",
+    "Ingress"
+  ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "A template of a working ingress Organization App.",
+  "note": "Ingests Tor relay/exit IPs from Recorded Future Fusion public policy file tor_ips.json as Address indicators with tags.",
   "params": [
     {
       "label": "ThreatConnect Owner",
