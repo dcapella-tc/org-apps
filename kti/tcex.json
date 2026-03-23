@@ -5,9 +5,9 @@
       ".gitignore",
       ".pre-commit-config.yaml",
       "app_spec.yaml",
+      "examples",
       "local-*",
       "pyproject.toml"
-      ,"examples"
     ]
   },
   "template_name": "ingress",
