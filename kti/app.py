@@ -2,7 +2,7 @@
 
 import json
 import re
-from pathlib import Path
+from urllib.parse import quote
 
 from tcex import TcEx
 from tcex.exit import ExitCode
@@ -22,13 +22,8 @@ class App(JobApp):
 
     def setup(self):
         """Perform prep/setup logic."""
-        # setting the base url allow for subsequent API call
-        # to be made by only providing the API endpoint/path.
-        # self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
-
-        # Tor Nodes
-        # flags: "flag:{flag name}"
-        # name: tags
+        # Recorded Future Fusion v3 files API (path appended URL-encoded after base).
+        self.tcex.session.external.base_url = 'https://api.recordedfuture.com/fusion/v3/files/'
 
     def run(self):
         """Run main App logic."""
@@ -36,49 +31,92 @@ class App(JobApp):
         self._load_tor_nodes()
         self._batch_submit()
 
+    def _normalize_tor_nodes_payload(self, parsed):
+        """Return a list of node dicts from Fusion JSON (array or common wrappers)."""
+        if isinstance(parsed, list):
+            return parsed
+        if isinstance(parsed, dict):
+            for key in ("data", "records", "nodes", "ips", "tor_ips", "items"):
+                val = parsed.get(key)
+                if isinstance(val, list):
+                    return val
+            if any(
+                k in parsed
+                for k in ("ip", "ipAddress", "address", "value")
+            ):
+                return [parsed]
+        return []
+
     def _load_tor_nodes(self):
-        """Load Tor nodes from file."""
-        tor_nodes_path = (
-            Path(__file__).resolve().parent
-            / "examples"
-            / "Known Tor Infrastructure (1).json"
-        )
-        if not tor_nodes_path.is_file():
-            self.tcex.log.error("Tor nodes file not found: %s", tor_nodes_path)
+        """Load Tor nodes from Recorded Future Fusion public policy file."""
+        endpoint = "/public/policy/tor_ips.json"
+        encoded_endpoint = quote(endpoint, safe="")
+
+        headers = {
+            "Accept": "application/octet-stream",
+            "X-RFToken": self.in_.rf_token.value,
+        }
+        self.tcex.log.info('requesting-fusion-file endpoint="%s"', encoded_endpoint)
+
+        try:
+            with self.tcex.session.external as session:
+                response = session.get(f"/{encoded_endpoint}", headers=headers)
+        except Exception as ex:
             self.tcex.exit.exit(
                 ExitCode.FAILURE,
-                f"Tor nodes file not found: {tor_nodes_path}",
+                f"Failed to retrieve Fusion Tor file: {ex}",
+            )
+
+        if not response.ok:
+            self.tcex.log.error(
+                "Fusion file request failed with status %s", response.status_code
+            )
+            self.tcex.exit.exit(
+                ExitCode.FAILURE,
+                f"Fusion file request failed with status {response.status_code}",
             )
 
         try:
-            with tor_nodes_path.open(encoding="utf-8") as f:
-                tor_nodes = json.load(f)
+            if isinstance(response.content, bytes):
+                raw_text = response.content.decode("utf-8")
+            else:
+                raw_text = str(response.content)
+            parsed = json.loads(raw_text)
         except json.JSONDecodeError as ex:
-            self.tcex.log.error("Invalid JSON in Tor nodes file: %s", ex)
+            self.tcex.log.error("Invalid JSON in Fusion Tor file: %s", ex)
             self.tcex.exit.exit(
                 ExitCode.FAILURE,
-                f"Invalid JSON in Tor nodes file: {ex}",
+                f"Invalid JSON in Fusion Tor file: {ex}",
             )
 
-        if not isinstance(tor_nodes, list):
+        tor_nodes = self._normalize_tor_nodes_payload(parsed)
+        if not tor_nodes:
             self.tcex.log.error(
-                "Tor nodes file must contain a JSON array, got %s",
-                type(tor_nodes).__name__,
+                "Fusion Tor payload had no node list (type=%s)",
+                type(parsed).__name__,
             )
             self.tcex.exit.exit(
                 ExitCode.FAILURE,
-                "Tor nodes file must contain a JSON array.",
+                "Fusion Tor file did not contain a recognizable list of nodes.",
             )
 
-        self.tcex.log.info("Loaded %d Tor node records from %s", len(tor_nodes), tor_nodes_path)
+        self.tcex.log.info(
+            "Loaded %d Tor node records from Fusion /public/policy/tor_ips.json",
+            len(tor_nodes),
+        )
 
         for node in tor_nodes:
             if not isinstance(node, dict):
                 self.tcex.log.warning("Skipping non-object entry: %r", node)
                 continue
-            ip = node.get("ip")
+            ip = (
+                node.get("ip")
+                or node.get("ipAddress")
+                or node.get("address")
+                or node.get("value")
+            )
             if not ip:
-                self.tcex.log.warning("Skipping entry without ip: %r", node)
+                self.tcex.log.warning("Skipping entry without IP field: %r", node)
                 continue
             ioc = {
                 "value": ip,

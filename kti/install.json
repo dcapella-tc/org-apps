@@ -23,15 +23,27 @@
       ]
     },
     {
+      "label": "Recorded Future API Token",
+      "name": "rf_token",
+      "note": "API token for Recorded Future Fusion file download (X-RFToken).",
+      "required": true,
+      "sequence": 2,
+      "type": "String",
+      "validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    },
+    {
       "label": "Rating",
       "name": "rating",
-      "sequence": 2,
+      "sequence": 3,
       "type": "String"
     },
     {
       "label": "Confidence",
       "name": "confidence",
-      "sequence": 3,
+      "sequence": 4,
       "type": "String"
     },
     {
