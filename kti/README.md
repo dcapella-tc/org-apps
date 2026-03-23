@@ -1,3 +1,7 @@
+## Release notes
+
+### 1.0.0
+
 # Known Tor Infrastructure (Recorded Future)
 
 Organization Job App for ThreatConnect (TcEx 4) that downloads Tor IP data from **Recorded Future Fusion** and creates **Address** indicators in batch.
@@ -29,8 +33,6 @@ Do **not** commit real `rf_token` values; `app_inputs.json` is gitignored in thi
 
 Each indicator is tagged `Tor Node`, plus optional `flag:<flags>` and `name:<relay name>` (tag values truncated for length safety).
 
-## Release notes
 
-### 1.0.0
 
 - Initial release: Fusion `tor_ips.json` ingest via batch Address API.
