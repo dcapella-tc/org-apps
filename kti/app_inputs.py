@@ -9,6 +9,8 @@ class AppBaseModel(AppOrganizationModel):
     """Base model for the App containing any common inputs."""
 
     tc_owner: String
+    rating: String = String("3.0")
+    confidence: String = String("50")
 
 
 class AppInputs:
