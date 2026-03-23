@@ -20,16 +20,40 @@ class App(JobApp):
         """Perform prep/setup logic."""
         # setting the base url allow for subsequent API call
         # to be made by only providing the API endpoint/path.
-        self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
+        # self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
+
+        # Tor Nodes
+        # flags: "flag:{flag name}"
+        # name: tags
 
     def run(self):
         """Run main App logic."""
-        with self.tcex.session.external as s:
-            # https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.json
-            r = s.get('/downloads/ipblocklist_recommended.json')
 
-            if r.ok:
-                ti_data = r.json()
+    def _batch_save_ioc(self, ioc):
+        # init
+        indicator = self.batch.indicator(ioc['value'], rating=self._in.rating, confidence=self._in.confidence)
+        
+        # tags
+        indicator.tag("Tor Node")
+        if ioc.get('flags'):
+            tag = f'flag:{ioc["flags"]}'
+            indicator.tag(tag)
+        if ioc.get('name'):
+            tag = f'name:{ioc["name"]}'
+            indicator.tag(tag)
+
+        self.batch.save(indicator)
+
+
+
+
+
+        # with self.tcex.session.external as s:
+            # https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.json
+            # r = s.get('/downloads/ipblocklist_recommended.json')
+
+            # if r.ok:
+            #     ti_data = r.json()
 
                 # Example JSON
                 # {
@@ -45,44 +69,44 @@ class App(JobApp):
                 #   "malware": "Dridex"
                 # }
 
-                for ti in ti_data:
+                # for ti in ti_data:
                     # create batch entry
-                    ip_address = ti['ip_address']
-                    address = self.batch.address(ip_address, rating='4.0', confidence='100')
+        #             ip_address = ti['ip_address']
+        #             address = self.batch.address(ip_address, rating='4.0', confidence='100')
 
-                    # map first seen to "First Seen" attribute
-                    first_seen = ti.get('first_seen')
-                    if first_seen:
-                        first_seen = self.tcex.util.any_to_datetime(first_seen).strftime(
-                            '%Y-%m-%dT%H:%M:%SZ'
-                        )
-                        address.attribute('First Seen', first_seen)
+        #             # map first seen to "First Seen" attribute
+        #             first_seen = ti.get('first_seen')
+        #             if first_seen:
+        #                 first_seen = self.tcex.util.any_to_datetime(first_seen).strftime(
+        #                     '%Y-%m-%dT%H:%M:%SZ'
+        #                 )
+        #                 address.attribute('First Seen', first_seen)
 
-                    # map last online to "Last Seen" attribute
-                    last_online = ti.get('last_online')
-                    if last_online:
-                        last_online = self.tcex.util.any_to_datetime(last_online).strftime(
-                            '%Y-%m-%dT%H:%M:%SZ'
-                        )
-                        address.attribute('Last Seen', last_online)
+        #             # map last online to "Last Seen" attribute
+        #             last_online = ti.get('last_online')
+        #             if last_online:
+        #                 last_online = self.tcex.util.any_to_datetime(last_online).strftime(
+        #                     '%Y-%m-%dT%H:%M:%SZ'
+        #                 )
+        #                 address.attribute('Last Seen', last_online)
 
-                    # map port to "Port" attribute
-                    port = ti.get('port')
-                    if port:
-                        address.attribute('Port', port)
+        #             # map port to "Port" attribute
+        #             port = ti.get('port')
+        #             if port:
+        #                 address.attribute('Port', port)
 
-                    # map malware to "Malware" tag
-                    malware = ti.get('malware')
-                    if malware:
-                        address.tag(malware)
+        #             # map malware to "Malware" tag
+        #             malware = ti.get('malware')
+        #             if malware:
+        #                 address.tag(malware)
 
-                    # optionally save object to disk to save on memory usage
-                    self.batch.save(address)
-            else:
-                self.tcex.exit.exit(ExitCode.SUCCESS, 'Failed to download data.')
+        #             # optionally save object to disk to save on memory usage
+        #             self.batch.save(address)
+        #     else:
+        #         self.tcex.exit.exit(ExitCode.SUCCESS, 'Failed to download data.')
 
-        # submit batch job
-        batch_status = self.batch.submit_all()
-        self.log.info(f'batch-status={batch_status}')
+        # # submit batch job
+        # batch_status = self.batch.submit_all()
+        # self.log.info(f'batch-status={batch_status}')
 
-        self.exit_message = 'Downloaded data and create batch job.'
+        # self.exit_message = 'Downloaded data and create batch job.'

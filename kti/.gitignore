@@ -65,6 +65,7 @@ junit.xml
 py311.xml
 dump.rdb
 SERVICE_STARTED
+examples
 
 #-------------------------------------------------
 # Other Nonsense
