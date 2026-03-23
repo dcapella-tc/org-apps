@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TC_-_Ingress_Template",
+    "app_name": "TC_-_RF_SCF_Known_Tor_Infrastructure",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",

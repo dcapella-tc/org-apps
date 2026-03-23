@@ -1,15 +1,16 @@
 {
   "allowOnDemand": true,
-  "displayName": "Known Tor Infrastructure (Recorded Future)",
+  "displayName": "Recorded Future SCF - Known Tor Infrastructure",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
     "fileParams"
   ],
   "labels": [
+    "SCF",
     "Tor",
     "Recorded Future",
-    "Ingress"
+    "Unsupported"
   ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
