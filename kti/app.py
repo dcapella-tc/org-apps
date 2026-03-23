@@ -133,7 +133,7 @@ class App(JobApp):
     def _batch_save_ioc(self, ioc):
         """Save IOC to batch."""
         # init
-        indicator = self.batch.indicator(ioc['value'], rating=self.in_.rating, confidence=self.in_.confidence)
+        indicator = self.batch.indicator("Address", ioc['value'], rating=self.in_.rating, confidence=self.in_.confidence)
         
         # tags
         indicator.tag("Tor Node")
