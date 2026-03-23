@@ -1,5 +1,6 @@
 """ThreatConnect Job App"""
 
+import re
 from tcex import TcEx
 from tcex.exit import ExitCode
 
@@ -14,7 +15,7 @@ class App(JobApp):
         super().__init__(_tcex)
 
         # properties
-        self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+        # self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
 
     def setup(self):
         """Perform prep/setup logic."""
@@ -28,6 +29,53 @@ class App(JobApp):
 
     def run(self):
         """Run main App logic."""
+        self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+        # To Do: Load Tor Nodes from file "examples/Known Tor Infrastructure (1).json"
+        # To Do: Process each Tor Node and save to batch
+        self._batch_submit()
+
+    def _batch_submit(self):
+        """Submit batch job and handle errors."""
+        batch_response = self.batch.submit_all()
+        self.tcex.log.debug(f"batch_response: {batch_response}")
+        self.batch.close()
+
+        errors = []
+        success = 0
+        for item in batch_response:
+            errors.extend(item.get('errors', []))
+            success += item.get('successCount', 0)
+        if errors:
+            known_errors = []
+            self.tcex.log.error('App.run: batch submission failed with %d errors', len(errors))
+
+            error_count = 0
+            for error in errors:
+                error_count += 1
+                if error_count == 100: break
+                error_reason = error.get('errorReason', '')
+                if 'Found duplicate indicator in batch job file' in error_reason:
+                    if 'Found duplicate indicator in batch job file' in known_errors:
+                        continue
+                    known_error = 'Found duplicate indicator in batch job file'
+                else:
+                    try:
+                        error_reason = error_reason.split('is not valid. ')[1]
+                    except:
+                        pass
+                    known_error = re.sub(r"'[^']*'", '', error_reason).strip()
+                    if known_error in known_errors:
+                        continue
+                known_errors.append(known_error)
+                self.tcex.log.error('App.run: batch submission error: %s', error)
+        else:
+            self.tcex.log.info("No errors found.")
+
+        if success:
+            self.tcex.log.info('App.run: batch submission successful with %d items', success)
+        else:
+            self.tcex.log.warning("No successes found.")
+
 
     def _batch_save_ioc(self, ioc):
         # init
@@ -43,7 +91,6 @@ class App(JobApp):
             indicator.tag(tag)
 
         self.batch.save(indicator)
-
 
 
 

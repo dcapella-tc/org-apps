@@ -23,6 +23,18 @@
       ]
     },
     {
+      "label": "Rating",
+      "name": "rating",
+      "sequence": 2,
+      "type": "String"
+    },
+    {
+      "label": "Confidence",
+      "name": "confidence",
+      "sequence": 3,
+      "type": "String"
+    },
+    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",
