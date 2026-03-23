@@ -1,6 +1,9 @@
 """ThreatConnect Job App"""
 
+import json
 import re
+from pathlib import Path
+
 from tcex import TcEx
 from tcex.exit import ExitCode
 
@@ -30,8 +33,56 @@ class App(JobApp):
     def run(self):
         """Run main App logic."""
         self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
-        # To Do: Load Tor Nodes from file "examples/Known Tor Infrastructure (1).json"
-        # To Do: Process each Tor Node and save to batch
+
+        tor_nodes_path = (
+            Path(__file__).resolve().parent
+            / "examples"
+            / "Known Tor Infrastructure (1).json"
+        )
+        if not tor_nodes_path.is_file():
+            self.tcex.log.error("Tor nodes file not found: %s", tor_nodes_path)
+            self.tcex.exit.exit(
+                ExitCode.FAILURE,
+                f"Tor nodes file not found: {tor_nodes_path}",
+            )
+
+        try:
+            with tor_nodes_path.open(encoding="utf-8") as f:
+                tor_nodes = json.load(f)
+        except json.JSONDecodeError as ex:
+            self.tcex.log.error("Invalid JSON in Tor nodes file: %s", ex)
+            self.tcex.exit.exit(
+                ExitCode.FAILURE,
+                f"Invalid JSON in Tor nodes file: {ex}",
+            )
+
+        if not isinstance(tor_nodes, list):
+            self.tcex.log.error(
+                "Tor nodes file must contain a JSON array, got %s",
+                type(tor_nodes).__name__,
+            )
+            self.tcex.exit.exit(
+                ExitCode.FAILURE,
+                "Tor nodes file must contain a JSON array.",
+            )
+
+        self.tcex.log.info("Loaded %d Tor node records from %s", len(tor_nodes), tor_nodes_path)
+
+        for node in tor_nodes:
+            if not isinstance(node, dict):
+                self.tcex.log.warning("Skipping non-object entry: %r", node)
+                continue
+            ip = node.get("ip")
+            if not ip:
+                self.tcex.log.warning("Skipping entry without ip: %r", node)
+                continue
+            ioc = {
+                "value": ip,
+                "flags": node.get("flags"),
+                "name": node.get("name"),
+            }
+            self._batch_save_ioc(ioc)
+
         self._batch_submit()
 
     def _batch_submit(self):
@@ -78,6 +129,7 @@ class App(JobApp):
 
 
     def _batch_save_ioc(self, ioc):
+        """Save IOC to batch."""
         # init
         indicator = self.batch.indicator(ioc['value'], rating=self._in.rating, confidence=self._in.confidence)
         
