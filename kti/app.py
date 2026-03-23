@@ -33,7 +33,11 @@ class App(JobApp):
     def run(self):
         """Run main App logic."""
         self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+        self._load_tor_nodes()
+        self._batch_submit()
 
+    def _load_tor_nodes(self):
+        """Load Tor nodes from file."""
         tor_nodes_path = (
             Path(__file__).resolve().parent
             / "examples"
@@ -82,8 +86,6 @@ class App(JobApp):
                 "name": node.get("name"),
             }
             self._batch_save_ioc(ioc)
-
-        self._batch_submit()
 
     def _batch_submit(self):
         """Submit batch job and handle errors."""
