@@ -1,12 +1,14 @@
 {
   "package": {
-    "app_name": "TC_-_Ingress_Template",
+    "app_name": "TC_-_RF_SCF_Fast_Flux_Hosts",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
       "app_spec.yaml",
       "local-*",
-      "pyproject.toml"
+      "pyproject.toml",
+      "examples",
+      "app_inputs.json"
     ]
   },
   "template_name": "ingress",

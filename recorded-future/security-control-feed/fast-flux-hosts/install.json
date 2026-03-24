@@ -1,6 +1,6 @@
 {
   "allowOnDemand": true,
-  "displayName": "Batch Template",
+  "displayName": "Recorded Future SCF Fast Flux Hosts",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
@@ -9,7 +9,7 @@
   "labels": [],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "A template of a working ingress Organization App.",
+  "note": "Recorded Future SCF Fast Flux Hosts Ingress Organization App.",
   "params": [
     {
       "label": "ThreatConnect Owner",
