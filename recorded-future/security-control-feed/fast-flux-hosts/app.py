@@ -55,6 +55,15 @@ def _coerce_last_seen_datetime(raw: object) -> datetime | None:
     return None
 
 
+def _format_last_seen_for_tc(dt: datetime) -> str:
+    """Format datetime as UTC ISO string for ThreatConnect batch (JSON-serializable)."""
+    if dt.tzinfo is not None:
+        utc = dt.astimezone(timezone.utc)
+    else:
+        utc = dt.replace(tzinfo=timezone.utc)
+    return utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
 class App(JobApp):
     """Job App"""
 
@@ -184,7 +193,10 @@ class App(JobApp):
         if last_seen_raw is not None and last_seen_raw != '':
             last_seen_dt = _coerce_last_seen_datetime(last_seen_raw)
             if last_seen_dt is not None:
-                ip.attribute('Last Seen', last_seen_dt)
+                ip.attribute(
+                    'Last Seen',
+                    _format_last_seen_for_tc(last_seen_dt),
+                )
             else:
                 self.tcex.log.warning(
                     'Skipping unparseable last_seen for %r: %r',
