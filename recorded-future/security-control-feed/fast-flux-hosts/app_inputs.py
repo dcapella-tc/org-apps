@@ -10,8 +10,8 @@ class AppBaseModel(AppOrganizationModel):
 
     tc_owner: String
     rf_token: Sensitive
-    tc_rating: String = String("3")
-    tc_confidence: String = String("50")
+    rating: String = String("3.0")
+    confidence: String = String("50")
 
 
 class AppInputs:
