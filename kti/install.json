@@ -1,0 +1,72 @@
+{
+  "allowOnDemand": true,
+  "displayName": "Known Tor Infrastructure (Recorded Future)",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams"
+  ],
+  "labels": [
+    "Tor",
+    "Recorded Future",
+    "Ingress"
+  ],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "note": "Ingests Tor relay/exit IPs from Recorded Future Fusion public policy file tor_ips.json as Address indicators with tags.",
+  "params": [
+    {
+      "label": "ThreatConnect Owner",
+      "name": "tc_owner",
+      "note": "The destination Owner in the ThreatConnect Platform.",
+      "required": true,
+      "sequence": 1,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    },
+    {
+      "label": "Recorded Future API Token",
+      "name": "rf_token",
+      "note": "API token for Recorded Future Fusion file download (X-RFToken).",
+      "required": true,
+      "sequence": 2,
+      "type": "String",
+      "validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "Rating",
+      "name": "rating",
+      "sequence": 3,
+      "type": "String"
+    },
+    {
+      "label": "Confidence",
+      "name": "confidence",
+      "sequence": 4,
+      "type": "String"
+    },
+    {
+      "default": "warning",
+      "label": "Logging Level",
+      "name": "tc_log_level",
+      "sequence": 99,
+      "type": "Choice",
+      "validValues": [
+        "debug",
+        "info",
+        "warning",
+        "error"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}
