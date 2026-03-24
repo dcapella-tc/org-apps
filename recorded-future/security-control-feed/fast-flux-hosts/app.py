@@ -1,5 +1,6 @@
 """ThreatConnect Job App"""
 
+from datetime import datetime
 import re
 
 from tcex import TcEx
@@ -38,6 +39,23 @@ class App(JobApp):
     def run(self):
         """Run main App logic."""
         self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
+        # To Do: Helper function — Get the Fast Flux Hosts from Recorded Future
+        # To Do: Helper function — Loop through each record of the Fast Flux Hosts and add to batch job using _batch_add_indicator
+        self._batch_submit()
+
+    def _batch_add_indicator(self, indicator: dict) -> None:
+        """Add indicator to batch job."""
+        ip = self.batch.indicator(
+            'Address'
+            ,indicator['value']
+            ,rating=self.in_.rating
+            ,confidence=self.in_.confidence
+        )
+        ip.tag("Fast Flux Host")
+
+        if indicator.get("lastSeen"):
+            last_seen = datetime.fromisoformat(indicator["lastSeen"])
+            ip.attribute("Last Seen", last_seen)
 
 
     def _batch_submit(self) -> None:

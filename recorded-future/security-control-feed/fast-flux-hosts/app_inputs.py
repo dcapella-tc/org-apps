@@ -1,6 +1,6 @@
 """App Inputs"""
 
-from tcex.input.field_type import String
+from tcex.input.field_type import String, Sensitive
 from tcex.input.input import Input
 from tcex.input.model.app_organization_model import AppOrganizationModel
 
@@ -9,6 +9,9 @@ class AppBaseModel(AppOrganizationModel):
     """Base model for the App containing any common inputs."""
 
     tc_owner: String
+    rf_token: Sensitive
+    tc_rating: String = String("3")
+    tc_confidence: String = String("50")
 
 
 class AppInputs:
