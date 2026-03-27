@@ -2,7 +2,7 @@
 
 # Release Notes
 
-### 1.0.0 (2021-04-22)
+### 1.0.0 (2026-03-27)
 
 * Initial Release
 

@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TC_-_Ingress_Template",
+    "app_name": "TC_-_Reporting_Cyber_Threat_Intel",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",

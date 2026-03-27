@@ -1,6 +1,6 @@
 {
   "allowOnDemand": true,
-  "displayName": "Batch Template",
+  "displayName": "Reporting Cyber Threat Intel",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
@@ -9,7 +9,7 @@
   "labels": [],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "A template of a working ingress Organization App.",
+  "note": "A reporting app for Cyber Threat Intel.",
   "params": [
     {
       "label": "ThreatConnect Owner",
@@ -21,6 +21,22 @@
       "validValues": [
         "${OWNERS}"
       ]
+    },
+    {
+      "label": "Emails",
+      "name": "emails",
+      "note": "The emails to send the report to.",
+      "required": true,
+      "sequence": 2,
+      "type": "String"
+    },
+    {
+      "label": "Last Run",
+      "name": "last_run",
+      "note": "The last run date and time.",
+      "required": true,
+      "sequence": 3,
+      "type": "String"
     },
     {
       "default": "warning",
