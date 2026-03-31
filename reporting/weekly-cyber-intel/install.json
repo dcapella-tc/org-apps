@@ -31,11 +31,19 @@
       "type": "String"
     },
     {
+      "label": "Max Results",
+      "name": "max_results",
+      "note": "The maximum number of results to return per section.",
+      "required": true,
+      "sequence": 3,
+      "type": "String"
+    }, 
+    {
       "label": "Last Run",
       "name": "last_run",
       "note": "The last run date and time.",
       "required": true,
-      "sequence": 3,
+      "sequence": 4,
       "type": "String"
     },
     {
