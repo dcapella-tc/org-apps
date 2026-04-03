@@ -1,0 +1,68 @@
+{
+  "allowOnDemand": true,
+  "displayName": "Reporting Cyber Threat Intel",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams"
+  ],
+  "labels": [],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "note": "A reporting app for Cyber Threat Intel.",
+  "params": [
+    {
+      "label": "ThreatConnect Owner",
+      "name": "tc_owner",
+      "note": "The destination Owner in the ThreatConnect Platform.",
+      "required": true,
+      "sequence": 1,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    },
+    {
+      "label": "Emails",
+      "name": "emails",
+      "note": "The emails to send the report to.",
+      "required": true,
+      "sequence": 2,
+      "type": "String"
+    },
+    {
+      "label": "Max Results",
+      "name": "max_results",
+      "note": "The maximum number of results to return per section.",
+      "required": true,
+      "sequence": 3,
+      "type": "String"
+    }, 
+    {
+      "label": "Last Run",
+      "name": "last_run",
+      "note": "The last run date and time.",
+      "required": true,
+      "sequence": 4,
+      "type": "String"
+    },
+    {
+      "default": "warning",
+      "label": "Logging Level",
+      "name": "tc_log_level",
+      "sequence": 99,
+      "type": "Choice",
+      "validValues": [
+        "debug",
+        "info",
+        "warning",
+        "error"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}
