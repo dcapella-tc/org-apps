@@ -87,7 +87,6 @@ class App(JobApp):
             self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
             self._process_records(i)
             self._batch_submit()
-            break # TODO: remove this
 
     def _load_fast_flux_hosts(self) -> None:
         """Load Fast Flux host IPs from Recorded Future Fusion public detect file."""

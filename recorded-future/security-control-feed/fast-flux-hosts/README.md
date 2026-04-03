@@ -1,5 +1,7 @@
 ## Release notes
 
+### 1.0.1
+- Removed testing blocks
 
 ### 1.0.0 (2026-04-03)
 
