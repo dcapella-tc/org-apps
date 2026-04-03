@@ -1,0 +1,8 @@
+{
+  "inputs": {
+    "tc_logging_level": "debug",
+    "tc_owner": "Capella Community"
+    ,"emails": "dcapella@threatconnect.com"
+  },
+  "stage": {}
+}
