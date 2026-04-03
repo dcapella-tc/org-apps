@@ -1,0 +1,17 @@
+{
+  "package": {
+    "app_name": "TC_-_RF_SCF_Fast_Flux_Hosts",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "app_inputs.json",
+      "app_spec.yaml",
+      "examples",
+      "local-*",
+      "pyproject.toml"
+    ]
+  },
+  "template_name": "ingress",
+  "template_repo_hash": "a1fbdf2eaac5b0408f051ad29b69852407752c94",
+  "template_type": "organization"
+}
