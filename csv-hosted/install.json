@@ -1,6 +1,6 @@
 {
   "allowOnDemand": true,
-  "displayName": "CSV Fileshare (publishOutFiles)",
+  "displayName": "TQL summary CSV (fileshare)",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
@@ -9,12 +9,12 @@
   "labels": [],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "Writes a Job parameter string to data.csv in the app output directory for publishOutFiles (HTTP file URL). Organization Job String params are single-line; very large CSV may need a different input pattern.",
+  "note": "Runs indicator TQL (stubbed for now), builds a one-column summary CSV, and publishes data.csv via publishOutFiles. Organization Job String params are single-line.",
   "params": [
     {
-      "label": "CSV content",
-      "name": "csv_data",
-      "note": "Raw CSV text written to data.csv for fileshare download.",
+      "label": "Indicator TQL",
+      "name": "indicator_tql",
+      "note": "TQL for v3 indicators query when the real API call is implemented; the current stub ignores this value.",
       "required": true,
       "sequence": 1,
       "type": "String"
@@ -35,7 +35,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "0.1.0",
+  "programVersion": "0.2.0",
   "publishOutFiles": [
     "data.csv"
   ],
