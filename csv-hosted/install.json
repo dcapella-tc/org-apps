@@ -1,0 +1,44 @@
+{
+  "allowOnDemand": true,
+  "displayName": "CSV Fileshare (publishOutFiles)",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams"
+  ],
+  "labels": [],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "note": "Writes a Job parameter string to data.csv in the app output directory for publishOutFiles (HTTP file URL). Organization Job String params are single-line; very large CSV may need a different input pattern.",
+  "params": [
+    {
+      "label": "CSV content",
+      "name": "csv_data",
+      "note": "Raw CSV text written to data.csv for fileshare download.",
+      "required": true,
+      "sequence": 1,
+      "type": "String"
+    },
+    {
+      "default": "warning",
+      "label": "Logging Level",
+      "name": "tc_log_level",
+      "sequence": 99,
+      "type": "Choice",
+      "validValues": [
+        "debug",
+        "info",
+        "warning",
+        "error"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "1.1.0",
+  "publishOutFiles": [
+    "data.csv"
+  ],
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}
