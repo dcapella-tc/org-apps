@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TC_-_Basic_Template",
+    "app_name": "TC_-_CSV_Fileshare",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",

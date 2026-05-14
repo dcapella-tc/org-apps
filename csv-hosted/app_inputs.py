@@ -7,6 +7,8 @@ from tcex.input.input import Input
 class AppBaseModel(BaseModel):
     """Base model for the App containing any common inputs."""
 
+    csv_data: str
+
 
 class AppInputs:
     """App Inputs"""
