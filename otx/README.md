@@ -2,6 +2,11 @@
 
 # Release Notes
 
+### 1.0.1 (2026-07-20)
+
+* Feed Deployer: show API key, cursor, ratings, and log level on the Parameters tab
+* Pin `tc_owner` to the created Source in the job template (fixes missing-owner validation)
+
 ### 1.0.0 (2026-07-20)
 
 * Initial release: fetch AlienVault OTX subscribed pulses (`modified_since` cursor)
@@ -19,8 +24,13 @@ ThreatConnect via batch.
 
 After installing the App via TC Exchange, a System Administrator can use Feed
 Deployer (**Settings → TC Exchange Settings → Deploy**) to create the Source
-and scheduled Job. If using the job default for the API key, create an
-Organization Keychain variable named `OTX API Key` first.
+and scheduled Job.
+
+Feed Deployer Parameters include the API key, last-modified cursor, threat
+rating, confidence, and logging level. The destination owner is the created
+Source (not a separate Owner field). You can enter the API key in Parameters,
+or leave the job default and create an Organization Keychain variable named
+`OTX API Key`.
 
 ### Inputs
 

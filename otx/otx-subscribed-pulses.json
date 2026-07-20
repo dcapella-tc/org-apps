@@ -1,6 +1,6 @@
 {
   "programName": "AlienVault OTX - Subscribed Pulses v1",
-  "programVersion": "1.0.0",
+  "programVersion": "1.0.1",
   "jobName": "AlienVault OTX - Subscribed Pulses",
   "allowOnDemand": true,
   "publishAuth": false,
@@ -15,7 +15,9 @@
   "notifyIncludeLogFiles": false,
   "params": [
     {
-      "name": "tc_owner"
+      "name": "tc_owner",
+      "default": "AlienVault OTX - Subscribed Pulses",
+      "preventUpdates": true
     },
     {
       "name": "otx_api_key",

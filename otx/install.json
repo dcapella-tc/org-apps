@@ -39,6 +39,7 @@
       ]
     },
     {
+      "feedDeployer": true,
       "label": "OTX API Key",
       "name": "otx_api_key",
       "note": "AlienVault OTX API key (X-OTX-API-KEY).",
@@ -52,6 +53,7 @@
     },
     {
       "default": "30 days ago",
+      "feedDeployer": true,
       "label": "Last Modified",
       "name": "last_modified",
       "note": "modified_since cursor. Use a relative expression (e.g. 30 days ago) for the first run, or an ISO-8601 datetime. Empty falls back to 30 days. After a successful run the job writes an ISO cursor via results.tc for the next execution.",
@@ -61,6 +63,7 @@
     },
     {
       "default": "3",
+      "feedDeployer": true,
       "label": "ThreatConnect Threat Rating",
       "name": "tc_threat_rating",
       "note": "Threat rating applied to imported indicators (0-5).",
@@ -70,6 +73,7 @@
     },
     {
       "default": "50",
+      "feedDeployer": true,
       "label": "ThreatConnect Confidence",
       "name": "tc_confidence",
       "note": "Confidence applied to imported indicators (0-100).",
@@ -79,6 +83,7 @@
     },
     {
       "default": "warning",
+      "feedDeployer": true,
       "label": "Logging Level",
       "name": "tc_log_level",
       "sequence": 99,
@@ -93,7 +98,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.0.0",
+  "programVersion": "1.0.1",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }
