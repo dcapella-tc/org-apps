@@ -98,7 +98,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.0.1",
+  "programVersion": "1.0.2",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }
