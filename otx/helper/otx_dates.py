@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
+from tcex.util.datetime_operation import DatetimeOperation
+
 
 DEFAULT_LOOKBACK = timedelta(days=30)
 
@@ -45,9 +47,15 @@ def format_last_modified_cursor(value: datetime) -> str:
 
 
 def parse_last_modified_input(value: str | None) -> datetime | None:
-    """Parse an optional ISO datetime string from app input.
+    """Parse an optional last_modified app input.
 
-    Empty or whitespace-only values return ``None`` (use default lookback).
+    Accepts:
+    - Empty / whitespace → ``None`` (caller uses default 30-day lookback)
+    - ISO-8601 datetimes (e.g. ``2026-07-20T12:00:00Z``)
+    - Relative expressions (e.g. ``30 days ago``) via TcEx ``any_to_datetime``
+
+    Raises:
+        ValueError: When the value cannot be parsed as a datetime.
     """
     if value is None:
         return None
@@ -55,8 +63,27 @@ def parse_last_modified_input(value: str | None) -> datetime | None:
     if not text:
         return None
 
-    normalized = text.replace('Z', '+00:00')
-    parsed = datetime.fromisoformat(normalized)
-    if parsed.tzinfo is None:
-        return parsed.replace(tzinfo=UTC)
-    return parsed.astimezone(UTC)
+    # Prefer ISO first for stable cursor values from results_tc.
+    try:
+        normalized = text.replace('Z', '+00:00')
+        parsed = datetime.fromisoformat(normalized)
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=UTC)
+        return parsed.astimezone(UTC)
+    except ValueError:
+        pass
+
+    try:
+        arrow_dt = DatetimeOperation.any_to_datetime(text, tz='UTC')
+    except Exception as exc:
+        raise ValueError(
+            f'Invalid last_modified value "{text}". '
+            'Use an ISO datetime (e.g. 2026-07-20T12:00:00Z) '
+            'or a relative expression (e.g. 30 days ago).'
+        ) from exc
+
+    # Arrow → datetime (timezone-aware UTC).
+    as_datetime = arrow_dt.datetime
+    if as_datetime.tzinfo is None:
+        return as_datetime.replace(tzinfo=UTC)
+    return as_datetime.astimezone(UTC)

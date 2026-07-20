@@ -35,10 +35,10 @@
       ]
     },
     {
-      "default": "",
+      "default": "30 days ago",
       "label": "Last Modified",
       "name": "last_modified",
-      "note": "Optional ISO-8601 datetime for modified_since. Empty uses the last 30 days on first run; subsequent platform runs reuse the value written by the job via results.tc.",
+      "note": "modified_since cursor. Use a relative expression (e.g. 30 days ago) for the first run, or an ISO-8601 datetime. Empty falls back to 30 days. After a successful run the job writes an ISO cursor via results.tc for the next execution.",
       "required": false,
       "sequence": 3,
       "type": "String"

@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from tcex import TcEx
+from tcex.exit import ExitCode
 
 from helper.otx import Otx
 from helper.otx_batch_pulse import import_pulse
@@ -29,9 +30,12 @@ class App(JobApp):
         """Run main App logic."""
         run_started = datetime.now(tz=UTC)
         otx = Otx(self.tcex, api_key=self.in_.otx_api_key.value)
-        last_modified = parse_last_modified_input(
-            str(getattr(self.in_, 'last_modified', '') or '')
-        )
+        try:
+            last_modified = parse_last_modified_input(
+                str(getattr(self.in_, 'last_modified', '') or '')
+            )
+        except ValueError as exc:
+            self.tcex.exit.exit(ExitCode.FAILURE, str(exc))
         out_dir = Path(self.in_.tc_out_path)
 
         payload = otx.fetch_with_widening_window(last_modified, out_dir=out_dir)

@@ -2,6 +2,8 @@
 
 from datetime import UTC, datetime, timedelta
 
+import pytest
+
 from helper.otx_dates import (
     default_last_modified,
     format_last_modified_cursor,
@@ -49,3 +51,16 @@ def test_parse_last_modified_input_empty():
 def test_parse_last_modified_input_iso_z():
     result = parse_last_modified_input('2026-07-18T08:30:15Z')
     assert result == datetime(2026, 7, 18, 8, 30, 15, tzinfo=UTC)
+
+
+def test_parse_last_modified_input_relative_30_days_ago():
+    before = datetime.now(tz=UTC) - timedelta(days=30, seconds=5)
+    result = parse_last_modified_input('30 days ago')
+    after = datetime.now(tz=UTC) - timedelta(days=30, seconds=-5)
+    assert result is not None
+    assert before <= result <= after
+
+
+def test_parse_last_modified_input_invalid_raises():
+    with pytest.raises(ValueError, match='Invalid last_modified'):
+        parse_last_modified_input('not-a-date-xyz')

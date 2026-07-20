@@ -22,8 +22,9 @@ ThreatConnect via batch.
   AlienVault OTX API key (`X-OTX-API-KEY`).
 
   **Last Modified** *(String, optional)*
-  ISO-8601 datetime for `modified_since`. Empty uses the last **30 days** on
-  first run. After a successful run the App writes the cursor via
+  Cursor for OTX `modified_since`. Default / first run: `30 days ago` (relative
+  expression). Also accepts ISO-8601 datetimes. Empty falls back to 30 days.
+  After a successful run the App writes an ISO cursor via
   `results_tc('last_modified', ...)`; on the platform ThreatConnect feeds that
   value back as the next job input.
 
@@ -34,7 +35,8 @@ ThreatConnect via batch.
 
 1. Install dependencies: `tcex deps`.
 2. Put ThreatConnect credentials in `.env`.
-3. Set app values in `app_inputs.json` (including `otx_api_key`).
+3. Set app values in `app_inputs.json` (including `otx_api_key`;
+   `last_modified` defaults to `30 days ago`).
 4. Run: `tcex run`
 
 After a successful local run, the cursor is written to `results.tc` under
