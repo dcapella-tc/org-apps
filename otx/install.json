@@ -6,6 +6,17 @@
     "appBuilderCompliant",
     "fileParams"
   ],
+  "feeds": [
+    {
+      "documentStorageLimitMb": 100,
+      "enableBulkJson": false,
+      "indicatorLimit": 5000000,
+      "jobFile": "otx-subscribed-pulses.json",
+      "sourceCategory": "Public",
+      "sourceDescription": "Fetches AlienVault OTX subscribed pulses and imports Reports with associated malware, adversaries, and indicators into ThreatConnect via batch.",
+      "sourceName": "AlienVault OTX - Subscribed Pulses"
+    }
+  ],
   "labels": [
     "OTX",
     "AlienVault",

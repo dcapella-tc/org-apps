@@ -15,6 +15,13 @@ Organization Job App that fetches subscribed pulses from AlienVault OTX and
 imports Reports (with associated malware, adversaries, and indicators) into
 ThreatConnect via batch.
 
+### Deploy
+
+After installing the App via TC Exchange, a System Administrator can use Feed
+Deployer (**Settings → TC Exchange Settings → Deploy**) to create the Source
+and scheduled Job. If using the job default for the API key, create an
+Organization Keychain variable named `OTX API Key` first.
+
 ### Inputs
 
   **ThreatConnect Owner** *(Choice)*
