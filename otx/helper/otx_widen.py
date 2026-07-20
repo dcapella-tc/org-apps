@@ -6,10 +6,9 @@ from datetime import UTC, datetime, timedelta
 
 # Progressive lookbacks when a fetch returns zero pulses.
 LOOKBACK_WINDOWS = (
-    timedelta(hours=24),
-    timedelta(hours=48),
-    timedelta(days=7),
     timedelta(days=30),
+    timedelta(days=60),
+    timedelta(days=90),
 )
 
 

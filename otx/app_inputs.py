@@ -10,7 +10,7 @@ class AppBaseModel(AppOrganizationModel):
 
     tc_owner: String
     otx_api_key: Sensitive
-    # Optional ISO datetime; empty string uses the default 24-hour lookback.
+    # Optional ISO datetime; empty string uses the default 30-day lookback.
     last_modified: String = String('')
     tc_threat_rating: String = String('3')
     tc_confidence: String = String('50')

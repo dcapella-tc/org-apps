@@ -38,7 +38,7 @@
       "default": "",
       "label": "Last Modified",
       "name": "last_modified",
-      "note": "Optional ISO-8601 datetime for modified_since. Empty uses the last 24 hours.",
+      "note": "Optional ISO-8601 datetime for modified_since. Empty uses the last 30 days on first run; subsequent platform runs reuse the value written by the job via results.tc.",
       "required": false,
       "sequence": 3,
       "type": "String"

@@ -5,11 +5,11 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 
 
-DEFAULT_LOOKBACK = timedelta(hours=24)
+DEFAULT_LOOKBACK = timedelta(days=30)
 
 
 def default_last_modified(*, now: datetime | None = None) -> datetime:
-    """Return UTC now minus the default 24-hour lookback."""
+    """Return UTC now minus the default 30-day lookback."""
     current = now if now is not None else datetime.now(tz=UTC)
     if current.tzinfo is None:
         current = current.replace(tzinfo=UTC)
@@ -21,7 +21,7 @@ def resolve_last_modified(
     *,
     now: datetime | None = None,
 ) -> datetime:
-    """Return ``last_modified`` or the default 24-hour lookback window start."""
+    """Return ``last_modified`` or the default 30-day lookback window start."""
     if last_modified is None:
         return default_last_modified(now=now)
     if last_modified.tzinfo is None:
@@ -33,6 +33,15 @@ def format_modified_since(last_modified: datetime) -> str:
     """Format a datetime as an OTX ``modified_since`` query value (ISO-8601 UTC)."""
     resolved = resolve_last_modified(last_modified)
     return resolved.strftime('%Y-%m-%dT%H:%M:%S')
+
+
+def format_last_modified_cursor(value: datetime) -> str:
+    """Format a datetime for persistence via ``results_tc`` (ISO-8601 UTC with Z)."""
+    if value.tzinfo is None:
+        resolved = value.replace(tzinfo=UTC)
+    else:
+        resolved = value.astimezone(UTC)
+    return resolved.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 def parse_last_modified_input(value: str | None) -> datetime | None:

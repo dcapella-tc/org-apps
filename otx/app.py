@@ -1,12 +1,13 @@
 """ThreatConnect Job App"""
 
+from datetime import UTC, datetime
 from pathlib import Path
 
 from tcex import TcEx
 
 from helper.otx import Otx
 from helper.otx_batch_pulse import import_pulse
-from helper.otx_dates import parse_last_modified_input
+from helper.otx_dates import format_last_modified_cursor, parse_last_modified_input
 from helper.otx_parse import extract_pulses
 from job_app import JobApp  # Import default Job App Class (Required)
 
@@ -26,6 +27,7 @@ class App(JobApp):
 
     def run(self):
         """Run main App logic."""
+        run_started = datetime.now(tz=UTC)
         otx = Otx(self.tcex, api_key=self.in_.otx_api_key.value)
         last_modified = parse_last_modified_input(
             str(getattr(self.in_, 'last_modified', '') or '')
@@ -67,6 +69,10 @@ class App(JobApp):
 
         batch_status = self.batch.submit_all()
         self.log.info('batch-status=%s', batch_status)
+
+        cursor = format_last_modified_cursor(run_started)
+        self.tcex.app.results_tc('last_modified', cursor)
+        self.log.info('saved-last-modified-cursor=%s', cursor)
 
         self.exit_message = (
             f'Imported {pulse_count} OTX pulse(s) as Reports; '

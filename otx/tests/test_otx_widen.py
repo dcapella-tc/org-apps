@@ -11,39 +11,34 @@ from helper.otx_widen import (
 
 
 def test_lookback_sequence():
-    assert lookback_for_index(0) == timedelta(hours=24)
-    assert lookback_for_index(1) == timedelta(hours=48)
-    assert lookback_for_index(2) == timedelta(days=7)
-    assert lookback_for_index(3) == timedelta(days=30)
-    assert lookback_for_index(4) is None
+    assert lookback_for_index(0) == timedelta(days=30)
+    assert lookback_for_index(1) == timedelta(days=60)
+    assert lookback_for_index(2) == timedelta(days=90)
+    assert lookback_for_index(3) is None
 
 
 def test_window_start_for_index():
     now = datetime(2026, 7, 19, 12, 0, 0, tzinfo=UTC)
-    assert window_start_for_index(0, now=now) == now - timedelta(hours=24)
-    assert window_start_for_index(3, now=now) == now - timedelta(days=30)
+    assert window_start_for_index(0, now=now) == now - timedelta(days=30)
+    assert window_start_for_index(2, now=now) == now - timedelta(days=90)
     assert window_start_for_index(99, now=now) is None
 
 
 def test_next_wider_last_modified_progresses():
     now = datetime(2026, 7, 19, 12, 0, 0, tzinfo=UTC)
-    current = now - timedelta(hours=24)
+    current = now - timedelta(days=30)
     wider = next_wider_last_modified(current, now=now)
-    assert wider == now - timedelta(hours=48)
+    assert wider == now - timedelta(days=60)
 
     wider2 = next_wider_last_modified(wider, now=now)
-    assert wider2 == now - timedelta(days=7)
+    assert wider2 == now - timedelta(days=90)
 
-    wider3 = next_wider_last_modified(wider2, now=now)
-    assert wider3 == now - timedelta(days=30)
-
-    assert next_wider_last_modified(wider3, now=now) is None
+    assert next_wider_last_modified(wider2, now=now) is None
 
 
 def test_lookback_windows_match_plan():
     assert LOOKBACK_WINDOWS == (
-        timedelta(hours=24),
-        timedelta(hours=48),
-        timedelta(days=7),
         timedelta(days=30),
+        timedelta(days=60),
+        timedelta(days=90),
     )
