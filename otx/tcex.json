@@ -4,8 +4,8 @@
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
-      "app_spec.yaml",
       "app_inputs.json",
+      "app_spec.yaml",
       "local-*",
       "pyproject.toml"
     ]
