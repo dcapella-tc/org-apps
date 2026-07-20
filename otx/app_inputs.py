@@ -12,6 +12,8 @@ class AppBaseModel(AppOrganizationModel):
     otx_api_key: Sensitive
     # Optional ISO datetime; empty string uses the default 24-hour lookback.
     last_modified: String = String('')
+    tc_threat_rating: String = String('3')
+    tc_confidence: String = String('50')
 
 
 class AppInputs:

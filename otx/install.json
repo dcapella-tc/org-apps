@@ -44,6 +44,24 @@
       "type": "String"
     },
     {
+      "default": "3",
+      "label": "ThreatConnect Threat Rating",
+      "name": "tc_threat_rating",
+      "note": "Threat rating applied to imported indicators (0-5).",
+      "required": false,
+      "sequence": 4,
+      "type": "String"
+    },
+    {
+      "default": "50",
+      "label": "ThreatConnect Confidence",
+      "name": "tc_confidence",
+      "note": "Confidence applied to imported indicators (0-100).",
+      "required": false,
+      "sequence": 5,
+      "type": "String"
+    },
+    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",
