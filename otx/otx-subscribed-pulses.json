@@ -1,6 +1,6 @@
 {
   "programName": "AlienVault OTX - Subscribed Pulses v1",
-  "programVersion": "1.0.2",
+  "programVersion": "1.0.3",
   "jobName": "AlienVault OTX - Subscribed Pulses",
   "allowOnDemand": true,
   "publishAuth": false,
@@ -16,6 +16,7 @@
   "params": [
     {
       "name": "tc_owner",
+      "default": "AlienVault OTX - Subscribed Pulses",
       "preventUpdates": true
     },
     {

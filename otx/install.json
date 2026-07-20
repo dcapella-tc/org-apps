@@ -28,9 +28,10 @@
   "note": "Fetches AlienVault OTX subscribed pulses and imports Reports with associated malware, adversaries, and indicators into ThreatConnect via batch.",
   "params": [
     {
+      "feedDeployer": true,
       "label": "ThreatConnect Owner",
       "name": "tc_owner",
-      "note": "The destination Owner in the ThreatConnect Platform.",
+      "note": "The destination Owner in the ThreatConnect Platform. Must match the Source name entered on the Source tab (including a custom Capella prefix).",
       "required": true,
       "sequence": 1,
       "type": "Choice",
@@ -98,7 +99,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.0.2",
+  "programVersion": "1.0.3",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }

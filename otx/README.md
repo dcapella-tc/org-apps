@@ -2,6 +2,10 @@
 
 # Release Notes
 
+### 1.0.3 (2026-07-20)
+
+* Feed Deployer: show ThreatConnect Owner on Parameters (restore job default); if you rename the Source, set Owner to the same name
+
 ### 1.0.2 (2026-07-20)
 
 * Feed Deployer: set Job `tc_owner` from the Source name entered on Deploy (supports custom Source names)
@@ -30,10 +34,11 @@ After installing the App via TC Exchange, a System Administrator can use Feed
 Deployer (**Settings → TC Exchange Settings → Deploy**) to create the Source
 and scheduled Job.
 
-Feed Deployer Parameters include the API key, last-modified cursor, threat
-rating, confidence, and logging level. The destination owner is the Source
-name you enter on the Source tab (including a custom name such as a Capella
-prefix); it is not a separate Parameters field. You can enter the API key in
+Feed Deployer Parameters include ThreatConnect Owner, API key, last-modified
+cursor, threat rating, confidence, and logging level. Owner defaults to
+`AlienVault OTX - Subscribed Pulses`. If you rename the Source on the Source
+tab (for example with a Capella prefix), set **ThreatConnect Owner** on
+Parameters to that **exact** same name. You can enter the API key in
 Parameters, or leave the job default and create an Organization Keychain
 variable named `OTX API Key`.
 
