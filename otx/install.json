@@ -55,9 +55,9 @@
     {
       "default": "30 days ago",
       "feedDeployer": true,
-      "label": "Last Modified",
-      "name": "last_modified",
-      "note": "modified_since cursor. Use a relative expression (e.g. 30 days ago) for the first run, or an ISO-8601 datetime. Empty falls back to 30 days. After a successful run the job writes an ISO cursor via results.tc for the next execution.",
+      "label": "Last Run",
+      "name": "last_run",
+      "note": "First-run lookback or ISO cursor. Use a relative expression (e.g. 30 days ago or 90 days ago), or an ISO-8601 datetime. Empty falls back to 30 days. After a successful run the job writes an ISO cursor via results.tc for the next execution.",
       "required": false,
       "sequence": 3,
       "type": "String"
@@ -99,7 +99,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.0.3",
+  "programVersion": "1.1.0",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }

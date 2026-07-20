@@ -37,7 +37,7 @@ def format_modified_since(last_modified: datetime) -> str:
     return resolved.strftime('%Y-%m-%dT%H:%M:%S')
 
 
-def format_last_modified_cursor(value: datetime) -> str:
+def format_last_run_cursor(value: datetime) -> str:
     """Format a datetime for persistence via ``results_tc`` (ISO-8601 UTC with Z)."""
     if value.tzinfo is None:
         resolved = value.replace(tzinfo=UTC)
@@ -46,8 +46,8 @@ def format_last_modified_cursor(value: datetime) -> str:
     return resolved.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
-def parse_last_modified_input(value: str | None) -> datetime | None:
-    """Parse an optional last_modified app input.
+def parse_last_run_input(value: str | None) -> datetime | None:
+    """Parse an optional last_run app input.
 
     Accepts:
     - Empty / whitespace → ``None`` (caller uses default 30-day lookback)
@@ -77,7 +77,7 @@ def parse_last_modified_input(value: str | None) -> datetime | None:
         arrow_dt = DatetimeOperation.any_to_datetime(text, tz='UTC')
     except Exception as exc:
         raise ValueError(
-            f'Invalid last_modified value "{text}". '
+            f'Invalid last_run value "{text}". '
             'Use an ISO datetime (e.g. 2026-07-20T12:00:00Z) '
             'or a relative expression (e.g. 30 days ago).'
         ) from exc

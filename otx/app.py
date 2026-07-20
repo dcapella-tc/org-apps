@@ -9,7 +9,7 @@ from tcex.exit import ExitCode
 from helper.otx import Otx
 from helper.otx_batch_pulse import import_pulse
 from helper.otx_batch_status import batch_submit_succeeded
-from helper.otx_dates import format_last_modified_cursor, parse_last_modified_input
+from helper.otx_dates import format_last_run_cursor, parse_last_run_input
 from helper.otx_parse import extract_pulses
 from job_app import JobApp  # Import default Job App Class (Required)
 
@@ -32,14 +32,14 @@ class App(JobApp):
         run_started = datetime.now(tz=UTC)
         otx = Otx(self.tcex, api_key=self.in_.otx_api_key.value)
         try:
-            last_modified = parse_last_modified_input(
-                str(getattr(self.in_, 'last_modified', '') or '')
+            window_start = parse_last_run_input(
+                str(getattr(self.in_, 'last_run', '') or '')
             )
         except ValueError as exc:
             self.tcex.exit.exit(ExitCode.FAILURE, str(exc))
         out_dir = Path(self.in_.tc_out_path)
 
-        payload = otx.fetch_with_widening_window(last_modified, out_dir=out_dir)
+        payload = otx.fetch_with_widening_window(window_start, out_dir=out_dir)
         pulses = extract_pulses(payload)
         pulse_count = len(pulses)
 
@@ -100,12 +100,12 @@ class App(JobApp):
             self.tcex.exit.exit(
                 ExitCode.FAILURE,
                 f'Batch submit failed for {pulse_count} pulse(s); '
-                f'last_modified cursor not advanced. status={batch_status}',
+                f'last_run cursor not advanced. status={batch_status}',
             )
 
-        cursor = format_last_modified_cursor(run_started)
-        self.tcex.app.results_tc('last_modified', cursor)
-        self.log.info('saved-last-modified-cursor=%s', cursor)
+        cursor = format_last_run_cursor(run_started)
+        self.tcex.app.results_tc('last_run', cursor)
+        self.log.info('saved-last-run-cursor=%s', cursor)
 
         self.exit_message = (
             f'Queued {pulse_count} OTX pulse(s) as Reports; '

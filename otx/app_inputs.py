@@ -11,7 +11,7 @@ class AppBaseModel(AppOrganizationModel):
     tc_owner: String
     otx_api_key: Sensitive
     # Default first-run lookback; subsequent runs get ISO from results_tc.
-    last_modified: String = String('30 days ago')
+    last_run: String = String('30 days ago')
     tc_threat_rating: String = String('3')
     tc_confidence: String = String('50')
 

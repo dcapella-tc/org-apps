@@ -2,6 +2,11 @@
 
 # Release Notes
 
+### 1.1.0 (2026-07-20)
+
+* Rename Last Modified input / `results_tc` cursor to **Last Run** (`last_run`) for clearer operator UX
+* Note: existing Jobs that stored `last_modified` in results.tc do not auto-migrate; set Last Run once after upgrade
+
 ### 1.0.3 (2026-07-20)
 
 * Feed Deployer: show ThreatConnect Owner on Parameters (restore job default); if you rename the Source, set Owner to the same name
@@ -34,8 +39,8 @@ After installing the App via TC Exchange, a System Administrator can use Feed
 Deployer (**Settings → TC Exchange Settings → Deploy**) to create the Source
 and scheduled Job.
 
-Feed Deployer Parameters include ThreatConnect Owner, API key, last-modified
-cursor, threat rating, confidence, and logging level. Owner defaults to
+Feed Deployer Parameters include ThreatConnect Owner, API key, Last Run
+lookback/cursor, threat rating, confidence, and logging level. Owner defaults to
 `AlienVault OTX - Subscribed Pulses`. If you rename the Source on the Source
 tab (for example with a Capella prefix), set **ThreatConnect Owner** on
 Parameters to that **exact** same name. You can enter the API key in
@@ -47,7 +52,7 @@ variable named `OTX API Key`.
 The API user / token used by the Job must have **create** permission on the
 destination Source for: Indicators, Groups, Attributes, Tags, and Security
 Labels. Without that, batch submit returns HTTP 401 and the Job fails without
-advancing `last_modified`.
+advancing `last_run`.
 
 ### Inputs
 
@@ -57,11 +62,12 @@ advancing `last_modified`.
   **OTX API Key** *(String / Keychain)*
   AlienVault OTX API key (`X-OTX-API-KEY`).
 
-  **Last Modified** *(String, optional)*
-  Cursor for OTX `modified_since`. Default / first run: `30 days ago` (relative
-  expression). Also accepts ISO-8601 datetimes. Empty falls back to 30 days.
+  **Last Run** *(String, optional)*
+  First-run lookback or ISO cursor used for OTX `modified_since`. Default /
+  first run: `30 days ago` (relative expression; e.g. `90 days ago` also
+  works). Also accepts ISO-8601 datetimes. Empty falls back to 30 days.
   After a successful run the App writes an ISO cursor via
-  `results_tc('last_modified', ...)`; on the platform ThreatConnect feeds that
+  `results_tc('last_run', ...)`; on the platform ThreatConnect feeds that
   value back as the next job input.
 
   **Threat Rating / Confidence** *(String)*
@@ -72,9 +78,9 @@ advancing `last_modified`.
 1. Install dependencies: `tcex deps`.
 2. Put ThreatConnect credentials in `.env`.
 3. Set app values in `app_inputs.json` (including `otx_api_key`;
-   `last_modified` defaults to `30 days ago`).
+   `last_run` defaults to `30 days ago`).
 4. Run: `tcex run`
 
 After a successful local run, the cursor is written to `results.tc` under
-`tc_out_path` (often `log/`). Copy that `last_modified` value into
+`tc_out_path` (often `log/`). Copy that `last_run` value into
 `app_inputs.json` for the next local incremental run if desired.

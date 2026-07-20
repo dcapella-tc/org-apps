@@ -1,6 +1,6 @@
 {
   "programName": "AlienVault OTX - Subscribed Pulses v1",
-  "programVersion": "1.0.3",
+  "programVersion": "1.1.0",
   "jobName": "AlienVault OTX - Subscribed Pulses",
   "allowOnDemand": true,
   "publishAuth": false,
@@ -25,7 +25,7 @@
       "default": "${ORGANIZATION:KEYCHAIN:OTX API Key}"
     },
     {
-      "name": "last_modified",
+      "name": "last_run",
       "default": "30 days ago"
     },
     {
