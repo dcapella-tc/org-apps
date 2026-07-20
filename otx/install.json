@@ -23,6 +23,27 @@
       ]
     },
     {
+      "label": "OTX API Key",
+      "name": "otx_api_key",
+      "note": "AlienVault OTX API key (X-OTX-API-KEY).",
+      "required": true,
+      "sequence": 2,
+      "type": "String",
+      "validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    },
+    {
+      "default": "",
+      "label": "Last Modified",
+      "name": "last_modified",
+      "note": "Optional ISO-8601 datetime for modified_since. Empty uses the last 24 hours.",
+      "required": false,
+      "sequence": 3,
+      "type": "String"
+    },
+    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",

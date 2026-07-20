@@ -1,8 +1,12 @@
 """ThreatConnect Job App"""
 
-from tcex import TcEx
-from tcex.exit import ExitCode
+from pathlib import Path
 
+from tcex import TcEx
+
+from helper.otx import Otx
+from helper.otx_dates import parse_last_modified_input
+from helper.otx_parse import extract_pulses
 from job_app import JobApp  # Import default Job App Class (Required)
 
 
@@ -13,76 +17,31 @@ class App(JobApp):
         """Initialize class properties."""
         super().__init__(_tcex)
 
-        # properties
-        self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
-
     def setup(self):
         """Perform prep/setup logic."""
-        # setting the base url allow for subsequent API call
-        # to be made by only providing the API endpoint/path.
-        self.tcex.session.external.base_url = 'https://feodotracker.abuse.ch'
+        # Base URL for subsequent OTX API calls (path-only requests).
+        self.tcex.session.external.base_url = 'https://otx.alienvault.com/api/v1/'
 
     def run(self):
         """Run main App logic."""
-        with self.tcex.session.external as s:
-            # https://feodotracker.abuse.ch/downloads/ipblocklist_recommended.json
-            r = s.get('/downloads/ipblocklist_recommended.json')
+        otx = Otx(self.tcex, api_key=self.in_.otx_api_key.value)
+        last_modified = parse_last_modified_input(
+            str(getattr(self.in_, 'last_modified', '') or '')
+        )
+        out_dir = Path(self.in_.tc_out_path)
 
-            if r.ok:
-                ti_data = r.json()
+        payload = otx.fetch_with_widening_window(last_modified, out_dir=out_dir)
+        pulse_count = len(extract_pulses(payload))
+        json_path = out_dir / 'otx_pulses_raw.json'
+        csv_path = out_dir / 'otx_pulses_sheet.csv'
 
-                # Example JSON
-                # {
-                #   "ip_address": "178.128.23.9",
-                #   "port": 4125,
-                #   "status": "online",
-                #   "hostname": null,
-                #   "as_number": 14061,
-                #   "as_name": "DIGITALOCEAN-ASN",
-                #   "country": "SG",
-                #   "first_seen": "2021-05-16 19:49:33",
-                #   "last_online": "2023-04-29",
-                #   "malware": "Dridex"
-                # }
-
-                for ti in ti_data:
-                    # create batch entry
-                    ip_address = ti['ip_address']
-                    address = self.batch.address(ip_address, rating='4.0', confidence='100')
-
-                    # map first seen to "First Seen" attribute
-                    first_seen = ti.get('first_seen')
-                    if first_seen:
-                        first_seen = self.tcex.util.any_to_datetime(first_seen).strftime(
-                            '%Y-%m-%dT%H:%M:%SZ'
-                        )
-                        address.attribute('First Seen', first_seen)
-
-                    # map last online to "Last Seen" attribute
-                    last_online = ti.get('last_online')
-                    if last_online:
-                        last_online = self.tcex.util.any_to_datetime(last_online).strftime(
-                            '%Y-%m-%dT%H:%M:%SZ'
-                        )
-                        address.attribute('Last Seen', last_online)
-
-                    # map port to "Port" attribute
-                    port = ti.get('port')
-                    if port:
-                        address.attribute('Port', port)
-
-                    # map malware to "Malware" tag
-                    malware = ti.get('malware')
-                    if malware:
-                        address.tag(malware)
-
-                    # optionally save object to disk to save on memory usage
-                    self.batch.save(address)
-            else:
-                self.tcex.exit.exit(ExitCode.SUCCESS, 'Failed to download data.')
-
-        # submit batch job
-        batch_status = self.batch.submit_all()
-        self.log.info(f'batch-status={batch_status}')
-
-        self.exit_message = 'Downloaded data and create batch job.'
+        self.log.info(
+            'saved-otx-inspection json=%s csv=%s count=%s',
+            json_path,
+            csv_path,
+            pulse_count,
+        )
+        self.exit_message = (
+            f'Downloaded {pulse_count} OTX pulse(s); '
+            f'saved inspection files to {out_dir}.'
+        )
