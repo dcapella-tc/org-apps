@@ -1,10 +1,12 @@
-# AlienVault OTX Ingress (TcEx Batch)
+# AlienVault OTX - Subscribed Pulses
 
 # Release Notes
 
-### 1.0.0 (2021-04-22)
+### 1.0.0 (2026-07-20)
 
-* Initial Release
+* Initial release: fetch AlienVault OTX subscribed pulses (`modified_since` cursor)
+* Batch-import Reports with associated malware, adversaries, and indicators
+* Persist `last_modified` between runs via `results_tc` (default first run: `30 days ago`)
 
 
 # Description

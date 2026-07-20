@@ -1,15 +1,20 @@
 {
   "allowOnDemand": true,
-  "displayName": "Batch Template",
+  "displayName": "AlienVault OTX - Subscribed Pulses",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
     "fileParams"
   ],
-  "labels": [],
+  "labels": [
+    "OTX",
+    "AlienVault",
+    "Ingress",
+    "Reports"
+  ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "A template of a working ingress Organization App.",
+  "note": "Fetches AlienVault OTX subscribed pulses and imports Reports with associated malware, adversaries, and indicators into ThreatConnect via batch.",
   "params": [
     {
       "label": "ThreatConnect Owner",

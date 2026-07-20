@@ -1,10 +1,11 @@
 {
   "package": {
-    "app_name": "TC_-_Ingress_Template",
+    "app_name": "DC_-_AlienVault_OTX_Subscribed_Pulses",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
       "app_spec.yaml",
+      "app_inputs.json",
       "local-*",
       "pyproject.toml"
     ]
