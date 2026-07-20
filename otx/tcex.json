@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "DC_-_AlienVault_OTX_Subscribed_Pulses",
+    "app_name": "AlienVault_OTX_-_Subscribed_Pulses",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
