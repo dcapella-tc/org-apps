@@ -23,14 +23,16 @@ def import_pulse(
     confidence: str = '50',
     log: _Log | None = None,
 ) -> dict[str, int]:
-    """Create a Report plus associated malware, adversaries, and indicators.
+    """Create a Report plus associated malware, adversaries, CVEs, and indicators.
 
     Returns:
-        Counts: ``adversaries``, ``malware``, ``indicators``, ``skipped_indicators``.
+        Counts: ``adversaries``, ``malware``, ``vulnerabilities``, ``indicators``,
+        ``skipped_indicators``.
     """
     stats = {
         'adversaries': 0,
         'malware': 0,
+        'vulnerabilities': 0,
         'indicators': 0,
         'skipped_indicators': 0,
     }
@@ -93,6 +95,13 @@ def import_pulse(
         stats['malware'] += 1
 
     for raw_ind in pulse.get('indicators') or []:
+        if isinstance(raw_ind, dict) and str(raw_ind.get('type') or '').strip() == 'CVE':
+            if _import_cve_vulnerability(batch, raw_ind, pulse_id, report_xid, log=log):
+                stats['vulnerabilities'] += 1
+            else:
+                stats['skipped_indicators'] += 1
+            continue
+
         mapped = map_otx_indicator(raw_ind if isinstance(raw_ind, dict) else None)
         if mapped is None:
             otx_type = (
@@ -138,16 +147,49 @@ def import_pulse(
     if log:
         log.info(
             'otx-batch pulse_id=%s report_xid=%s adversaries=%s malware=%s '
-            'indicators=%s skipped=%s',
+            'vulnerabilities=%s indicators=%s skipped=%s',
             pulse_id,
             report_xid,
             stats['adversaries'],
             stats['malware'],
+            stats['vulnerabilities'],
             stats['indicators'],
             stats['skipped_indicators'],
         )
 
     return stats
+
+
+def _import_cve_vulnerability(
+    batch: Any,
+    raw_ind: dict[str, Any],
+    pulse_id: Any,
+    report_xid: str,
+    *,
+    log: _Log | None = None,
+) -> bool:
+    """Create a Vulnerability group for an OTX CVE indicator. Return True if queued."""
+    cve_name = str(raw_ind.get('indicator') or '').strip()
+    if not cve_name:
+        if log:
+            log.warning(
+                'otx-batch skipping CVE without value pulse_id=%s',
+                pulse_id,
+            )
+        return False
+
+    otx_id = raw_ind.get('id')
+    if otx_id is not None:
+        vuln_xid = batch.generate_xid(['otx', 'vulnerability', str(otx_id)])
+    else:
+        vuln_xid = batch.generate_xid(
+            ['otx', 'vulnerability', str(pulse_id), cve_name]
+        )
+
+    vulnerability = batch.vulnerability(cve_name, xid=vuln_xid)
+    vulnerability.association(report_xid)
+    batch.save(vulnerability)
+    return True
 
 
 def _create_indicator(

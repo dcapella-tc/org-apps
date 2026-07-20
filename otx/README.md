@@ -32,6 +32,13 @@ Source (not a separate Owner field). You can enter the API key in Parameters,
 or leave the job default and create an Organization Keychain variable named
 `OTX API Key`.
 
+### ThreatConnect permissions
+
+The API user / token used by the Job must have **create** permission on the
+destination Source for: Indicators, Groups, Attributes, Tags, and Security
+Labels. Without that, batch submit returns HTTP 401 and the Job fails without
+advancing `last_modified`.
+
 ### Inputs
 
   **ThreatConnect Owner** *(Choice)*

@@ -15,6 +15,7 @@ def _make_batch():
     batch.report.side_effect = _obj_factory
     batch.adversary.side_effect = _obj_factory
     batch.malware.side_effect = _obj_factory
+    batch.vulnerability.side_effect = _obj_factory
     batch.host.side_effect = _obj_factory
     batch.file.side_effect = _obj_factory
     batch.address.side_effect = _obj_factory
@@ -61,8 +62,9 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
     assert stats == {
         'adversaries': 1,
         'malware': 2,
+        'vulnerabilities': 1,
         'indicators': 2,
-        'skipped_indicators': 1,
+        'skipped_indicators': 0,
     }
 
     batch.report.assert_called_once()
@@ -82,6 +84,10 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
     assert batch.adversary.call_args[0][0] == 'Poisson'
     assert batch.malware.call_count == 2
 
+    batch.vulnerability.assert_called_once()
+    assert batch.vulnerability.call_args[0][0] == 'CVE-2024-1'
+    assert batch.vulnerability.call_args[1]['xid'] == 'xid-otx-vulnerability-103'
+
     for saved in batch.save.call_args_list[1:]:
         obj = saved[0][0]
         obj.association.assert_called_with('xid-otx-pulse-pulse-1')
@@ -93,6 +99,24 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
 
     batch.file.assert_called_once()
     assert batch.file.call_args[1]['sha256'] == 'aa' * 32
+
+
+def test_import_pulse_skips_empty_cve():
+    batch = _make_batch()
+    log = MagicMock()
+    stats = import_pulse(
+        batch,
+        {
+            'id': 'p-cve',
+            'name': 'Empty CVE',
+            'indicators': [{'type': 'CVE', 'indicator': '  '}],
+            'malware_families': [],
+        },
+        log=log,
+    )
+    assert stats['vulnerabilities'] == 0
+    assert stats['skipped_indicators'] == 1
+    batch.vulnerability.assert_not_called()
 
 
 def test_import_pulse_skips_missing_id():
