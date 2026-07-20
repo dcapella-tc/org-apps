@@ -9,9 +9,7 @@ class AppBaseModel(AppOrganizationModel):
     """Base model for the App containing any common inputs."""
 
     tc_owner: String
-    # Optional locally: leave empty and set otx_api_key in .env for tcex run.
-    # Required on the ThreatConnect platform via install.json.
-    otx_api_key: Sensitive = Sensitive('')
+    otx_api_key: Sensitive
     # Optional ISO datetime; empty string uses the default 24-hour lookback.
     last_modified: String = String('')
 
