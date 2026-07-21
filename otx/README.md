@@ -2,6 +2,11 @@
 
 # Release Notes
 
+### 1.1.1 (2026-07-21)
+
+* Precheck ThreatConnect batch write access on the destination owner before fetching OTX
+* Batch item-level errors are warnings only; successful submits still advance `last_run`
+
 ### 1.1.0 (2026-07-20)
 
 * Rename Last Modified input / `results_tc` cursor to **Last Run** (`last_run`) for clearer operator UX
@@ -51,8 +56,10 @@ variable named `OTX API Key`.
 
 The API user / token used by the Job must have **create** permission on the
 destination Source for: Indicators, Groups, Attributes, Tags, and Security
-Labels. Without that, batch submit returns HTTP 401 and the Job fails without
-advancing `last_run`.
+Labels. The Job prechecks write access with `POST /v2/batch` before calling
+OTX; a 401 fails immediately without advancing `last_run`. After import,
+batch item-level errors (e.g. invalid URLs) are logged as warnings and do
+not fail the Job; `last_run` still advances when submit returns normally.
 
 ### Inputs
 

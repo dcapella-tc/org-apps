@@ -1,33 +1,45 @@
-"""Evaluate ThreatConnect v2 batch submit_all status payloads."""
+"""Summarize ThreatConnect v2 batch submit_all status payloads."""
 
 from __future__ import annotations
 
 from typing import Any
 
 
-def batch_submit_succeeded(statuses: Any, *, had_work: bool) -> bool:
-    """Return True only when every status is a non-empty success (or no work).
+def summarize_batch_errors(statuses: Any, *, max_reasons: int = 3) -> str | None:
+    """Return a short warning summary of batch errors, or None if none.
 
-    When ``had_work`` is False (nothing queued), an empty status list is success.
-    When ``had_work`` is True, empty statuses, empty dicts (e.g. HTTP 401 path),
-    error counts, or ``successCount == 0`` are failures.
+    Does not treat item-level errors as hard failure; callers log the result.
     """
-    if not had_work:
-        return True
-
     if not isinstance(statuses, list) or not statuses:
-        return False
+        return 'batch returned no status entries'
+
+    total_errors = 0
+    total_success = 0
+    reasons: list[str] = []
 
     for entry in statuses:
         if not isinstance(entry, dict) or not entry:
-            return False
+            return 'batch returned empty or invalid status entry'
         error_count = entry.get('errorCount')
-        if isinstance(error_count, int) and error_count > 0:
-            return False
+        if isinstance(error_count, int):
+            total_errors += error_count
+        success_count = entry.get('successCount')
+        if isinstance(success_count, int):
+            total_success += success_count
         errors = entry.get('errors')
-        if isinstance(errors, list) and errors:
-            return False
-        if 'successCount' in entry and entry.get('successCount') == 0:
-            return False
+        if isinstance(errors, list):
+            for item in errors:
+                if len(reasons) >= max_reasons:
+                    break
+                if isinstance(item, dict):
+                    reason = item.get('errorReason') or item.get('errorMessage')
+                    if reason:
+                        reasons.append(str(reason))
 
-    return True
+    if total_errors <= 0 and not reasons:
+        return None
+
+    parts = [f'batch item errors={total_errors} successCount={total_success}']
+    if reasons:
+        parts.append('samples: ' + ' | '.join(reasons))
+    return '; '.join(parts)

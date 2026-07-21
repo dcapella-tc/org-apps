@@ -1,6 +1,6 @@
 {
   "programName": "AlienVault OTX - Subscribed Pulses v1",
-  "programVersion": "1.1.0",
+  "programVersion": "1.1.1",
   "jobName": "AlienVault OTX - Subscribed Pulses",
   "allowOnDemand": true,
   "publishAuth": false,
