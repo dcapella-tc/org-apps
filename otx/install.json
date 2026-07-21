@@ -1,0 +1,105 @@
+{
+  "allowOnDemand": true,
+  "displayName": "AlienVault OTX - Subscribed Pulses",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams"
+  ],
+  "feeds": [
+    {
+      "documentStorageLimitMb": 100,
+      "enableBulkJson": false,
+      "indicatorLimit": 5000000,
+      "jobFile": "otx-subscribed-pulses.json",
+      "sourceCategory": "Public",
+      "sourceDescription": "Fetches AlienVault OTX subscribed pulses and imports Reports with associated malware, adversaries, and indicators into ThreatConnect via batch.",
+      "sourceName": "AlienVault OTX - Subscribed Pulses"
+    }
+  ],
+  "labels": [
+    "OTX",
+    "AlienVault",
+    "Ingress",
+    "Reports"
+  ],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "note": "Fetches AlienVault OTX subscribed pulses and imports Reports with associated malware, adversaries, and indicators into ThreatConnect via batch.",
+  "params": [
+    {
+      "feedDeployer": true,
+      "label": "ThreatConnect Owner",
+      "name": "tc_owner",
+      "note": "The destination Owner in the ThreatConnect Platform. Must match the Source name entered on the Source tab (including a custom Capella prefix).",
+      "required": true,
+      "sequence": 1,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    },
+    {
+      "feedDeployer": true,
+      "label": "OTX API Key",
+      "name": "otx_api_key",
+      "note": "AlienVault OTX API key (X-OTX-API-KEY).",
+      "required": true,
+      "sequence": 2,
+      "type": "String",
+      "validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    },
+    {
+      "default": "30 days ago",
+      "feedDeployer": true,
+      "label": "Last Run",
+      "name": "last_run",
+      "note": "First-run lookback or ISO cursor. Use a relative expression (e.g. 30 days ago or 90 days ago), or an ISO-8601 datetime. Empty falls back to 30 days. After a successful run the job writes an ISO cursor via results.tc for the next execution.",
+      "required": false,
+      "sequence": 3,
+      "type": "String"
+    },
+    {
+      "default": "3",
+      "feedDeployer": true,
+      "label": "ThreatConnect Threat Rating",
+      "name": "tc_threat_rating",
+      "note": "Threat rating applied to imported indicators (0-5).",
+      "required": false,
+      "sequence": 4,
+      "type": "String"
+    },
+    {
+      "default": "50",
+      "feedDeployer": true,
+      "label": "ThreatConnect Confidence",
+      "name": "tc_confidence",
+      "note": "Confidence applied to imported indicators (0-100).",
+      "required": false,
+      "sequence": 5,
+      "type": "String"
+    },
+    {
+      "default": "warning",
+      "feedDeployer": true,
+      "label": "Logging Level",
+      "name": "tc_log_level",
+      "sequence": 99,
+      "type": "Choice",
+      "validValues": [
+        "debug",
+        "info",
+        "warning",
+        "error"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "1.1.1",
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}

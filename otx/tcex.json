@@ -1,0 +1,16 @@
+{
+  "package": {
+    "app_name": "AlienVault_OTX_-_Subscribed_Pulses",
+    "excludes": [
+      ".gitignore",
+      ".pre-commit-config.yaml",
+      "app_inputs.json",
+      "app_spec.yaml",
+      "local-*",
+      "pyproject.toml"
+    ]
+  },
+  "template_name": "ingress",
+  "template_repo_hash": "a1fbdf2eaac5b0408f051ad29b69852407752c94",
+  "template_type": "organization"
+}

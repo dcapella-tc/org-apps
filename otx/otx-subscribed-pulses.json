@@ -1,0 +1,44 @@
+{
+  "programName": "AlienVault OTX - Subscribed Pulses v1",
+  "programVersion": "1.1.1",
+  "jobName": "AlienVault OTX - Subscribed Pulses",
+  "allowOnDemand": true,
+  "publishAuth": false,
+  "scheduleType": "Daily",
+  "scheduleCronFormat": "0 0 * * *",
+  "scheduleStartDate": 0,
+  "enableNotifications": false,
+  "notifyOnFailure": false,
+  "notifyOnPartialFailure": false,
+  "notifyOnComplete": false,
+  "notifyEmail": "",
+  "notifyIncludeLogFiles": false,
+  "params": [
+    {
+      "name": "tc_owner",
+      "default": "AlienVault OTX - Subscribed Pulses",
+      "preventUpdates": true
+    },
+    {
+      "name": "otx_api_key",
+      "encrypt": true,
+      "default": "${ORGANIZATION:KEYCHAIN:OTX API Key}"
+    },
+    {
+      "name": "last_run",
+      "default": "30 days ago"
+    },
+    {
+      "name": "tc_threat_rating",
+      "default": "3"
+    },
+    {
+      "name": "tc_confidence",
+      "default": "50"
+    },
+    {
+      "name": "tc_log_level",
+      "default": "warning"
+    }
+  ]
+}
