@@ -27,7 +27,7 @@ def fetch_for_pir(
     params = {
         'tql': f'hasGroup(hasIntelRequirement(id={pir_id})) and not hasIntelRequirement(id={pir_id})',
         'sorting': 'calScore DESC',
-        'fields': 'tags',
+        'fields': 'tags,associatedGroups',
         'resultLimit': result_limit,
     }
     response = tc_session.get('/v3/indicators', params=params)

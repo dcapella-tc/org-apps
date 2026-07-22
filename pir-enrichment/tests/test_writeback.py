@@ -3,7 +3,27 @@
 from unittest.mock import MagicMock
 
 from helper.indicators import ENRICHMENT_TAG
-from helper.writeback import add_enrichment_tag, set_description
+from helper.writeback import (
+    add_enrichment_tag,
+    associated_groups_body,
+    set_description,
+)
+
+
+def test_associated_groups_body_id_only():
+    indicator = {
+        'associatedGroups': {
+            'data': [
+                {'id': 10, 'name': 'Report A', 'type': 'Report'},
+                {'id': 20, 'summary': 'extra'},
+                {'name': 'no-id'},
+            ]
+        }
+    }
+    assert associated_groups_body(indicator) == {
+        'data': [{'id': 10}, {'id': 20}],
+    }
+    assert associated_groups_body({}) == {'data': []}
 
 
 def test_set_description_put_body():
@@ -37,7 +57,15 @@ def test_add_enrichment_tag_put_body():
     session = MagicMock()
     session.put.return_value = response
 
-    add_enrichment_tag(session, '99')
+    indicator = {
+        'associatedGroups': {
+            'data': [
+                {'id': 111, 'type': 'Report'},
+                {'id': 222},
+            ]
+        }
+    }
+    add_enrichment_tag(session, '99', indicator)
 
     session.put.assert_called_once_with(
         '/v3/indicators/99',
@@ -46,7 +74,10 @@ def test_add_enrichment_tag_put_body():
                 'data': [
                     {'name': ENRICHMENT_TAG},
                 ]
-            }
+            },
+            'associatedGroups': {
+                'data': [{'id': 111}, {'id': 222}],
+            },
         },
     )
     response.raise_for_status.assert_called_once()

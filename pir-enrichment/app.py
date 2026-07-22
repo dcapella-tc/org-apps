@@ -65,7 +65,7 @@ class App(JobApp):
 
                 indicator_id = ioc['id']
                 set_description(self.tcex.session.tc, indicator_id, content)
-                add_enrichment_tag(self.tcex.session.tc, indicator_id)
+                add_enrichment_tag(self.tcex.session.tc, indicator_id, ioc)
                 enriched += 1
 
         self.exit_message = (

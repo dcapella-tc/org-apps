@@ -34,10 +34,12 @@ def test_fetch_for_pir_builds_request():
     session.get.assert_called_once_with(
         '/v3/indicators',
         params={
-            'tql': 'hasGroup(hasIntelRequirement(id=13510798885004707))',
+            'tql': (
+                'hasGroup(hasIntelRequirement(id=13510798885004707)) '
+                'and not hasIntelRequirement(id=13510798885004707)'
+            ),
             'sorting': 'calScore DESC',
-            'fields': 'tags',
+            'fields': 'tags,associatedGroups',
             'resultLimit': 500,
-            'owner': 'CTI Lifecycle',
         },
     )
