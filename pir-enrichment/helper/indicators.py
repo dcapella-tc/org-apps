@@ -29,7 +29,6 @@ def fetch_for_pir(
         'sorting': 'calScore DESC',
         'fields': 'tags',
         'resultLimit': result_limit,
-        'owner': owner,
     }
     response = tc_session.get('/v3/indicators', params=params)
     response.raise_for_status()
