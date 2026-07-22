@@ -4,10 +4,11 @@
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
+      "app_inputs.json",
       "app_spec.yaml",
+      "examples",
       "local-*",
-      "pyproject.toml",
-      "examples"
+      "pyproject.toml"
     ]
   },
   "template_name": "basic",
