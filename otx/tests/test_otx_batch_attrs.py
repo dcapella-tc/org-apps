@@ -14,7 +14,7 @@ def test_build_pulse_attributes_scalars_and_lists():
         'public': 1,
         'adversary': 'Poisson',
         'references': ['https://example.com/a', 'https://example.com/b'],
-        'targeted_countries': ['India', 'Taiwan'],
+        'targeted_countries': ['India', 'Taiwan', 'FooLand'],
         'extract_source': ['src1'],
     }
     attrs = build_pulse_attributes(pulse)
@@ -34,7 +34,8 @@ def test_build_pulse_attributes_scalars_and_lists():
         'https://example.com/b',
     ]
     assert by_type['Source'] == ['src1']
-    assert by_type['Target Country'] == ['India', 'Taiwan']
+    assert by_type['Target Country'] == ['India', 'Taiwan, Province Of China']
+    assert 'FooLand' not in by_type.get('Target Country', [])
     assert 'Adversary' not in by_type
 
     desc = next(a for a in attrs if a[0] == 'Description')

@@ -2,6 +2,12 @@
 
 # Release Notes
 
+### 1.1.3 (2026-07-22)
+
+* Map OTX `targeted_countries` to ThreatConnect Target Country allowlist values
+  (e.g. `Taiwan` → `Taiwan, Province Of China`)
+* Unmatched countries: skip attribute, warn, and tag as `Target Country:<OTX value>`
+
 ### 1.1.2 (2026-07-22)
 
 * Map OTX `created` / `modified` to Report native metadata (`publish_date`,

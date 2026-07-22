@@ -7,6 +7,7 @@ from typing import Any, Protocol
 from helper.otx_batch_attrs import build_pulse_attributes, tlp_security_label
 from helper.otx_batch_tags import build_pulse_tags
 from helper.otx_indicator_map import map_otx_indicator
+from helper.otx_target_country import resolve_targeted_countries
 
 
 class _Log(Protocol):
@@ -59,6 +60,15 @@ def import_pulse(
             report_kwargs['external_last_modified'] = modified_text
 
     report = batch.report(name, **report_kwargs)
+
+    _mapped_countries, unmatched_countries = resolve_targeted_countries(pulse)
+    if log:
+        for country in unmatched_countries:
+            log.warning(
+                'otx-batch pulse_id=%s unmatched target country=%s; tagging instead',
+                pulse_id,
+                country,
+            )
 
     for tag_name in build_pulse_tags(pulse):
         report.tag(tag_name)
