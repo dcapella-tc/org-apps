@@ -6,7 +6,8 @@
       ".pre-commit-config.yaml",
       "app_spec.yaml",
       "local-*",
-      "pyproject.toml"
+      "pyproject.toml",
+      "examples"
     ]
   },
   "template_name": "basic",
