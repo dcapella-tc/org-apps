@@ -15,7 +15,11 @@ def associated_groups_body(indicator: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build_create_body(indicator: dict[str, Any], owner: str) -> dict[str, Any]:
+def build_create_body(
+    indicator: dict[str, Any],
+    owner: str,
+    description: str,
+) -> dict[str, Any]:
     """Build a v3 indicator POST body from a fetched IOC."""
     tag_names: list[str] = []
     seen: set[str] = set()
@@ -34,6 +38,15 @@ def build_create_body(indicator: dict[str, Any], owner: str) -> dict[str, Any]:
         'ownerName': owner,
         'tags': {'data': [{'name': name} for name in tag_names]},
         'associatedGroups': associated_groups_body(indicator),
+        'attributes': {
+            'data': [
+                {
+                    'type': 'Description',
+                    'value': description,
+                    'default': True,
+                }
+            ]
+        },
     }
     for hash_field in ('sha256', 'sha1', 'md5'):
         value = indicator.get(hash_field)
@@ -42,30 +55,14 @@ def build_create_body(indicator: dict[str, Any], owner: str) -> dict[str, Any]:
     return body
 
 
-def set_description(tc_session: Any, indicator_id: int | str, content: str) -> None:
-    """PUT a Description attribute on the indicator."""
-    body = {
-        'attributes': {
-            'data': [
-                {
-                    'type': 'Description',
-                    'value': content,
-                    'default': True,
-                }
-            ]
-        }
-    }
-    response = tc_session.put(f'/v3/indicators/{indicator_id}', json=body)
-    response.raise_for_status()
-
-
 def create_indicator(
     tc_session: Any,
     indicator: dict[str, Any],
     owner: str,
+    description: str,
 ) -> int | str:
     """POST a new indicator into owner; return the created id."""
-    body = build_create_body(indicator, owner)
+    body = build_create_body(indicator, owner, description)
     response = tc_session.post('/v3/indicators', json=body)
     response.raise_for_status()
     payload = response.json() or {}
