@@ -8,6 +8,7 @@
   ],
   "feeds": [
     {
+      "attributesFile": "attributes.json",
       "documentStorageLimitMb": 100,
       "enableBulkJson": false,
       "indicatorLimit": 5000000,
@@ -99,7 +100,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.1.1",
+  "programVersion": "1.1.2",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }

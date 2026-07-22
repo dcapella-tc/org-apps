@@ -48,7 +48,15 @@ def import_pulse(
     report_kwargs: dict[str, Any] = {'xid': report_xid}
     created = pulse.get('created')
     if created:
-        report_kwargs['publish_date'] = str(created)
+        created_text = str(created).strip()
+        if created_text:
+            report_kwargs['publish_date'] = created_text
+            report_kwargs['external_date_created'] = created_text
+    modified = pulse.get('modified')
+    if modified:
+        modified_text = str(modified).strip()
+        if modified_text:
+            report_kwargs['external_last_modified'] = modified_text
 
     report = batch.report(name, **report_kwargs)
 

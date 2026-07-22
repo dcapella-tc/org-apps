@@ -10,11 +10,10 @@ from helper.otx_attr_names import normalize_attr_name
 AttributeTuple = tuple[str, str, bool]
 
 # Scalar / list fields imported as attributes (not tags-only, not separate objects).
+# created/modified are Report metadata (publish_date / external_*); not attributes.
 _SCALAR_FIELDS = (
     'description',
     'author_name',
-    'created',
-    'modified',
     'id',
     'public',
 )

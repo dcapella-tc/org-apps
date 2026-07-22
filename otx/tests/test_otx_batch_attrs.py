@@ -25,8 +25,8 @@ def test_build_pulse_attributes_scalars_and_lists():
     assert by_type['Description'] == ['A pulse']
     assert by_type['Author'] == ['AlienVault']
     assert by_type['External ID'] == ['abc123']
-    assert by_type['External Date Created'] == ['2026-06-19T11:24:44.247000']
-    assert by_type['External Date Last Modified'] == ['2026-07-19T11:13:46.346000']
+    assert 'External Date Created' not in by_type
+    assert 'External Date Last Modified' not in by_type
     assert 'Report Revision Date' not in by_type
     assert by_type['Availability to Public'] == ['1']
     assert by_type['External References'] == [

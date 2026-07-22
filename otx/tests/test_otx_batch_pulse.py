@@ -30,6 +30,8 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
         'id': 'pulse-1',
         'name': 'Test Pulse',
         'description': 'Desc',
+        'created': '2026-06-19T11:24:44.247000',
+        'modified': '2026-07-19T11:13:46.346000',
         'tlp': 'white',
         'adversary': 'Poisson',
         'tags': ['alpha'],
@@ -72,12 +74,18 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
     report_kwargs = batch.report.call_args[1]
     assert report_name == 'Test Pulse'
     assert report_kwargs['xid'] == 'xid-otx-pulse-pulse-1'
+    assert report_kwargs['publish_date'] == '2026-06-19T11:24:44.247000'
+    assert report_kwargs['external_date_created'] == '2026-06-19T11:24:44.247000'
+    assert report_kwargs['external_last_modified'] == '2026-07-19T11:13:46.346000'
 
     report_obj = batch.save.call_args_list[0][0][0]
     report_obj.tag.assert_any_call('alpha')
     report_obj.tag.assert_any_call('T1001')
     report_obj.tag.assert_any_call('Target Country:India')
     report_obj.attribute.assert_any_call('Description', 'Desc', True)
+    attr_calls = [c.args[0] for c in report_obj.attribute.call_args_list]
+    assert 'External Date Created' not in attr_calls
+    assert 'External Date Last Modified' not in attr_calls
     report_obj.security_label.assert_called_with('TLP:WHITE')
 
     batch.adversary.assert_called_once()
