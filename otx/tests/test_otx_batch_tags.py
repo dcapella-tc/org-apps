@@ -3,14 +3,18 @@
 from helper.otx_batch_tags import build_pulse_tags
 
 
-def test_build_pulse_tags_includes_target_country_prefix():
+def test_build_pulse_tags_country_fallback_only_unmatched():
     pulse = {
         'tags': ['vpn', 'fortinet'],
         'attack_ids': ['T1110'],
         'industries': ['Finance'],
         'adversary': 'Poisson',
         'revision': 3,
-        'targeted_countries': ['United States of America', 'India'],
+        'targeted_countries': [
+            'United States of America',
+            'India',
+            'FooLand',
+        ],
     }
     tags = build_pulse_tags(pulse)
     assert 'vpn' in tags
@@ -18,8 +22,10 @@ def test_build_pulse_tags_includes_target_country_prefix():
     assert 'Finance' in tags
     assert 'Poisson' not in tags
     assert 'revision:3' in tags
-    assert 'Target Country:United States of America' in tags
-    assert 'Target Country:India' in tags
+    # Mapped countries are attributes only — no Target Country tags.
+    assert 'Target Country:United States of America' not in tags
+    assert 'Target Country:India' not in tags
+    assert 'Target Country:FooLand' in tags
 
 
 def test_revision_tag_skipped_when_empty():

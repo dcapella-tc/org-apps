@@ -4,11 +4,17 @@ from __future__ import annotations
 
 from typing import Any
 
+from helper.otx_target_country import resolve_targeted_countries
+
 MAX_TAG_LENGTH = 128
 
 
 def build_pulse_tags(pulse: dict[str, Any]) -> list[str]:
-    """Return deduplicated tag names for a pulse (order preserved)."""
+    """Return deduplicated tag names for a pulse (order preserved).
+
+    ``Target Country:`` tags are only added for countries that do not map to
+    the ThreatConnect Target Country attribute allowlist.
+    """
     tags: list[str] = []
     seen: set[str] = set()
 
@@ -37,9 +43,8 @@ def build_pulse_tags(pulse: dict[str, Any]) -> list[str]:
     if revision is not None and str(revision).strip():
         add(f'revision:{str(revision).strip()}')
 
-    for country in pulse.get('targeted_countries') or []:
-        country_text = str(country).strip()
-        if country_text:
-            add(f'Target Country:{country_text}')
+    _mapped, unmatched = resolve_targeted_countries(pulse)
+    for country_text in unmatched:
+        add(f'Target Country:{country_text}')
 
     return tags

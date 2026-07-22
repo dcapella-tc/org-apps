@@ -2,6 +2,20 @@
 
 # Release Notes
 
+### 1.1.3 (2026-07-22)
+
+* Map OTX `targeted_countries` to ThreatConnect Target Country allowlist values
+  (e.g. `Taiwan` → `Taiwan, Province Of China`)
+* Unmatched countries: skip attribute, warn, and tag as `Target Country:<OTX value>`
+
+### 1.1.2 (2026-07-22)
+
+* Map OTX `created` / `modified` to Report native metadata (`publish_date`,
+  `external_date_created`, `external_last_modified`) instead of date attributes
+* Ship custom Report attribute types via Feed Deployer `attributes.json`
+  (Author, External ID, Availability to Public, External References,
+  Target Country); Redeploy / Create Attributes so types exist on the Source
+
 ### 1.1.1 (2026-07-21)
 
 * Precheck ThreatConnect batch write access on the destination owner before fetching OTX
@@ -43,6 +57,10 @@ ThreatConnect via batch.
 After installing the App via TC Exchange, a System Administrator can use Feed
 Deployer (**Settings → TC Exchange Settings → Deploy**) to create the Source
 and scheduled Job.
+
+After Deploy (or Redeploy), ensure custom attribute types from
+`attributes.json` are created on the Source (Create Attributes) before the Job
+writes Author, External ID, and related fields.
 
 Feed Deployer Parameters include ThreatConnect Owner, API key, Last Run
 lookback/cursor, threat rating, confidence, and logging level. Owner defaults to

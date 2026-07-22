@@ -1,0 +1,54 @@
+{
+  "types": [
+    {
+      "allowMarkdown": false,
+      "description": "Author of the AlienVault OTX pulse.",
+      "errorMessage": "Please enter a valid Author.",
+      "groups": ["Report"],
+      "maxLength": 500,
+      "name": "Author",
+      "system": false,
+      "version": 1
+    },
+    {
+      "allowMarkdown": false,
+      "description": "AlienVault OTX pulse identifier.",
+      "errorMessage": "Please enter a valid External ID.",
+      "groups": ["Report"],
+      "maxLength": 500,
+      "name": "External ID",
+      "system": false,
+      "version": 1
+    },
+    {
+      "allowMarkdown": false,
+      "description": "Whether the OTX pulse is public.",
+      "errorMessage": "Please enter a valid Availability to Public value.",
+      "groups": ["Report"],
+      "maxLength": 100,
+      "name": "Availability to Public",
+      "system": false,
+      "version": 1
+    },
+    {
+      "allowMarkdown": true,
+      "description": "External reference URL from an AlienVault OTX pulse.",
+      "errorMessage": "Please enter a valid External Reference.",
+      "groups": ["Report"],
+      "maxLength": 10240,
+      "name": "External References",
+      "system": false,
+      "version": 1
+    },
+    {
+      "allowMarkdown": false,
+      "description": "Country targeted by an AlienVault OTX pulse.",
+      "errorMessage": "Please enter a valid Target Country.",
+      "groups": ["Report"],
+      "maxLength": 500,
+      "name": "Target Country",
+      "system": false,
+      "version": 1
+    }
+  ]
+}

@@ -5,16 +5,16 @@ from __future__ import annotations
 from typing import Any
 
 from helper.otx_attr_names import normalize_attr_name
+from helper.otx_target_country import resolve_targeted_countries
 
 # (attr_type, value, displayed)
 AttributeTuple = tuple[str, str, bool]
 
 # Scalar / list fields imported as attributes (not tags-only, not separate objects).
+# created/modified are Report metadata (publish_date / external_*); not attributes.
 _SCALAR_FIELDS = (
     'description',
     'author_name',
-    'created',
-    'modified',
     'id',
     'public',
 )
@@ -22,7 +22,6 @@ _SCALAR_FIELDS = (
 _LIST_AS_ONE_PER_ITEM = (
     ('references', True),
     ('extract_source', False),
-    ('targeted_countries', False),
 )
 
 
@@ -52,6 +51,10 @@ def build_pulse_attributes(pulse: dict[str, Any]) -> list[AttributeTuple]:
             text = str(item).strip()
             if text:
                 attrs.append((attr_type, text, displayed))
+
+    mapped_countries, _unmatched = resolve_targeted_countries(pulse)
+    for country in mapped_countries:
+        attrs.append(('Target Country', country, False))
 
     return attrs
 

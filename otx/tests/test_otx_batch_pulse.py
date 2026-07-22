@@ -30,6 +30,8 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
         'id': 'pulse-1',
         'name': 'Test Pulse',
         'description': 'Desc',
+        'created': '2026-06-19T11:24:44.247000',
+        'modified': '2026-07-19T11:13:46.346000',
         'tlp': 'white',
         'adversary': 'Poisson',
         'tags': ['alpha'],
@@ -72,12 +74,20 @@ def test_import_pulse_creates_report_adversary_malware_indicators():
     report_kwargs = batch.report.call_args[1]
     assert report_name == 'Test Pulse'
     assert report_kwargs['xid'] == 'xid-otx-pulse-pulse-1'
+    assert report_kwargs['publish_date'] == '2026-06-19T11:24:44.247000'
+    assert report_kwargs['external_date_created'] == '2026-06-19T11:24:44.247000'
+    assert report_kwargs['external_last_modified'] == '2026-07-19T11:13:46.346000'
 
     report_obj = batch.save.call_args_list[0][0][0]
     report_obj.tag.assert_any_call('alpha')
     report_obj.tag.assert_any_call('T1001')
-    report_obj.tag.assert_any_call('Target Country:India')
+    tag_calls = [c.args[0] for c in report_obj.tag.call_args_list]
+    assert 'Target Country:India' not in tag_calls
     report_obj.attribute.assert_any_call('Description', 'Desc', True)
+    report_obj.attribute.assert_any_call('Target Country', 'India', False)
+    attr_calls = [c.args[0] for c in report_obj.attribute.call_args_list]
+    assert 'External Date Created' not in attr_calls
+    assert 'External Date Last Modified' not in attr_calls
     report_obj.security_label.assert_called_with('TLP:WHITE')
 
     batch.adversary.assert_called_once()
@@ -159,3 +169,38 @@ def test_import_pulse_warns_on_more_indicators():
         log=log,
     )
     assert any('more_indicators=true' in str(c) for c in log.warning.call_args_list)
+
+
+def test_import_pulse_maps_and_falls_back_target_countries():
+    batch = _make_batch()
+    log = MagicMock()
+    import_pulse(
+        batch,
+        {
+            'id': 'p-country',
+            'name': 'Countries',
+            'targeted_countries': ['Taiwan', 'FooLand'],
+            'indicators': [],
+            'malware_families': [],
+        },
+        log=log,
+    )
+    report_obj = batch.save.call_args_list[0][0][0]
+    report_obj.attribute.assert_any_call(
+        'Target Country', 'Taiwan, Province Of China', False
+    )
+    attr_values = [
+        c.args[1]
+        for c in report_obj.attribute.call_args_list
+        if c.args[0] == 'Target Country'
+    ]
+    assert 'FooLand' not in attr_values
+    report_obj.tag.assert_any_call('Target Country:FooLand')
+    tag_calls = [c.args[0] for c in report_obj.tag.call_args_list]
+    assert 'Target Country:Taiwan' not in tag_calls
+    assert any(
+        c.args
+        and 'unmatched target country' in c.args[0]
+        and c.args[-1] == 'FooLand'
+        for c in log.warning.call_args_list
+    )

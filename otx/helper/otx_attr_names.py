@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-# Explicit overrides for known OTX fields (plan mapping).
+# Explicit overrides for known OTX fields mapped to TC attributes.
 ATTRIBUTE_NAME_OVERRIDES: dict[str, str] = {
     'description': 'Description',
     'author_name': 'Author',
-    'created': 'External Date Created',
-    'modified': 'External Date Last Modified',
     'id': 'External ID',
     'public': 'Availability to Public',
     'references': 'External References',
