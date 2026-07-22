@@ -9,7 +9,8 @@ def build_auth_headers(api_key: str) -> dict[str, str]:
     """Return Bearer auth headers for Polarity requests."""
     return {
         'Authorization': f'Bearer {api_key}',
-        'Accept': 'application/json',
+        'Accept': 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
     }
 
 

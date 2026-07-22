@@ -14,7 +14,8 @@ from helper.polarity import (
 def test_build_auth_headers():
     headers = build_auth_headers('secret')
     assert headers['Authorization'] == 'Bearer secret'
-    assert headers['Accept'] == 'application/json'
+    assert headers['Accept'] == 'application/vnd.api+json'
+    assert headers['Content-Type'] == 'application/vnd.api+json'
 
 
 def test_build_lookup_body():
