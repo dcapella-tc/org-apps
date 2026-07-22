@@ -8,7 +8,7 @@ from helper.polarity import (
     matching_ids,
 )
 from helper.type_map import map_polarity_type
-from helper.writeback import add_enrichment_tag, set_description
+from helper.writeback import create_indicator, set_description
 from job_app import JobApp
 
 
@@ -75,9 +75,8 @@ class App(JobApp):
                     failed += 1
                     continue
 
-                indicator_id = ioc['id']
-                set_description(self.tcex.session.tc, indicator_id, content)
-                add_enrichment_tag(self.tcex.session.tc, indicator_id, ioc)
+                new_id = create_indicator(self.tcex.session.tc, ioc, owner)
+                set_description(self.tcex.session.tc, new_id, content)
                 enriched += 1
 
         self.exit_message = (
