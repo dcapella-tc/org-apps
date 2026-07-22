@@ -4,6 +4,7 @@
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
+    "CALSettings",
     "fileParams"
   ],
   "labels": [
@@ -14,7 +15,7 @@
   ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "Enriches indicators associated with an Intel Requirement (PIR) via Polarity integrations, writes a Description attribute, and tags enrichment:polarity.",
+  "note": "Enriches indicators associated with an Intel Requirement (PIR) via Polarity integrations, summarizes enrichment text with CAL Doc Analysis, writes a Description attribute, and tags enrichment:polarity.",
   "params": [
     {
       "label": "Intel Requirement ID",

@@ -19,12 +19,18 @@ def build_create_body(
     indicator: dict[str, Any],
     owner: str,
     description: str,
+    extra_tags: list[str] | None = None,
 ) -> dict[str, Any]:
     """Build a v3 indicator POST body from a fetched IOC."""
     tag_names: list[str] = []
     seen: set[str] = set()
     for tag in (indicator.get('tags') or {}).get('data') or []:
         name = tag.get('name')
+        if not name or name in seen:
+            continue
+        seen.add(name)
+        tag_names.append(name)
+    for name in extra_tags or []:
         if not name or name in seen:
             continue
         seen.add(name)
@@ -60,9 +66,10 @@ def create_indicator(
     indicator: dict[str, Any],
     owner: str,
     description: str,
+    extra_tags: list[str] | None = None,
 ) -> int | str:
     """POST a new indicator into owner; return the created id."""
-    body = build_create_body(indicator, owner, description)
+    body = build_create_body(indicator, owner, description, extra_tags=extra_tags)
     response = tc_session.post('/v3/indicators', json=body)
     response.raise_for_status()
     payload = response.json() or {}

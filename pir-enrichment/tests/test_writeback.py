@@ -46,7 +46,12 @@ def test_build_create_body():
         'sha256': 'a' * 64,
         'md5': 'c' * 32,
     }
-    body = build_create_body(indicator, 'CTI Lifecycle', 'polarity results')
+    body = build_create_body(
+        indicator,
+        'CTI Lifecycle',
+        'polarity results',
+        extra_tags=['Finance', 'malware', 'T1059'],
+    )
     assert body == {
         'summary': 'evil.example',
         'type': 'Host',
@@ -55,6 +60,8 @@ def test_build_create_body():
             'data': [
                 {'name': 'malware'},
                 {'name': ENRICHMENT_TAG},
+                {'name': 'Finance'},
+                {'name': 'T1059'},
             ]
         },
         'associatedGroups': {
@@ -97,11 +104,22 @@ def test_create_indicator_posts_body():
         'type': 'Host',
         'associatedGroups': {'data': [{'id': 111}]},
     }
-    new_id = create_indicator(session, indicator, 'CTI Lifecycle', 'polarity results')
+    new_id = create_indicator(
+        session,
+        indicator,
+        'CTI Lifecycle',
+        'polarity results',
+        extra_tags=['Finance'],
+    )
 
     assert new_id == 99
     session.post.assert_called_once_with(
         '/v3/indicators',
-        json=build_create_body(indicator, 'CTI Lifecycle', 'polarity results'),
+        json=build_create_body(
+            indicator,
+            'CTI Lifecycle',
+            'polarity results',
+            extra_tags=['Finance'],
+        ),
     )
     response.raise_for_status.assert_called_once()

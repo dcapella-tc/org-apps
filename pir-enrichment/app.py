@@ -1,5 +1,6 @@
 """ThreatConnect Exchange Job App."""
 
+from helper.doc_analysis import analyze_document, format_description
 from helper.indicators import fetch_enriched_summaries, fetch_for_pir, has_enrichment_tag
 from helper.polarity import (
     build_auth_headers,
@@ -75,7 +76,31 @@ class App(JobApp):
                     failed += 1
                     continue
 
-                create_indicator(self.tcex.session.tc, ioc, owner, content)
+                try:
+                    analysis = analyze_document(
+                        content,
+                        cal_token=self.in_.tc_cal_token,
+                        cal_timestamp=self.in_.tc_cal_timestamp,
+                        cal_host=str(getattr(self.in_, 'tc_cal_host', None) or 'cal.threatconnect.com'),
+                        log=self.log,
+                    )
+                except Exception as exc:
+                    self.log.warning('CAL document analysis failed: %s', exc)
+                    failed += 1
+                    continue
+
+                description = format_description(analysis['summary'], analysis['bullets'])
+                if not description.strip():
+                    failed += 1
+                    continue
+
+                create_indicator(
+                    self.tcex.session.tc,
+                    ioc,
+                    owner,
+                    description,
+                    extra_tags=analysis['tags'],
+                )
                 enriched += 1
 
         self.exit_message = (
