@@ -25,7 +25,7 @@ def fetch_for_pir(
     Uses TQL ``hasGroup(hasIntelRequirement(id=...))``, sorted by calScore DESC.
     """
     params = {
-        'tql': f'hasGroup(hasIntelRequirement(id={pir_id}))',
+        'tql': f'hasGroup(hasIntelRequirement(id={pir_id})) and not hasIntelRequirement(id={pir_id})',
         'sorting': 'calScore DESC',
         'fields': 'tags',
         'resultLimit': result_limit,
