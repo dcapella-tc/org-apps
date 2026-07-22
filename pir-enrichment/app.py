@@ -1,6 +1,6 @@
 """ThreatConnect Exchange Job App."""
 
-from helper.indicators import fetch_for_pir, has_enrichment_tag
+from helper.indicators import fetch_enriched_summaries, fetch_for_pir, has_enrichment_tag
 from helper.polarity import (
     build_auth_headers,
     list_integrations,
@@ -27,11 +27,23 @@ class App(JobApp):
         api_key = self.in_.polarity_api_key.value
         headers = build_auth_headers(api_key)
 
+        enriched_summaries = fetch_enriched_summaries(
+            self.tcex.session.tc,
+            owner,
+            result_limit=result_limit,
+        )
+        self.log.info(
+            'Found %s already-enriched summar(ies) in owner %s',
+            len(enriched_summaries),
+            owner,
+        )
+
         iocs = fetch_for_pir(
             self.tcex.session.tc,
             pir_id,
             owner=owner,
             result_limit=result_limit,
+            skip_summaries=enriched_summaries,
         )
         self.log.info('Fetched %s indicator(s) for PIR %s', len(iocs), pir_id)
 
