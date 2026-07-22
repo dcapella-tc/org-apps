@@ -7,7 +7,7 @@
       "groups": ["Report"],
       "maxLength": 500,
       "name": "Author",
-      "system": true,
+      "system": false,
       "version": 1
     },
     {
@@ -17,7 +17,7 @@
       "groups": ["Report"],
       "maxLength": 500,
       "name": "External ID",
-      "system": true,
+      "system": false,
       "version": 1
     },
     {
@@ -27,7 +27,7 @@
       "groups": ["Report"],
       "maxLength": 100,
       "name": "Availability to Public",
-      "system": true,
+      "system": false,
       "version": 1
     },
     {
@@ -37,7 +37,7 @@
       "groups": ["Report"],
       "maxLength": 10240,
       "name": "External References",
-      "system": true,
+      "system": false,
       "version": 1
     },
     {
@@ -47,7 +47,7 @@
       "groups": ["Report"],
       "maxLength": 500,
       "name": "Target Country",
-      "system": true,
+      "system": false,
       "version": 1
     }
   ]
