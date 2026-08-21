@@ -7,6 +7,9 @@ from tcex.input.input import Input
 class AppBaseModel(BaseModel):
     """Base model for the App containing any common inputs."""
 
+    owner_name: str
+    tql: str
+
 
 class AppInputs:
     """App Inputs"""
