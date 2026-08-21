@@ -32,7 +32,6 @@ class App(JobApp):
         url = '/v3/indicators'
         params = {
             'tql': self.in_.tql,
-            'owner': self.in_.owner_name,
             'resultLimit': 10000,
         }
         while url:

@@ -12,20 +12,10 @@
   "note": "A template that provides the structure for a Job App without any App logic.",
   "params": [
     {
-      "label": "Owner Name",
-      "name": "owner_name",
-      "required": true,
-      "sequence": 1,
-      "type": "Choice",
-      "validValues": [
-        "${OWNERS}"
-      ]
-    },
-    {
       "label": "TQL",
       "name": "tql",
       "required": true,
-      "sequence": 2,
+      "sequence": 1,
       "type": "String"
     },
     {
