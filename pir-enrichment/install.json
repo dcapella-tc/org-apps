@@ -1,0 +1,90 @@
+{
+  "allowOnDemand": true,
+  "displayName": "PIR IOC Enrichment (Polarity)",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "CALSettings",
+    "fileParams"
+  ],
+  "labels": [
+    "PIR",
+    "Polarity",
+    "Enrichment",
+    "IOC"
+  ],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "note": "Enriches indicators associated with an Intel Requirement (PIR) via Polarity integrations, summarizes enrichment text with CAL Doc Analysis, writes a Description attribute, and tags enrichment:polarity.",
+  "params": [
+    {
+      "label": "Intel Requirement ID",
+      "name": "pir_id",
+      "note": "ThreatConnect Intel Requirement (PIR) id whose associated indicators will be enriched.",
+      "required": true,
+      "sequence": 1,
+      "type": "String"
+    },
+    {
+      "label": "ThreatConnect Owner",
+      "name": "tc_owner",
+      "note": "Owner used when fetching and updating indicators.",
+      "required": true,
+      "sequence": 2,
+      "type": "Choice",
+      "validValues": [
+        "${OWNERS}"
+      ]
+    },
+    {
+      "label": "Polarity Base URL",
+      "name": "polarity_base_url",
+      "note": "Base URL for the Polarity API (e.g. https://polarity.example.com).",
+      "required": true,
+      "sequence": 3,
+      "type": "String",
+      "validValues": [
+        "${TEXT}"
+      ]
+    },
+    {
+      "label": "Polarity API Key",
+      "name": "polarity_api_key",
+      "note": "Bearer token for Polarity API authentication.",
+      "required": true,
+      "sequence": 4,
+      "type": "String",
+      "validValues": [
+        "${KEYCHAIN}",
+        "${TEXT}"
+      ]
+    },
+    {
+      "default": "1000",
+      "label": "Result Limit",
+      "name": "result_limit",
+      "note": "Maximum number of indicators to fetch for the PIR (default 1000).",
+      "required": false,
+      "sequence": 5,
+      "type": "String"
+    },
+    {
+      "default": "warning",
+      "label": "Logging Level",
+      "name": "tc_log_level",
+      "sequence": 99,
+      "type": "Choice",
+      "validValues": [
+        "debug",
+        "info",
+        "warning",
+        "error"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "0.0.1",
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}
