@@ -1,9 +1,10 @@
 {
   "package": {
-    "app_name": "TC_-_Basic_Template",
+    "app_name": "TC_-_Indicator_Auto_Enrichment",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",
+      "app_inputs.json",
       "app_spec.yaml",
       "local-*",
       "pyproject.toml"

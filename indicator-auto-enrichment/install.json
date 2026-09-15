@@ -1,19 +1,24 @@
 {
   "allowOnDemand": true,
-  "displayName": "Example Basic Organization App",
+  "displayName": "Indicator Auto Enrichment",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
     "fileParams"
   ],
-  "labels": [],
+  "labels": [
+    "Enrichment",
+    "VirusTotal",
+    "Indicators"
+  ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "A template that provides the structure for a Job App without any App logic.",
+  "note": "Queries indicators by TQL and batch-enriches them with VirusTotal V3.",
   "params": [
     {
       "label": "TQL",
       "name": "tql",
+      "note": "TQL query used to select indicators to enrich via VirusTotal V3.",
       "required": true,
       "sequence": 1,
       "type": "String"
