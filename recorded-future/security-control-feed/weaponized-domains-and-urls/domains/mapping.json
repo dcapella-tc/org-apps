@@ -1,0 +1,16 @@
+{
+  "records_key": "results",
+  "indicators": [
+    {
+      "rf_field": "domain",
+      "tc_type": "Host",
+      "tag": "Weaponized Domain",
+      "attributes": [
+        {"rf_field": "last_seen", "tc_type": "Last Seen", "format": "datetime"},
+        {"rf_field": "service_provider", "tc_type": "Source"}
+      ],
+      "tags_from_truthy_keys": "detection_strings"
+    }
+  ],
+  "groups": []
+}
