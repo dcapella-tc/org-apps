@@ -1,6 +1,5 @@
 """ThreatConnect Job App"""
 
-import hashlib
 import json
 import uuid
 from pathlib import Path
@@ -14,9 +13,7 @@ from job_app import JobApp
 
 RF_SCF_BASE = 'https://api.recordedfuture.com/fusion/v3/files/'
 RF_SCF_PATH = '/public/prevent/weaponized_domains.json'
-APP_DIR = Path(__file__).resolve().parent
-MAPPING_PATH = APP_DIR / 'mapping.json'
-STATE_PATH = APP_DIR / 'ingest_state.json'
+MAPPING_PATH = Path(__file__).resolve().parent / 'mapping.json'
 BATCH_CHUNK = 10_000
 MAX_TAG_LENGTH = 128
 
@@ -32,117 +29,6 @@ class App(JobApp):
         """Perform prep/setup logic."""
         self.tcex.session.external.base_url = RF_SCF_BASE
 
-    def _record_id(self, rec: dict, mapping: dict) -> str | None:
-        """Return the primary indicator value used as a state key."""
-        for rule in mapping.get('indicators') or []:
-            value = rec.get(rule.get('rf_field'))
-            if value:
-                return str(value)
-        return None
-
-    def _fingerprint(self, rec: dict) -> str:
-        """Return a stable hash of one Fusion record."""
-        payload = {k: v for k, v in rec.items() if k != '_uuid'}
-        blob = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode()
-        return hashlib.sha256(blob).hexdigest()
-
-    def _fingerprints(self, records: list, mapping: dict) -> dict[str, str]:
-        """Map record id -> fingerprint for dict records with an id."""
-        fps = {}
-        for rec in records:
-            if not isinstance(rec, dict):
-                continue
-            rec_id = self._record_id(rec, mapping)
-            if rec_id:
-                fps[rec_id] = self._fingerprint(rec)
-        return fps
-
-    def _load_state(self) -> dict:
-        """Load prior ingest fingerprints if present."""
-        if not STATE_PATH.is_file():
-            return {}
-        try:
-            return json.loads(STATE_PATH.read_text())
-        except (OSError, json.JSONDecodeError) as ex:
-            self.log.warning('Could not read ingest state: %s', ex)
-            return {}
-
-    def _save_state(self, records: list, mapping: dict) -> None:
-        """Persist current fingerprints so the next run can skip unchanged records."""
-        STATE_PATH.write_text(
-            json.dumps({'fps': self._fingerprints(records, mapping)}, separators=(',', ':'))
-        )
-
-    def _write_since_date(self, records: list) -> None:
-        """Publish max last_seen for ThreatConnect job chaining."""
-        last_seen = [
-            str(rec.get('last_seen') or '')
-            for rec in records
-            if isinstance(rec, dict) and rec.get('last_seen')
-        ]
-        if not last_seen:
-            return
-        max_last_seen = max(last_seen)
-        try:
-            self.tcex.app.results_tc('since_date', max_last_seen)
-        except Exception as ex:
-            self.log.debug('results_tc since_date skipped: %s', ex)
-
-    def _record_uuid(self, rec: dict) -> str:
-        """Return a uuid5 fingerprint of the Fusion record (excluding _uuid)."""
-        payload = {k: v for k, v in rec.items() if k != '_uuid'}
-        canonical = json.dumps(payload, sort_keys=True, separators=(',', ':'))
-        return str(uuid.uuid5(uuid.NAMESPACE_URL, canonical))
-
-    def _existing_uuids(self) -> set:
-        """Return UUID attribute values already present in the destination owner."""
-        attrs = self.tcex.api.tc.v3.indicator_attributes(params={'resultLimit': 10000})
-        attrs.filter.owner_name(TqlOperator.EQ, self.in_.tc_owner)
-        attrs.filter.type_name(TqlOperator.EQ, 'UUID')
-        return {a.model.value for a in attrs if a.model.value}
-
-    def _drop_seen(self, records: list) -> list:
-        """Remove records whose UUID already exists on a Host in the owner."""
-        existing = self._existing_uuids()
-        kept = [
-            rec
-            for rec in records
-            if not isinstance(rec, dict) or rec.get('_uuid') not in existing
-        ]
-        self.log.info(
-            'uuid-filter loaded=%d existing=%d kept=%d',
-            len(records),
-            len(existing),
-            len(kept),
-        )
-        return kept
-
-    def _pending_records(self, records: list, mapping: dict) -> list:
-        """Return records that are new or changed since the last successful run."""
-        prev_fps = (self._load_state() or {}).get('fps') or {}
-        if prev_fps:
-            pending = []
-            for rec in records:
-                if not isinstance(rec, dict):
-                    continue
-                rec_id = self._record_id(rec, mapping)
-                if not rec_id or prev_fps.get(rec_id) != self._fingerprint(rec):
-                    pending.append(rec)
-            return pending
-
-        since_date = str(getattr(self.in_, 'since_date', '') or '').strip()
-        if since_date:
-            pending = []
-            for rec in records:
-                if not isinstance(rec, dict):
-                    continue
-                last_seen = str(rec.get('last_seen') or '')
-                if last_seen > since_date:
-                    pending.append(rec)
-            return pending
-
-        return [rec for rec in records if isinstance(rec, dict)]
-
     def run(self):
         """Download Fusion file, map records, and batch import into ThreatConnect."""
         mapping = json.loads(MAPPING_PATH.read_text())
@@ -151,28 +37,21 @@ class App(JobApp):
             if isinstance(rec, dict):
                 rec['_uuid'] = self._record_uuid(rec)
         records = self._drop_seen(records)
-        pending = self._pending_records(records, mapping)
-        if not pending:
-            self._save_state(records, mapping)
-            self._write_since_date(records)
+        if not records:
             self.exit_message = (
                 f'No new or updated records in {RF_SCF_PATH}; skipped batch import.'
             )
             return
 
-        self.log.info('Importing %d of %d records', len(pending), len(records))
         imported = 0
-        for offset in range(0, len(pending), BATCH_CHUNK):
-            chunk = pending[offset : offset + BATCH_CHUNK]
+        for offset in range(0, len(records), BATCH_CHUNK):
+            chunk = records[offset : offset + BATCH_CHUNK]
             self.batch = self.tcex.api.tc.v2.batch(self.in_.tc_owner)
             for rec in chunk:
-                imported += self._import_record(rec, mapping)
+                if isinstance(rec, dict):
+                    imported += self._import_record(rec, mapping)
             self._submit()
-        self._save_state(records, mapping)
-        self._write_since_date(records)
-        self.exit_message = (
-            f'Imported {imported} of {len(records)} records from {RF_SCF_PATH}.'
-        )
+        self.exit_message = f'Imported {imported} records from {RF_SCF_PATH}.'
 
     def _load_records(self, mapping: dict) -> list:
         """Fetch and parse the Fusion JSON file into a record list."""
@@ -205,6 +84,35 @@ class App(JobApp):
             self.tcex.exit.exit(ExitCode.FAILURE, 'Fusion file did not contain records.')
         self.log.info('Loaded %d records from Fusion %s', len(records), RF_SCF_PATH)
         return records
+
+    def _record_uuid(self, rec: dict) -> str:
+        """Return a uuid5 fingerprint of the Fusion record (excluding _uuid)."""
+        payload = {k: v for k, v in rec.items() if k != '_uuid'}
+        canonical = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return str(uuid.uuid5(uuid.NAMESPACE_URL, canonical))
+
+    def _existing_uuids(self) -> set:
+        """Return UUID attribute values already present in the destination owner."""
+        attrs = self.tcex.api.tc.v3.indicator_attributes(params={'resultLimit': 10000})
+        attrs.filter.owner_name(TqlOperator.EQ, self.in_.tc_owner)
+        attrs.filter.type_name(TqlOperator.EQ, 'UUID')
+        return {a.model.value for a in attrs if a.model.value}
+
+    def _drop_seen(self, records: list) -> list:
+        """Remove records whose UUID already exists on a Host in the owner."""
+        existing = self._existing_uuids()
+        kept = [
+            rec
+            for rec in records
+            if not isinstance(rec, dict) or rec.get('_uuid') not in existing
+        ]
+        self.log.info(
+            'uuid-filter loaded=%d existing=%d kept=%d',
+            len(records),
+            len(existing),
+            len(kept),
+        )
+        return kept
 
     def _import_record(self, rec: dict, mapping: dict) -> int:
         """Create mapped indicators and groups for one Fusion record."""

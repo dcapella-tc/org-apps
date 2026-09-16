@@ -53,14 +53,6 @@
       "type": "String"
     },
     {
-      "label": "Since Date",
-      "name": "since_date",
-      "note": "Optional. Leave empty for a full import (or local ingest_state.json delta). Set to the previous job since_date output to import only records with last_seen after that date.",
-      "required": false,
-      "sequence": 5,
-      "type": "String"
-    },
-    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",

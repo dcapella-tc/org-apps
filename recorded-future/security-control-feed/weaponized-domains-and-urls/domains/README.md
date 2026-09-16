@@ -21,9 +21,8 @@ RF to ThreatConnect field mapping lives in `mapping.json` (loaded at runtime).
 | **ThreatConnect Owner** | Destination owner for new indicators |
 | **Recorded Future API Token** | Token for `X-RFToken` (use Keychain or TEXT in production) |
 | **Rating** / **Confidence** | Passed to batch Host indicators |
-| **Since Date** | Optional. Leave empty for a full import (local runs then persist `ingest_state.json`). On ThreatConnect, feed the previous job `since_date` output back in to import only records with a newer `last_seen`. |
 
-Subsequent runs skip unchanged records. Delete `ingest_state.json` (or clear `since_date`) to force a full import.
+Later runs skip rows whose `UUID` is already in the owner. Unchanged Fusion records keep the same fingerprint; a `last_seen` or detection-flag change produces a new UUID and is ingested again.
 
 ## Local run
 
@@ -33,4 +32,4 @@ Subsequent runs skip unchanged records. Delete `ingest_state.json` (or clear `si
 4. Run: `tcex run`
 
 - Initial release: Fusion `weaponized_domains.json` ingest via batch Host API.
-- Incremental import: skip unchanged records via `ingest_state.json` / `since_date`.
+- Incremental import: skip records whose `UUID` attribute already exists in the owner.

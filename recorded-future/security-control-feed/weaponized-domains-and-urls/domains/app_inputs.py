@@ -12,8 +12,6 @@ class AppBaseModel(AppOrganizationModel):
     rf_token: Sensitive
     rating: String = String('3.0')
     confidence: String = String('50')
-    # Empty = use ingest_state.json (or full import). Set to last run output for TC jobs.
-    since_date: String = String('')
 
 
 class AppInputs:

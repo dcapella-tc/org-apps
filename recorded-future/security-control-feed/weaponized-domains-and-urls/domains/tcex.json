@@ -7,7 +7,6 @@
       "app_inputs.json",
       "app_spec.yaml",
       "examples",
-      "ingest_state.json",
       "local-*",
       "pyproject.toml"
     ]

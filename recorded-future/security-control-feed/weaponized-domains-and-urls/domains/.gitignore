@@ -74,4 +74,4 @@ examples
 #*************************************************
 # Custom Exclusion (per App exclusions)
 #*************************************************
-ingest_state.json
+examples
