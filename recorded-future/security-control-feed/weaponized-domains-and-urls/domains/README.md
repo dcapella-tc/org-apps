@@ -21,8 +21,9 @@ RF to ThreatConnect field mapping lives in `mapping.json` (loaded at runtime).
 | **ThreatConnect Owner** | Destination owner for new indicators |
 | **Recorded Future API Token** | Token for `X-RFToken` (use Keychain or TEXT in production) |
 | **Rating** / **Confidence** | Passed to batch Host indicators |
+| **Feed Hash** | Optional. Leave empty on first run. Map the previous job `feed_hash` output into this input. An identical Fusion file skips UUID TQL and batch. |
 
-Later runs skip rows whose `UUID` is already in the owner. Unchanged Fusion records keep the same fingerprint; a `last_seen` or detection-flag change produces a new UUID and is ingested again.
+If the downloaded Fusion file matches `feed_hash`, the job writes `results.tc` and exits. Otherwise later runs skip rows whose `UUID` is already in the owner. Unchanged Fusion records keep the same fingerprint; a `last_seen` or detection-flag change produces a new UUID and is ingested again.
 
 ## Local run
 
@@ -32,4 +33,4 @@ Later runs skip rows whose `UUID` is already in the owner. Unchanged Fusion reco
 4. Run: `tcex run`
 
 - Initial release: Fusion `weaponized_domains.json` ingest via batch Host API.
-- Incremental import: skip records whose `UUID` attribute already exists in the owner.
+- Incremental import: skip an unchanged Fusion file via `feed_hash`; otherwise skip records whose `UUID` attribute already exists in the owner.

@@ -12,6 +12,7 @@ class AppBaseModel(AppOrganizationModel):
     rf_token: Sensitive
     rating: String = String('3.0')
     confidence: String = String('50')
+    feed_hash: String = String('')
 
 
 class AppInputs:

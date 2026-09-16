@@ -53,6 +53,14 @@
       "type": "String"
     },
     {
+      "label": "Feed Hash",
+      "name": "feed_hash",
+      "note": "Optional. Leave empty on first run. Map the previous job feed_hash output into this input; if the Fusion file is unchanged the job exits without UUID TQL or batch.",
+      "required": false,
+      "sequence": 5,
+      "type": "String"
+    },
+    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",

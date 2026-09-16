@@ -1,5 +1,6 @@
 """ThreatConnect Job App"""
 
+import hashlib
 import json
 import uuid
 from pathlib import Path
@@ -15,6 +16,7 @@ RF_SCF_BASE = 'https://api.recordedfuture.com/fusion/v3/files/'
 RF_SCF_PATH = '/public/prevent/weaponized_domains.json'
 MAPPING_PATH = Path(__file__).resolve().parent / 'mapping.json'
 BATCH_CHUNK = 10_000
+UUID_TQL_CHUNK = 500
 MAX_TAG_LENGTH = 128
 
 
@@ -32,12 +34,20 @@ class App(JobApp):
     def run(self):
         """Download Fusion file, map records, and batch import into ThreatConnect."""
         mapping = json.loads(MAPPING_PATH.read_text())
-        records = self._load_records(mapping)
+        records, feed_hash = self._load_records(mapping)
+        prev_hash = str(getattr(self.in_, 'feed_hash', '') or '').strip()
+        if prev_hash and prev_hash == feed_hash:
+            self._write_feed_hash(feed_hash)
+            self.log.info('Fusion file unchanged; skipped ingest.')
+            self.exit_message = 'Fusion file unchanged; skipped ingest.'
+            return
+
         for rec in records:
             if isinstance(rec, dict):
                 rec['_uuid'] = self._record_uuid(rec)
         records = self._drop_seen(records)
         if not records:
+            self._write_feed_hash(feed_hash)
             self.exit_message = (
                 f'No new or updated records in {RF_SCF_PATH}; skipped batch import.'
             )
@@ -51,10 +61,11 @@ class App(JobApp):
                 if isinstance(rec, dict):
                     imported += self._import_record(rec, mapping)
             self._submit()
+        self._write_feed_hash(feed_hash)
         self.exit_message = f'Imported {imported} records from {RF_SCF_PATH}.'
 
-    def _load_records(self, mapping: dict) -> list:
-        """Fetch and parse the Fusion JSON file into a record list."""
+    def _load_records(self, mapping: dict) -> tuple:
+        """Fetch and parse the Fusion JSON file into a record list and file hash."""
         encoded_endpoint = quote(RF_SCF_PATH, safe='')
         headers = {
             'Accept': 'application/octet-stream',
@@ -68,6 +79,7 @@ class App(JobApp):
                 ExitCode.FAILURE,
                 f'Fusion file request failed with status {response.status_code}',
             )
+        feed_hash = hashlib.sha256(response.content).hexdigest()
         try:
             payload = json.loads(response.content)
         except json.JSONDecodeError as ex:
@@ -82,8 +94,20 @@ class App(JobApp):
             records = []
         if not records:
             self.tcex.exit.exit(ExitCode.FAILURE, 'Fusion file did not contain records.')
-        self.log.info('Loaded %d records from Fusion %s', len(records), RF_SCF_PATH)
-        return records
+        self.log.info(
+            'Loaded %d records from Fusion %s hash=%s',
+            len(records),
+            RF_SCF_PATH,
+            feed_hash,
+        )
+        return records, feed_hash
+
+    def _write_feed_hash(self, feed_hash: str) -> None:
+        """Persist the Fusion file hash for the next job run."""
+        try:
+            self.tcex.app.results_tc('feed_hash', feed_hash)
+        except Exception as ex:
+            self.log.debug('results_tc feed_hash skipped: %s', ex)
 
     def _record_uuid(self, rec: dict) -> str:
         """Return a uuid5 fingerprint of the Fusion record (excluding _uuid)."""
@@ -91,16 +115,37 @@ class App(JobApp):
         canonical = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return str(uuid.uuid5(uuid.NAMESPACE_URL, canonical))
 
-    def _existing_uuids(self) -> set:
-        """Return UUID attribute values already present in the destination owner."""
-        attrs = self.tcex.api.tc.v3.indicator_attributes(params={'resultLimit': 10000})
-        attrs.filter.owner_name(TqlOperator.EQ, self.in_.tc_owner)
-        attrs.filter.type_name(TqlOperator.EQ, 'UUID')
-        return {a.model.value for a in attrs if a.model.value}
+    def _existing_uuids(self, incoming: set) -> set:
+        """Return which incoming UUID values already exist in the destination owner."""
+        if not incoming:
+            return set()
+        values = list(incoming)
+        existing = set()
+        chunks = 0
+        for offset in range(0, len(values), UUID_TQL_CHUNK):
+            chunk = values[offset : offset + UUID_TQL_CHUNK]
+            chunks += 1
+            attrs = self.tcex.api.tc.v3.indicator_attributes(params={'resultLimit': 10000})
+            attrs.filter.owner_name(TqlOperator.EQ, self.in_.tc_owner)
+            attrs.filter.type_name(TqlOperator.EQ, 'UUID')
+            attrs.filter.text(TqlOperator.IN, chunk)
+            existing.update(a.model.value for a in attrs if a.model.value)
+        self.log.info(
+            'uuid-tql chunks=%d incoming=%d existing=%d',
+            chunks,
+            len(incoming),
+            len(existing),
+        )
+        return existing
 
     def _drop_seen(self, records: list) -> list:
         """Remove records whose UUID already exists on a Host in the owner."""
-        existing = self._existing_uuids()
+        incoming = {
+            rec.get('_uuid')
+            for rec in records
+            if isinstance(rec, dict) and rec.get('_uuid')
+        }
+        existing = self._existing_uuids(incoming)
         kept = [
             rec
             for rec in records
