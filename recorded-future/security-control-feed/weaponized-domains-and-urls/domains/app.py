@@ -100,7 +100,9 @@ class App(JobApp):
         return count
 
     def _apply_metadata(self, obj, rec: dict, rule: dict) -> None:
-        """Apply tag, attributes, and truthy-key tags from a mapping rule."""
+        """Apply tags, attributes, and truthy-key tags from a mapping rule."""
+        for tag in rule.get('tags') or []:
+            self._tag(obj, tag)
         if rule.get('tag'):
             self._tag(obj, rule['tag'])
         for attr in rule.get('attributes') or []:
