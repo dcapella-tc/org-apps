@@ -2,10 +2,12 @@
 
 import hashlib
 import json
+import uuid
 from pathlib import Path
 from urllib.parse import quote
 
 from tcex import TcEx
+from tcex.api.tc.v3.tql.tql_operator import TqlOperator
 from tcex.exit import ExitCode
 
 from job_app import JobApp
@@ -40,7 +42,8 @@ class App(JobApp):
 
     def _fingerprint(self, rec: dict) -> str:
         """Return a stable hash of one Fusion record."""
-        blob = json.dumps(rec, sort_keys=True, separators=(',', ':')).encode()
+        payload = {k: v for k, v in rec.items() if k != '_uuid'}
+        blob = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode()
         return hashlib.sha256(blob).hexdigest()
 
     def _fingerprints(self, records: list, mapping: dict) -> dict[str, str]:
@@ -85,6 +88,35 @@ class App(JobApp):
         except Exception as ex:
             self.log.debug('results_tc since_date skipped: %s', ex)
 
+    def _record_uuid(self, rec: dict) -> str:
+        """Return a uuid5 fingerprint of the Fusion record (excluding _uuid)."""
+        payload = {k: v for k, v in rec.items() if k != '_uuid'}
+        canonical = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return str(uuid.uuid5(uuid.NAMESPACE_URL, canonical))
+
+    def _existing_uuids(self) -> set:
+        """Return UUID attribute values already present in the destination owner."""
+        attrs = self.tcex.api.tc.v3.indicator_attributes(params={'resultLimit': 10000})
+        attrs.filter.owner_name(TqlOperator.EQ, self.in_.tc_owner)
+        attrs.filter.type_name(TqlOperator.EQ, 'UUID')
+        return {a.model.value for a in attrs if a.model.value}
+
+    def _drop_seen(self, records: list) -> list:
+        """Remove records whose UUID already exists on a Host in the owner."""
+        existing = self._existing_uuids()
+        kept = [
+            rec
+            for rec in records
+            if not isinstance(rec, dict) or rec.get('_uuid') not in existing
+        ]
+        self.log.info(
+            'uuid-filter loaded=%d existing=%d kept=%d',
+            len(records),
+            len(existing),
+            len(kept),
+        )
+        return kept
+
     def _pending_records(self, records: list, mapping: dict) -> list:
         """Return records that are new or changed since the last successful run."""
         prev_fps = (self._load_state() or {}).get('fps') or {}
@@ -115,6 +147,10 @@ class App(JobApp):
         """Download Fusion file, map records, and batch import into ThreatConnect."""
         mapping = json.loads(MAPPING_PATH.read_text())
         records = self._load_records(mapping)
+        for rec in records:
+            if isinstance(rec, dict):
+                rec['_uuid'] = self._record_uuid(rec)
+        records = self._drop_seen(records)
         pending = self._pending_records(records, mapping)
         if not pending:
             self._save_state(records, mapping)

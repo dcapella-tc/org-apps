@@ -11,7 +11,8 @@
       ],
       "attributes": [
         {"rf_field": "last_seen", "tc_type": "Last Seen", "format": "datetime"},
-        {"rf_field": "service_provider", "tc_type": "Source"}
+        {"rf_field": "service_provider", "tc_type": "Source"},
+        {"rf_field": "_uuid", "tc_type": "UUID"}
       ],
       "tags_from_truthy_keys": "detection_strings"
     }
