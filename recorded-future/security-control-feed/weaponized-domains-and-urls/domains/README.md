@@ -40,15 +40,6 @@ Map the previous job `feed_hash` output into the `feed_hash` input for the next 
 | **Rating** / **Confidence** | Passed to batch Host indicators |
 | **Feed Hash** | Optional. Leave empty on first run. Map the previous job `feed_hash` output into this input. An identical Fusion file skips UUID TQL and batch. |
 
-## Local run
-
-1. Install dependencies: `tcex deps` (requires a `deps` directory).
-2. Configure **ThreatConnect** standard inputs via environment variables or `.env`.
-3. Put app-specific values in **`app_inputs.json`** (default for `tcex run`). Keys must match `install.json` params.
-4. Run: `tcex run`
-
-Do **not** commit real `rf_token` values; `app_inputs.json` is gitignored.
-
 ## Release notes
 
 ### 1.0.0
