@@ -1,6 +1,6 @@
 {
   "package": {
-    "app_name": "TC_-_RF_SCF_Weaponized_Domains",
+    "app_name": "TC_-_RF_SCF_Weaponized_Domains_and_URLs_Domains",
     "excludes": [
       ".gitignore",
       ".pre-commit-config.yaml",

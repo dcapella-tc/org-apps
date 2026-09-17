@@ -1,6 +1,6 @@
 {
   "allowOnDemand": true,
-  "displayName": "Recorded Future SCF - Weaponized Domains",
+  "displayName": "Recorded Future SCF - Weaponized Domains and URLs: Domains",
   "features": [
     "aotExecutionEnabled",
     "appBuilderCompliant",
@@ -9,11 +9,12 @@
   "labels": [
     "SCF",
     "Recorded Future",
+    "Host",
     "Unsupported"
   ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "Ingests weaponized domains from Recorded Future Fusion public prevent file weaponized_domains.json as Host indicators.",
+  "note": "Ingests weaponized domains from Recorded Future Fusion public prevent file weaponized_domains.json as Host indicators. Unchanged files are skipped via feed_hash; known rows are skipped via the UUID attribute.",
   "params": [
     {
       "label": "ThreatConnect Owner",
