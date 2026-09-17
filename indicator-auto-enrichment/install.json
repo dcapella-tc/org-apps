@@ -1,0 +1,45 @@
+{
+  "allowOnDemand": true,
+  "displayName": "Indicator Auto Enrichment",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams"
+  ],
+  "labels": [
+    "Enrichment",
+    "VirusTotal",
+    "Indicators"
+  ],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "note": "Queries indicators by TQL and batch-enriches them with VirusTotal V3.",
+  "params": [
+    {
+      "label": "TQL",
+      "name": "tql",
+      "note": "TQL query used to select indicators to enrich via VirusTotal V3.",
+      "required": true,
+      "sequence": 1,
+      "type": "String"
+    },
+    {
+      "default": "warning",
+      "label": "Logging Level",
+      "name": "tc_log_level",
+      "sequence": 99,
+      "type": "Choice",
+      "validValues": [
+        "debug",
+        "info",
+        "warning",
+        "error"
+      ]
+    }
+  ],
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Organization",
+  "sdkVersion": "4.0.0"
+}
