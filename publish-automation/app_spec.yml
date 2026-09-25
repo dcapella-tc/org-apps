@@ -1,0 +1,42 @@
+allowOnDemand: true
+appId: 6e26ba55-0300-5462-aca7-ea049494c8a5
+category: Utility
+displayName: Publish Automation
+features:
+- aotExecutionEnabled
+- appBuilderCompliant
+- fileParams
+- redisPasswordSupport
+- runtimeVariables
+languageVersion: '3.11'
+listDelimiter: '|'
+minServerVersion: 7.2.0
+note: Copy a ThreatConnect group into one or more owners.
+outputData:
+- outputVariables:
+  - name: publish.result
+    note: JSON list of per-owner results (existing or published).
+    type: String
+packageName: TCPB_-_Basic_Template
+playbook: {}
+programLanguage: PYTHON
+programMain: run.py
+programVersion: 1.0.0
+releaseNotes:
+- notes:
+  - Copy a group into one or more owners using a reproducible xid.
+  version: 1.0.0
+runtimeLevel: Playbook
+schemaVersion: 1.1.0
+sdkVersion: 4.0.1
+sections:
+- params:
+  - label: Request JSON
+    name: request_json
+    note: Security-export JSON with owners, include flags, and custom.group_id.
+    playbookDataType:
+    - String
+    required: true
+    type: String
+    viewRows: 8
+  sectionName: Inputs

@@ -1,0 +1,45 @@
+{
+  "allowOnDemand": true,
+  "appId": "6e26ba55-0300-5462-aca7-ea049494c8a5",
+  "category": "Utility",
+  "displayName": "Publish Automation",
+  "features": [
+    "aotExecutionEnabled",
+    "appBuilderCompliant",
+    "fileParams",
+    "redisPasswordSupport",
+    "runtimeVariables"
+  ],
+  "languageVersion": "3.11",
+  "listDelimiter": "|",
+  "minServerVersion": "7.2.0",
+  "note": "Copy a ThreatConnect group into one or more owners.\n",
+  "params": [
+    {
+      "label": "Request JSON",
+      "name": "request_json",
+      "note": "Security-export JSON with owners, include flags, and custom.group_id.",
+      "playbookDataType": [
+        "String"
+      ],
+      "required": true,
+      "type": "String",
+      "viewRows": 8
+    }
+  ],
+  "playbook": {
+    "outputVariables": [
+      {
+        "name": "publish.result",
+        "note": "JSON list of per-owner results (existing or published).",
+        "type": "String"
+      }
+    ],
+    "type": "Utility"
+  },
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "programVersion": "1.0.0",
+  "runtimeLevel": "Playbook",
+  "sdkVersion": "4.0.1"
+}
