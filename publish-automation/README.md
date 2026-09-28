@@ -1,10 +1,10 @@
-# Example Basic Playbook App
+# Publish Automation
 
 ## Release Notes
 
 ### 1.0.0
 
--   Initial Release
+-   Copy a group into one or more owners using a reproducible xid.
 
 # Category
 
@@ -12,6 +12,12 @@
 
 # Description
 
-A template that provides the structure for a Playbook App without any App logic.
+Copy a ThreatConnect group into one or more owners.
 
 # Inputs
+
+-   **request_json** _(String)_: Security-export JSON. Includes `owners`, include flags (`includeTags`, `includeAttributes`, `includeAssociatedIndicators`, `includeAssociatedGroups`), `excludedSecurityLabels`, optional `update` (defaults to false), and `custom.group_id`.
+
+# Outputs
+
+-   **publish.result** _(String)_: JSON list of `{owner, xid, status}`. Status is `existing` or `published`.
