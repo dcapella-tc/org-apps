@@ -139,6 +139,18 @@ def _factory(batches: list):
     return factory
 
 
+def test_parse_request_reads_update_if_exists():
+    request = parse_request(
+        {
+            'owners': ['Capella Community'],
+            'updateIfExists': True,
+            'custom': {'group_id': 1},
+        }
+    )
+
+    assert request.update is True
+
+
 def test_parse_request_defaults_update_to_false():
     request = parse_request(EXAMPLE)
 

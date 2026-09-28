@@ -67,7 +67,7 @@ def parse_request(raw: str | dict) -> PublishRequest:
     return PublishRequest(
         group_id=int(custom['group_id']),
         owners=[str(owner) for owner in owners],
-        update=_flag(payload.get('update', False)),
+        update=_flag(payload.get('updateIfExists', payload.get('update', False))),
         include_tags=_flag(payload.get('includeTags', False)),
         include_attributes=_flag(payload.get('includeAttributes', False)),
         include_indicators=_flag(payload.get('includeAssociatedIndicators', False)),
