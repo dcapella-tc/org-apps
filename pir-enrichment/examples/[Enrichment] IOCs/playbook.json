@@ -1,0 +1,2452 @@
+{
+  "groupXid" : "EVvlzpkB",
+  "name" : "[Enrichment] IOCs",
+  "type" : "Playbook",
+  "panX" : 161.0,
+  "panY" : -141.0,
+  "zoom" : 1.0,
+  "logLevel" : "TRACE",
+  "description" : "",
+  "roiDollarsPerHour" : 75,
+  "roiMinutes" : 10,
+  "priority" : 6,
+  "version" : "1.9",
+  "comment" : "Auto-Saved on Wed Jul 22 15:26:18 UTC 2026",
+  "jobList" : [ {
+    "id" : 11258999068428276,
+    "appCatalogItem" : {
+      "id" : 241,
+      "programName" : "TCPB - JMESPath v3.0",
+      "displayName" : "JMESPath",
+      "programVersion" : "3.0.13",
+      "runLevels" : [ {
+        "id" : 16888498603000000,
+        "runLevel" : "Playbook"
+      } ]
+    },
+    "name" : "JMES | TC API Content",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_jmes_expression"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_quotes"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "json_data"
+      },
+      "value" : "#App:11258999068428275:tc.api.content!String"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_array_expressions"
+      },
+      "value" : "[{\"key\":\"jmes.iocs.summary\",\"value\":\"data[].summary\"},{\"key\":\"jmes.iocs.type\",\"value\":\"data[].type\"},{\"key\":\"jmes.iocs.entity\",\"value\":\"data[].{\\nsummary: summary\\ntype: type\\nsha256: sha256\\nsha1: sha1\\nmd5: md5\\nownerName: \\u0027#Global:0:gbl.ownername!String\\u0027\\ntags: {\\n    data: tags.data[].{\\n        name: name\\n    }\\n}\\nassociatedGroups: {\\n    data: [associatedGroups.data[].{\\n        id: id\\n    },{\\n        id: \\u0027#Trigger:10133099161584231:trg.action.item!String\\u0027\\n    }][]\\n}\\n}\"}]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "string_expressions"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "strip_json"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "path_output"
+      },
+      "value" : "false"
+    } ],
+    "locationLeft" : 960.0,
+    "locationTop" : 340.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.iocs.entity\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.iocs.type\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.iocs.summary\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"json_data\"]",
+    "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  }, {
+    "id" : 10133099161594163,
+    "appCatalogItem" : {
+      "id" : 19,
+      "programName" : "Merge",
+      "displayName" : "Merge",
+      "programVersion" : "1.0.0",
+      "runLevels" : [ {
+        "id" : 7881299349000034,
+        "runLevel" : "PlaybookOperator"
+      } ]
+    },
+    "name" : "Merge",
+    "locationLeft" : 1330.0,
+    "locationTop" : 510.0,
+    "outputVariables" : "[]",
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  }, {
+    "id" : 11258999068428277,
+    "appCatalogItem" : {
+      "id" : 33,
+      "programName" : "Iterator",
+      "displayName" : "Iterator",
+      "programVersion" : "1.0.0",
+      "runLevels" : [ {
+        "id" : 7881299349000028,
+        "runLevel" : "PlaybookOperator"
+      } ]
+    },
+    "name" : "i | IOCs",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "array_outputs"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "array_inputs"
+      },
+      "value" : "[{\"key\":\"iterator.ioc.entity.json\",\"value\":\"#App:11258999068428276:jmes.iocs.entity!StringArray\"},{\"key\":\"iterator.ioc.summary\",\"value\":\"#App:11258999068428276:jmes.iocs.summary!StringArray\"},{\"key\":\"iterator.ioc.type\",\"value\":\"#App:11258999068428276:jmes.iocs.type!StringArray\"}]"
+    } ],
+    "locationLeft" : 1140.0,
+    "locationTop" : 340.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"iterator.ioc.entity.json\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"iterator.ioc.type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"iterator.ioc.summary\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"array_inputs\"]",
+    "layoutDisplayedInputParams" : "[\"array_inputs\",\"array_outputs\"]",
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  }, {
+    "id" : 11258999068428298,
+    "appCatalogItem" : {
+      "id" : 36,
+      "programName" : "Break Iterator",
+      "displayName" : "Break Iterator",
+      "programVersion" : "1.0.0",
+      "runLevels" : [ {
+        "id" : 7881299349000005,
+        "runLevel" : "PlaybookOperator"
+      } ]
+    },
+    "name" : "Break Iterator",
+    "active" : false,
+    "locationLeft" : 1650.0,
+    "locationTop" : 670.0,
+    "outputVariables" : "[]",
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  }, {
+    "id" : 10133099161594162,
+    "appCatalogItem" : {
+      "id" : 1853,
+      "programName" : "TCPB - Threatconnect Get Indicators v1",
+      "displayName" : "ThreatConnect Get Indicators",
+      "programVersion" : "1.0.9",
+      "runLevels" : [ {
+        "id" : 2251799864000075,
+        "runLevel" : "Playbook"
+      } ]
+    },
+    "name" : "TC Get Indicator",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_type"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_no_results"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entity"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_id"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_ids"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "summaries"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "entities"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "max_results"
+      },
+      "value" : "1"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tags"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "owner"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tc_action"
+      },
+      "value" : "TQL"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "summary"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "tql"
+      },
+      "value" : "ownerName = \"#Global:0:gbl.ownername!String\" and typeName = \"#App:11258999068428277:iterator.ioc.type!String\" and summary = \"#App:11258999068428277:iterator.ioc.summary!String\" and tag = \"enrichment:polarity\""
+    } ],
+    "locationLeft" : 970.0,
+    "locationTop" : 510.0,
+    "outputVariables" : "[]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.entity\",\"type\":\"TCEntityArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.observation\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.id\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.first_seen\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.date_added\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_observed\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_seen\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_modified\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.hosts.dns_active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_date_expires\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.rating\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_last_modified\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.files.size\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.false_positive\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_date_added\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value3\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_false_positive\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value2\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value1\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.summary\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.owner_name\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.web_link\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.hosts.whois_active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.type\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.threat_assess_score\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.active_locked\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.confidence\",\"type\":\"StringArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"max_results\",\"tql\"]",
+    "layoutDisplayedInputParams" : "[\"tc_action\",\"max_results\",\"tql\",\"fail_on_no_results\"]",
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  }, {
+    "id" : 11258999068428275,
+    "appCatalogItem" : {
+      "id" : 1954,
+      "programName" : "TCPB - ThreatConnect API v3",
+      "displayName" : "ThreatConnect API",
+      "programVersion" : "3.0.2",
+      "runLevels" : [ {
+        "id" : 2251799820000031,
+        "runLevel" : "Playbook"
+      } ]
+    },
+    "name" : "GET | v3 Indicators",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "urlencode_body"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "headers"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "fail_on_error"
+      },
+      "value" : "true"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "exclude_null_parameters"
+      },
+      "value" : "false"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "body"
+      }
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "url"
+      },
+      "value" : "/v3/indicators"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "multipart"
+      },
+      "value" : "[]"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "http_method"
+      },
+      "value" : "GET"
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "params"
+      },
+      "value" : "[{\"key\":\"tql\",\"value\":\"hasGroup(hasIntelRequirement(id\\u003d#Trigger:10133099161584231:trg.action.item!String))\"},{\"key\":\"sorting\",\"value\":\"calScore DESC\"},{\"key\":\"fields\",\"value\":\"tags,associatedGroups\"},{\"key\":\"resultLimit\",\"value\":\"1000\"}]"
+    } ],
+    "locationLeft" : 780.0,
+    "locationTop" : 340.0,
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content\",\"type\":\"String\",\"encrypt\":false}]",
+    "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.url\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content_type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.ok\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.reason\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content.binary\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.headers\",\"type\":\"KeyValueArray\",\"encrypt\":false}]",
+    "layoutRequiredInputParams" : "[\"url\"]",
+    "layoutDisplayedInputParams" : "[\"url\",\"http_method\",\"params\",\"exclude_null_parameters\",\"headers\",\"fail_on_error\"]",
+    "playbookRetryDelayMinutes" : 1,
+    "playbookRetryMaxRetries" : 5,
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  }, {
+    "id" : 10133099161593923,
+    "appCatalogItem" : {
+      "id" : 10133099161583624,
+      "programName" : "ba4e765f894172f88a0c294f0c686635",
+      "displayName" : "[Enrichment] Polarity - IOC",
+      "programVersion" : "1.66.0",
+      "runLevels" : [ {
+        "id" : 11258999068426281,
+        "runLevel" : "PlaybookPipe"
+      } ],
+      "pipeRunLevel" : true
+    },
+    "name" : "[Enrichment] Polarity - IOC",
+    "jobParameterList" : [ {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_entity"
+      },
+      "value" : ""
+    }, {
+      "appCatalogItemParameter" : {
+        "paramName" : "indicator_entity_json"
+      },
+      "value" : "#App:11258999068428277:iterator.ioc.entity.json!String"
+    } ],
+    "locationLeft" : 1150.0,
+    "locationTop" : 550.0,
+    "outputVariables" : "[]",
+    "agentTools" : [ ],
+    "toolsets" : [ ]
+  } ],
+  "blockList" : [ ],
+  "playbookConnectionList" : [ {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 11258999068428275,
+    "targetJobId" : 11258999068428276
+  }, {
+    "type" : "Fail",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 10133099161594162,
+    "targetJobId" : 10133099161593923
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 10133099161594162,
+    "targetJobId" : 10133099161594163
+  }, {
+    "type" : "EndLoop",
+    "isCircularOnTarget" : true,
+    "sourceJobId" : 10133099161594163,
+    "targetJobId" : 11258999068428277
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 11258999068428276,
+    "targetJobId" : 11258999068428277
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 10133099161593923,
+    "targetJobId" : 10133099161594163
+  }, {
+    "type" : "StartLoop",
+    "isCircularOnTarget" : false,
+    "sourceJobId" : 11258999068428277,
+    "targetJobId" : 10133099161594162
+  }, {
+    "type" : "Pass",
+    "isCircularOnTarget" : false,
+    "targetJobId" : 11258999068428275,
+    "sourceTriggerId" : 10133099161584231
+  } ],
+  "playbookTriggerList" : [ {
+    "id" : 10133099161584231,
+    "name" : "Enrich Associated IOCs",
+    "type" : "UserAction",
+    "eventType" : "External",
+    "locationLeft" : 600.0,
+    "locationTop" : 340.0,
+    "httpResponseHeader" : "[]",
+    "httpResponseBody" : "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>In Progress</title>\n\n  <style>\n    :root {\n      color-scheme: dark;\n      --background: #07110e;\n      --panel: rgba(10, 25, 20, 0.82);\n      --accent: #35f29a;\n      --text: #e8fff4;\n      --muted: #8fa99d;\n      --border: rgba(53, 242, 154, 0.22);\n    }\n\n    * {\n      box-sizing: border-box;\n    }\n\n    body {\n      min-height: 100vh;\n      margin: 0;\n      display: grid;\n      place-items: center;\n      padding: 24px;\n      background:\n        linear-gradient(rgba(53, 242, 154, 0.025) 1px, transparent 1px),\n        linear-gradient(90deg, rgba(53, 242, 154, 0.025) 1px, transparent 1px),\n        radial-gradient(circle at center, #0b2119 0%, var(--background) 65%);\n      background-size: 32px 32px, 32px 32px, auto;\n      color: var(--text);\n      font-family: Inter, Arial, sans-serif;\n    }\n\n    .status-card {\n      width: min(100%, 460px);\n      padding: 48px 32px;\n      text-align: center;\n      background: var(--panel);\n      border: 1px solid var(--border);\n      border-radius: 18px;\n      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);\n      backdrop-filter: blur(12px);\n    }\n\n    .loader {\n      width: 54px;\n      height: 54px;\n      margin: 0 auto 28px;\n      border: 2px solid rgba(53, 242, 154, 0.16);\n      border-top-color: var(--accent);\n      border-radius: 50%;\n      animation: spin 1s linear infinite;\n      box-shadow: 0 0 18px rgba(53, 242, 154, 0.12);\n    }\n\n    h1 {\n      margin: 0 0 12px;\n      font-size: clamp(1.8rem, 5vw, 2.4rem);\n      font-weight: 600;\n      letter-spacing: -0.04em;\n    }\n\n    p {\n      margin: 0;\n      color: var(--muted);\n      font-size: 1rem;\n      line-height: 1.6;\n    }\n\n    .status {\n      display: inline-flex;\n      align-items: center;\n      gap: 8px;\n      margin-top: 28px;\n      color: var(--accent);\n      font-family: monospace;\n      font-size: 0.8rem;\n      letter-spacing: 0.12em;\n      text-transform: uppercase;\n    }\n\n    .status-dot {\n      width: 7px;\n      height: 7px;\n      background: var(--accent);\n      border-radius: 50%;\n      box-shadow: 0 0 10px var(--accent);\n      animation: pulse 1.4s ease-in-out infinite;\n    }\n\n    @keyframes spin {\n      to {\n        transform: rotate(360deg);\n      }\n    }\n\n    @keyframes pulse {\n      50% {\n        opacity: 0.35;\n        transform: scale(0.8);\n      }\n    }\n\n    @media (prefers-reduced-motion: reduce) {\n      .loader,\n      .status-dot {\n        animation: none;\n      }\n    }\n  </style>\n</head>\n\n<body>\n  <main class=\"status-card\">\n    <div class=\"loader\" aria-hidden=\"true\"></div>\n\n    <h1>In progress...</h1>\n\n    <p>\n      You do not have to remain here.\n    </p>\n\n    <div class=\"status\">\n      <span class=\"status-dot\"></span>\n      Secure process running\n    </div>\n  </main>\n</body>\n</html>",
+    "timeoutMinutes" : 5,
+    "anyOrg" : true,
+    "userActionTypes" : "Intel Requirement",
+    "renderBodyAsTip" : true,
+    "playbookTriggerFilterList" : [ ],
+    "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"trg.action.item\",\"type\":\"String\",\"encrypt\":false}]",
+    "cacheMinutes" : 120,
+    "cacheParams" : "{\"includeMethod\":false,\"includeBody\":false,\"queryParams\":[],\"headerNames\":[]}",
+    "organizationNames" : [ ]
+  } ],
+  "playbookLabels" : [ ],
+  "playbookScopeVariables" : [ {
+    "id" : 11258999068426302,
+    "name" : "ownerName",
+    "value" : "CTI Lifecycle",
+    "dataType" : "String",
+    "writable" : false
+  } ],
+  "exportablePipes" : [ {
+    "definitionVersion" : "6ea814be935ed5b3b3523303b82941f3",
+    "groupXid" : "z2QiFWPz",
+    "name" : "[Doc Analysis] Module: PUT Import - IOC Enrichment",
+    "type" : "Component",
+    "panX" : -113.0,
+    "panY" : -6.0,
+    "zoom" : 0.6166,
+    "logLevel" : "WARN",
+    "description" : "This module will create a Report object and enrich it—and an IOC if given—with Doc Analysis results including bringing in parsed IOCs.",
+    "roiDollarsPerHour" : 75,
+    "roiMinutes" : 10,
+    "priority" : 6,
+    "version" : "4.2",
+    "comment" : "Auto-Saved on Tue Jul 21 19:46:01 UTC 2026",
+    "jobList" : [ {
+      "id" : 10133099161593859,
+      "appCatalogItem" : {
+        "id" : 27,
+        "programName" : "Logger",
+        "displayName" : "Logger",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000033,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "WARN | No Description",
+      "active" : false,
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "logging"
+        },
+        "value" : "WARN"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "log_message"
+        },
+        "value" : "No \"Description\" attribute to delete..."
+      } ],
+      "locationLeft" : 1460.0,
+      "locationTop" : 430.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593867,
+      "appCatalogItem" : {
+        "id" : 27,
+        "programName" : "Logger",
+        "displayName" : "Logger",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000033,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "INFO | Content",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "log_message"
+        },
+        "value" : "#Trigger:10133099161584224:content!String|KeyValueArray|TCEntityArray|TCEnhancedEntityArray|StringArray|KeyValue|TCEntity|TCEnhancedEntity"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "logging"
+        },
+        "value" : "INFO"
+      } ],
+      "locationLeft" : 1460.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593861,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMESPath | Enrich IOC",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.enrich.summary\",\"value\":\"value\"},{\"key\":\"jmes.enrich.type\",\"value\":\"type\"},{\"key\":\"jmes.enrich.id\",\"value\":\"id\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#Trigger:10133099161584224:enrich_ioc!TCEntity"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 1280.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.enrich.id\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.enrich.summary\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593862,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "i | JMES | IOC | JSON POST",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "[\n#App:10133099161593860:iterator.ioc!String \n,#App:10133099161593864:jmes.doc_analysis.associated_groups!String \n]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"i.jmes.json_post.ioc\",\"value\":\"merge([0],{associatedGroups:[1]})\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 2080.0,
+      "locationTop" : 460.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"i.jmes.json_post.ioc\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593864,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | Doc Analysis",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.doc_analysis.iocs\",\"value\":\"[].appData[?indicatorType \\u0026\\u0026 uniqueId !\\u003d \\u0027#App:10133099161593861:jmes.enrich.summary!String\\u0027][].{\\ntype: indicatorType\\nsummary: uniqueId\\nsha256: sha256\\nsha1: sha1\\nmd5: md5\\nxid: (indicatorType \\u003d\\u003d \\u0027file\\u0027 \\u0026\\u0026 [indicatorType,sha256,sha1,md5]) || [indicatorType,uniqueId]\\n| join(\\u0027\\u0027,[]) | uuid5(@)\\n}\\n|\\ngroup_by([],\\u0026xid)\\n|\\n*[0]\\n|\\ndelete(@,\\u0027xid\\u0027)\\n|\\nmap(\\n    \\u0026([@]|\\n        ((not_null(sha256) || not_null(sha1) || not_null(md5)) \\u0026\\u0026 delete(@,\\u0027summary\\u0027)) || @\\n        |(!sha256 \\u0026\\u0026 delete(@,\\u0027sha256\\u0027)) || @\\n        |(!sha1 \\u0026\\u0026 delete(@,\\u0027sha1\\u0027)) || @\\n        |(!md5 \\u0026\\u0026 delete(@,\\u0027md5\\u0027)) || @\\n    )\\n,[])[]\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.doc_analysis.associated_groups\",\"value\":\"[].appData[?\\nobjectType \\u003d\\u003d \\u0027intrusion set\\u0027\\n|| objectType \\u003d\\u003d \\u0027malware\\u0027\\n|| objectType \\u003d\\u003d \\u0027course of action\\u0027\\n|| objectType \\u003d\\u003d \\u0027cve\\u0027\\n][].{\\ntype: objectType\\nname: displayName\\nxid: [\\u0027#Trigger:10133099161584224:owner_name!String\\u0027,objectType,displayName] | join(\\u0027:\\u0027,[]) | uuid5(@)\\n}\\n|\\ngroup_by([],\\u0026xid) | *[0]\\n|\\n{\\ndata: []\\n}\"},{\"key\":\"jmes.doc_analysis.associated_indicators\",\"value\":\"[].appData[?indicatorType \\u0026\\u0026 uniqueId !\\u003d \\u0027#App:10133099161593861:jmes.enrich.summary!String\\u0027][].{\\ntype: indicatorType\\nsummary: uniqueId\\nsha256: sha256\\nsha1: sha1\\nmd5: md5\\nxid: (indicatorType \\u003d\\u003d \\u0027file\\u0027 \\u0026\\u0026 [indicatorType,sha256,sha1,md5]) || [indicatorType,uniqueId]\\n| join(\\u0027\\u0027,[]) | uuid5(@)\\n}\\n|\\ngroup_by([],\\u0026xid)|*[0]\\n|\\n{\\n    data: delete(@,\\u0027xid\\u0027)\\n            | map(\\u0026(\\n                    (not_null(sha256) || not_null(sha1) || not_null(md5)) \\u0026\\u0026 delete([@],\\u0027summary\\u0027)[0]||@\\n                    |!not_null(sha256) \\u0026\\u0026 delete([@],\\u0027sha256\\u0027)[0]||@\\n                    |!not_null(sha1) \\u0026\\u0026 delete([@],\\u0027sha1\\u0027)[0]||@\\n                    |!not_null(md5) \\u0026\\u0026 delete([@],\\u0027md5\\u0027)[0]||@\\n                ),[])\\n}\"},{\"key\":\"jmes.doc_analysis.tags\",\"value\":\"{\\n    data: [\\n        [].appData[?app \\u003d\\u003d \\u0027TextIndustrializer\\u0027][].industry[].{\\n            name: @\\n        }\\n        ,[].appData[?objectType \\u003d\\u003d \\u0027attack pattern\\u0027][].objectId[].{\\n            name: @\\n        }\\n    ][]\\n}\"},{\"key\":\"jmes.doc_analysis.attributes\",\"value\":\"[\\n[].appData[].bullets[]\\n|\\njoin(\\u0027\\u003c/li\\u003e\\u003cli\\u003e\\u0027,[])\\n|\\n[\\n\\u0027\\u003cul\\u003e\\u003cli\\u003e\\u0027\\n,@\\n,\\u0027\\u003c/li\\u003e\\u003c/ul\\u003e\\u0027\\n]\\n|\\njoin(\\u0027\\u0027,[])\\n,[].appData[].summary|join(\\u0027\\u003cbr\\u003e\\u0027,[])\\n]\\n|\\njoin(\\u0027\\u0027,[])\\n|\\n{\\ndata: [\\n{\\ntype: \\u0027Description\\u0027\\nvalue: @\\ndefault: `true`\\n}\\n]\\n}\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#App:10133099161593865:tc.json.raw!String"
+      } ],
+      "locationLeft" : 1820.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.doc_analysis.tags\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.doc_analysis.associated_groups\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.doc_analysis.iocs\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.doc_analysis.attributes\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593860,
+      "appCatalogItem" : {
+        "id" : 33,
+        "programName" : "Iterator",
+        "displayName" : "Iterator",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000028,
+          "runLevel" : "PlaybookOperator"
+        } ]
+      },
+      "name" : "i | Doc Analysis | Indicators",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "array_inputs"
+        },
+        "value" : "[{\"key\":\"iterator.ioc\",\"value\":\"#App:10133099161593864:jmes.doc_analysis.iocs!StringArray\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "array_outputs"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 2180.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"iterator.ioc\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"array_inputs\"]",
+      "layoutDisplayedInputParams" : "[\"array_inputs\",\"array_outputs\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593866,
+      "appCatalogItem" : {
+        "id" : 1980,
+        "programName" : "TCPB - Threatconnect Attributes v2",
+        "displayName" : "ThreatConnect Attributes",
+        "programVersion" : "2.0.5",
+        "runLevels" : [ {
+          "id" : 1125899956000027,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "Attributes - Delete | Enrich IOC | Description",
+      "active" : false,
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "tc_action"
+        },
+        "value" : "Delete by Attribute Type"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "entity"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "delete_entities"
+        },
+        "value" : "#Trigger:10133099161584224:enrich_ioc!TCEntity"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "attribute_type_value_mapping"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "attribute_sources"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "attribute_type"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "apply_all"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "displayed"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "delete_attribute_type"
+        },
+        "value" : "Description"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "operation"
+        },
+        "value" : "Delete all occurrences"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "entities"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "delete_id"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "attribute_values"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "add_type"
+        },
+        "value" : "Restrict by Attribute"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "filter_attribute_type"
+        }
+      } ],
+      "locationLeft" : 1280.0,
+      "locationTop" : 380.0,
+      "outputVariables" : "[]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"delete_entities\",\"delete_attribute_type\"]",
+      "layoutDisplayedInputParams" : "[\"tc_action\",\"delete_entities\",\"delete_attribute_type\",\"operation\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593863,
+      "appCatalogItem" : {
+        "id" : 1954,
+        "programName" : "TCPB - ThreatConnect API v3",
+        "displayName" : "ThreatConnect API",
+        "programVersion" : "3.0.2",
+        "runLevels" : [ {
+          "id" : 2251799820000031,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "i | POST | Associate Indicators",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "body"
+        },
+        "value" : "#App:10133099161593862:i.jmes.json_post.ioc!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "http_method"
+        },
+        "value" : "POST"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "multipart"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "headers"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "params"
+        },
+        "value" : "[{\"key\":\"owner\",\"value\":\"#Trigger:10133099161584224:owner_name!String\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "urlencode_body"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "url"
+        },
+        "value" : "/v3/indicators"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "exclude_null_parameters"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 2260.0,
+      "locationTop" : 460.0,
+      "outputVariables" : "[]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.url\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content_type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.ok\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.reason\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content.binary\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.headers\",\"type\":\"KeyValueArray\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"url\"]",
+      "layoutDisplayedInputParams" : "[\"url\",\"http_method\",\"params\",\"exclude_null_parameters\",\"headers\",\"body\",\"urlencode_body\",\"multipart\",\"fail_on_error\"]",
+      "playbookRetryDelayMinutes" : 1,
+      "playbookRetryMaxRetries" : 5,
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593858,
+      "appCatalogItem" : {
+        "id" : 1954,
+        "programName" : "TCPB - ThreatConnect API v3",
+        "displayName" : "ThreatConnect API",
+        "programVersion" : "3.0.2",
+        "runLevels" : [ {
+          "id" : 2251799820000031,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "PUT | Enrich IOC | Doc Analysis",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "params"
+        },
+        "value" : "[{\"key\":\"owner\",\"value\":\"#Trigger:10133099161584224:owner_name!String\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "http_method"
+        },
+        "value" : "PUT"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "multipart"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "url"
+        },
+        "value" : "/v3/indicators/#App:10133099161593861:jmes.enrich.id!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "exclude_null_parameters"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "urlencode_body"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "body"
+        },
+        "value" : "{\n\"attributes\": #App:10133099161593864:jmes.doc_analysis.attributes!String\n,\"associatedGroups\": #App:10133099161593864:jmes.doc_analysis.associated_groups!String\n,\"tags\": #App:10133099161593864:jmes.doc_analysis.tags!String \n}"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "headers"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 2000.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.url\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content_type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.ok\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.reason\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content.binary\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.headers\",\"type\":\"KeyValueArray\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"url\"]",
+      "layoutDisplayedInputParams" : "[\"url\",\"http_method\",\"params\",\"exclude_null_parameters\",\"headers\",\"body\",\"urlencode_body\",\"multipart\",\"fail_on_error\"]",
+      "playbookRetryDelayMinutes" : 1,
+      "playbookRetryMaxRetries" : 5,
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593865,
+      "appCatalogItem" : {
+        "id" : 2251799823000001,
+        "programName" : "TCPB - ThreatConnect Doc Analysis v1",
+        "displayName" : "ThreatConnect Doc Analysis",
+        "programVersion" : "1.0.7",
+        "runLevels" : [ {
+          "id" : 2251799867000009,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "Doc Analysis | Trg Content",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "features"
+        },
+        "value" : "Alias Extraction|IOC Extraction|AI Summary Generation|AI MITRE ATT&CK Classification|AI NAICS Industry Classification"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "document"
+        },
+        "value" : "#Trigger:10133099161584224:content!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tc_action"
+        },
+        "value" : "Analyze Document"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "additional_features"
+        },
+        "value" : "None"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 1640.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.json.raw\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.malware_names.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.input_truncated\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.registry_key_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_tags.attackanalyzer.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_descriptions.aliasextractor\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.registry_key_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.hashtag_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tactic_descriptions\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.course_of_action_names\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tactic_names.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.signatures.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.sha1_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.sha256_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.md5_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.url_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.hashtag_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.intrusion_set_names.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.tc_action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.summary.bullets\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.zeroday.topic\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.user_agent_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.cve_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.url_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.email_subject_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.md5_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.host_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.mutex_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.course_of_action_names.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.cidr_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tools_names.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.email_address_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.user_agent_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.sha256_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_descriptions.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.course_of_action_descriptions.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tools_descriptions.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_descriptions.attackanalyzer.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.cve_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_tags.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.signatures\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_tags.aliasextractor\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.email_address_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.sha1_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.file_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.signature.name\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.asn_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_tags\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.mutex_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_tags.aliasextractor.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.malware_descriptions\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.malware_descriptions.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.input_length\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_descriptions.attackanalyzer\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.naics.codes\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.asn_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tools_names\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.summary\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.course_of_action_descriptions\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_tags.attackanalyzer\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tools_descriptions\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tactic_names\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.cidr_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.malware_names\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.intrusion_set_descriptions.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.email_subject_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_descriptions.aliasextractor.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.zeroday.summary\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.address_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.intrusion_set_names\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.host_array\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.address_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.file_array.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.tactic_descriptions.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.intrusion_set_descriptions\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.parsed.attack_pattern_descriptions\",\"type\":\"StringArray\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"tc_action\",\"document\",\"features\"]",
+      "layoutDisplayedInputParams" : "[\"tc_action\",\"document\",\"features\",\"additional_features\",\"fail_on_error\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    } ],
+    "blockList" : [ ],
+    "playbookConnectionList" : [ {
+      "type" : "Fail",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593866,
+      "targetJobId" : 10133099161593859
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593867,
+      "targetJobId" : 10133099161593865
+    }, {
+      "type" : "EndLoop",
+      "isCircularOnTarget" : true,
+      "sourceJobId" : 10133099161593863,
+      "targetJobId" : 10133099161593860
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593865,
+      "targetJobId" : 10133099161593864
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593858,
+      "targetJobId" : 10133099161593860
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "targetJobId" : 10133099161593861,
+      "sourceTriggerId" : 10133099161584224
+    }, {
+      "type" : "StartLoop",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593860,
+      "targetJobId" : 10133099161593862
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593861,
+      "targetJobId" : 10133099161593867
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593862,
+      "targetJobId" : 10133099161593863
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593864,
+      "targetJobId" : 10133099161593858
+    } ],
+    "playbookTriggerList" : [ {
+      "id" : 10133099161584224,
+      "name" : "Component Trigger",
+      "type" : "PipeConfig",
+      "eventType" : "External",
+      "locationLeft" : 1100.0,
+      "locationTop" : 290.0,
+      "scheduleType" : "Daily",
+      "anyOrg" : true,
+      "playbookTriggerFilterList" : [ ],
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"owner_name\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"enrich_ioc\",\"type\":\"TCEntity\",\"encrypt\":false}]",
+      "pipeInputParams" : "[{\"uiHidden\":false,\"allowMultiple\":false,\"serviceConfig\":false,\"note\":\"The owner to save the parsed entities under.\",\"label\":\"Owner Name\",\"dataType\":\"String\",\"playbookDataType\":\"String\",\"required\":true,\"name\":\"owner_name\",\"encrypted\":false,\"viewRows\":1,\"orderSequence\":0,\"hidden\":false,\"hasDollarVariables\":false,\"playbookVariable\":false,\"validValuesList\":[],\"variableTypes\":[]},{\"uiHidden\":false,\"allowMultiple\":false,\"serviceConfig\":false,\"note\":\"If you want an indicator enriched with the data.\",\"label\":\"Enrich IOC\",\"dataType\":\"String\",\"playbookDataType\":\"TCEntity\",\"required\":false,\"name\":\"enrich_ioc\",\"encrypted\":false,\"viewRows\":1,\"orderSequence\":1,\"hidden\":false,\"hasDollarVariables\":false,\"playbookVariable\":false,\"validValuesList\":[],\"variableTypes\":[]},{\"uiHidden\":false,\"allowMultiple\":false,\"serviceConfig\":false,\"note\":\"The content for the Doc Analysis to parse.\",\"label\":\"Content\",\"dataType\":\"String\",\"playbookDataType\":\"String\",\"required\":true,\"name\":\"content\",\"encrypted\":false,\"viewRows\":2,\"orderSequence\":2,\"hidden\":false,\"hasDollarVariables\":false,\"playbookVariable\":false,\"validValuesList\":[],\"variableTypes\":[]}]",
+      "pipeOutputParams" : "[]"
+    } ],
+    "playbookLabels" : [ {
+      "playbookLabelType" : {
+        "label" : "Enrichment"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "IOC"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "capella"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "2026-06-15"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "doc analysis"
+      }
+    } ],
+    "playbookScopeVariables" : [ ]
+  }, {
+    "definitionVersion" : "ba4e765f894172f88a0c294f0c686635",
+    "groupXid" : "EieshCIp",
+    "name" : "[Enrichment] Polarity - IOC",
+    "type" : "Component",
+    "panX" : 547.0,
+    "panY" : -22.0,
+    "zoom" : 0.935,
+    "logLevel" : "DEBUG",
+    "description" : "This integration is designed to query integrations allocated to a Polarity API Token to enrich intelligence in ThreatConnect.",
+    "roiDollarsPerHour" : 75,
+    "roiMinutes" : 10,
+    "priority" : 6,
+    "version" : "1.67",
+    "comment" : "Auto-Saved on Wed Jul 22 14:04:42 UTC 2026",
+    "jobList" : [ {
+      "id" : 10133099161593873,
+      "appCatalogItem" : {
+        "id" : 19,
+        "programName" : "Merge",
+        "displayName" : "Merge",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000034,
+          "runLevel" : "PlaybookOperator"
+        } ]
+      },
+      "name" : "i | Merge | End of iteration",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "output_array"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 2020.0,
+      "locationTop" : 380.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593874,
+      "appCatalogItem" : {
+        "id" : 19,
+        "programName" : "Merge",
+        "displayName" : "Merge",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000034,
+          "runLevel" : "PlaybookOperator"
+        } ]
+      },
+      "name" : "Merge | IOC ID",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "output_array"
+        },
+        "value" : "[{\"key\":\"c.merge.ioc.id\",\"value\":\"#App:10133099161593876:c.jmes.ioc.id!String #App:11258999068428278:jmes.post.indicator.id!String\"}]"
+      } ],
+      "locationLeft" : 480.0,
+      "locationTop" : 240.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"c.merge.ioc.id\",\"type\":\"String\",\"encrypt\":false}]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593880,
+      "appCatalogItem" : {
+        "id" : 33,
+        "programName" : "Iterator",
+        "displayName" : "Iterator",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000028,
+          "runLevel" : "PlaybookOperator"
+        } ]
+      },
+      "name" : "i | Integrations",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "array_outputs"
+        },
+        "value" : "[{\"key\":\"iterator.outputs.http.content\",\"value\":\"#App:10133099161593879:http.content!String\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "array_inputs"
+        },
+        "value" : "[{\"key\":\"iterator.integration.id\",\"value\":\"#App:10133099161593882:jmes.integrations.id!StringArray\"}]"
+      } ],
+      "locationLeft" : 1850.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"iterator.outputs.http.content\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"iterator.integration.id\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"array_inputs\"]",
+      "layoutDisplayedInputParams" : "[\"array_inputs\",\"array_outputs\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593875,
+      "appCatalogItem" : {
+        "id" : 5,
+        "programName" : "If / Else",
+        "displayName" : "If / Else",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000027,
+          "runLevel" : "PlaybookOperator"
+        } ]
+      },
+      "name" : "If Indicator JSON",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "operand_1"
+        },
+        "value" : "#Trigger:10133099161584225:indicator_entity_json!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "as_numeric"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "match_case"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "operator"
+        },
+        "value" : "not equals"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "operand_2"
+        },
+        "value" : "null"
+      } ],
+      "locationLeft" : 0.0,
+      "locationTop" : 240.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593883,
+      "appCatalogItem" : {
+        "id" : 27,
+        "programName" : "Logger",
+        "displayName" : "Logger",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000033,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "i | WARN |  Response Error",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "log_message"
+        },
+        "value" : "#App:10133099161593879:http.reason!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "logging"
+        },
+        "value" : "WARN"
+      } ],
+      "locationLeft" : 1840.0,
+      "locationTop" : 430.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 11258999068428425,
+      "appCatalogItem" : {
+        "id" : 27,
+        "programName" : "Logger",
+        "displayName" : "Logger",
+        "programVersion" : "1.0.0",
+        "runLevels" : [ {
+          "id" : 7881299349000033,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "WARN | Already Enriched",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "log_message"
+        },
+        "value" : "IOC already has `enrichment:polarity` tag."
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "logging"
+        },
+        "value" : "WARN"
+      } ],
+      "locationLeft" : 770.0,
+      "locationTop" : 290.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593871,
+      "appCatalogItem" : {
+        "id" : 118,
+        "programName" : "TCPB - Array Operations v1.0",
+        "displayName" : "Array Operations",
+        "programVersion" : "1.0.7",
+        "runLevels" : [ {
+          "id" : 13510798883000070,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "Pop | IOCs Entity",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "array_data"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "zip_input_arrays"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fill_length"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fill_string"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "is_in_array"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "slice_step"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "array_length"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "slice_end"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_false"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "pop_index"
+        },
+        "value" : "0"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "length_rule"
+        },
+        "value" : "Fill"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "delimiter"
+        },
+        "value" : "\\s"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "reverse_array"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "is_in_value"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "set_a"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tc_action"
+        },
+        "value" : "Pop"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "slice_array"
+        },
+        "value" : "#App:10133099161593869:tc.indicators.entity!TCEntityArray"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "depth"
+        },
+        "value" : "0"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fill_value"
+        },
+        "value" : ""
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "set_b"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "slice_start"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "flatten_input_arrays"
+        }
+      } ],
+      "locationLeft" : 770.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"pop.tcentity.result\",\"type\":\"TCEntity\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"array.operation\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"pop.string.result\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"pop.binary.result\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"pop.keyvalue.result\",\"type\":\"KeyValue\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"pop.tcentity.result\",\"type\":\"TCEntity\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"tc_action\",\"slice_array\",\"pop_index\"]",
+      "layoutDisplayedInputParams" : "[\"tc_action\",\"slice_array\",\"pop_index\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593872,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | Main IOC | Polarity Payload",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#App:10133099161593869:tc.response.json.raw!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.iterator.polarity.payload\",\"value\":\"data[0]\\n|\\n{\\ndata: {\\ntype: \\u0027integration-lookups\\u0027,\\nattributes: {\\nentities: [\\n{\\nvalue: summary,\\ntype: type \\u003d\\u003d \\u0027Host\\u0027 \\u0026\\u0026 \\u0027domain\\u0027\\n        || type \\u003d\\u003d \\u0027Address\\u0027 \\u0026\\u0026 (contains(ip,\\u0027:\\u0027) \\u0026\\u0026 \\u0027IPv6\\u0027 || \\u0027IPv4\\u0027)\\n        || type \\u003d\\u003d \\u0027File\\u0027 \\u0026\\u0026 (sha256 \\u0026\\u0026 \\u0027SHA256\\u0027 || sha1 \\u0026\\u0026 \\u0027SHA1\\u0027 || md5 \\u0026\\u0026 \\u0027MD5\\u0027)\\n        || (type \\u003d\\u003d \\u0027Email Subject\\u0027 || type \\u003d\\u003d \\u0027EmailAddress\\u0027) \\u0026\\u0026 \\u0027email\\u0027\\n        || type \\u003d\\u003d \\u0027URL\\u0027 \\u0026\\u0026 \\u0027url\\u0027\\n}\\n]\\n}\\n}\\n}\"}]"
+      } ],
+      "locationLeft" : 950.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.iterator.polarity.payload\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 11258999068428278,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | POST v3 Indicators",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.post.indicator.id\",\"value\":\"data.id\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#App:10133099161593924:tc.api.content!String"
+      } ],
+      "locationLeft" : 300.0,
+      "locationTop" : 200.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.post.indicator.id\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593882,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | Polarity Integrations | IDs",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#App:10133099161593870:http.content!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.integrations.id\",\"value\":\"#App:10133099161593878:regex.match.0!String\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      } ],
+      "locationLeft" : 1670.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.integrations.id\",\"type\":\"StringArray\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593877,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | Iterator Outputs",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#App:10133099161593880:iterator.outputs.http.content!StringArray"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.iterator.outputs.http.content\",\"value\":\"[][]\\n|\\nmap(\\u0026to_string(@),[])\\n|\\njoin(\\u0027 \\u0027,[])\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 1980.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.iterator.outputs.http.content\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593868,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | Main IOC | JMES Expression",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#App:10133099161593869:tc.response.json.raw!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"jmes.jmes_expression\",\"value\":\"data[0]\\n|\\n{\\ntype: type \\u003d\\u003d \\u0027Host\\u0027 \\u0026\\u0026 \\u0027domain\\u0027\\n|| type \\u003d\\u003d \\u0027Address\\u0027 \\u0026\\u0026 (contains(ip,\\u0027:\\u0027) \\u0026\\u0026 \\u0027IPv6\\u0027 || \\u0027IPv4\\u0027)\\n|| type \\u003d\\u003d \\u0027File\\u0027 \\u0026\\u0026 (sha256 \\u0026\\u0026 \\u0027SHA256\\u0027 || sha1 \\u0026\\u0026 \\u0027SHA1\\u0027 || md5 \\u0026\\u0026 \\u0027MD5\\u0027)\\n|| (type \\u003d\\u003d \\u0027Email Subject\\u0027 || type \\u003d\\u003d \\u0027EmailAddress\\u0027) \\u0026\\u0026 \\u0027email\\u0027\\n|| type \\u003d\\u003d \\u0027URL\\u0027 \\u0026\\u0026 \\u0027url\\u0027\\n}\\n|\\n[\\n\\u0027data[].attributes.\\\"integration-entity-types\\\"[?key\\u003d\\u003d\\\\\\u0027\\u0027\\n,type\\n,\\u0027\\\\\\u0027]\\u0027\\n]\\n|\\njoin(\\u0027\\u0027,[])\\n|\\n[\\n    @\\n    ,\\u0027[].integration_id|group_by([],\\u0026@)|keys(@)\\u0027\\n]\\n|\\njoin(\\u0027\\u0027,[])\"},{\"key\":\"jmes.ioc.owner_name\",\"value\":\"data[0].ownerName\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 1130.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.jmes_expression\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"jmes.ioc.owner_name\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593876,
+      "appCatalogItem" : {
+        "id" : 241,
+        "programName" : "TCPB - JMESPath v3.0",
+        "displayName" : "JMESPath",
+        "programVersion" : "3.0.13",
+        "runLevels" : [ {
+          "id" : 16888498603000000,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "JMES | Entity",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_quotes"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "strip_json"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_expressions"
+        },
+        "value" : "[{\"key\":\"c.jmes.ioc.id\",\"value\":\"id\"},{\"key\":\"c.jmes.ioc.summary\",\"value\":\"value\"},{\"key\":\"c.jmes.ioc.type\",\"value\":\"type\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "string_array_expressions"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_jmes_expression"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "json_data"
+        },
+        "value" : "#Trigger:10133099161584225:indicator_entity!TCEntity"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "path_output"
+        },
+        "value" : "false"
+      } ],
+      "locationLeft" : 300.0,
+      "locationTop" : 280.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"c.jmes.ioc.id\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"json_data\"]",
+      "layoutDisplayedInputParams" : "[\"json_data\",\"string_expressions\",\"strip_quotes\",\"strip_json\",\"string_array_expressions\",\"path_output\",\"fail_on_no_results\",\"fail_on_jmes_expression\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593881,
+      "appCatalogItem" : {
+        "id" : 1945,
+        "programName" : "TCPB - Threatconnect Tags TI v2",
+        "displayName" : "ThreatConnect Tags",
+        "programVersion" : "2.0.7",
+        "runLevels" : [ {
+          "id" : 2251799866000019,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "Tags | Add | Global Tags",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "check_mitre_tag"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "add_entities"
+        },
+        "value" : "#App:10133099161593871:pop.tcentity.result!TCEntity"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "check_naics_tag"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "entity_remove"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "apply_all"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "entity"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "name"
+        },
+        "value" : "#Global:0:gbl.tag.polarity_enrichment!StringArray"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tql"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tc_action"
+        },
+        "value" : "Add"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "get_by"
+        },
+        "value" : "Threat Intel Entity"
+      } ],
+      "locationLeft" : 2340.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"tc_action\",\"add_entities\",\"name\"]",
+      "layoutDisplayedInputParams" : "[\"tc_action\",\"add_entities\",\"apply_all\",\"name\",\"check_mitre_tag\",\"check_naics_tag\",\"fail_on_error\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593869,
+      "appCatalogItem" : {
+        "id" : 1853,
+        "programName" : "TCPB - Threatconnect Get Indicators v1",
+        "displayName" : "ThreatConnect Get Indicators",
+        "programVersion" : "1.0.9",
+        "runLevels" : [ {
+          "id" : 2251799864000075,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "Get IOC by ID | Main IOC | Trg",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "entity"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "indicator_type"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "indicator_ids"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "summaries"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tc_action"
+        },
+        "value" : "TQL"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "entities"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tql"
+        },
+        "value" : "id=#App:10133099161593874:c.merge.ioc.id!String and not hasTag(summary=\"enrichment:polarity\")"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "max_results"
+        },
+        "value" : "1"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "indicator_id"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "summary"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "owner"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tags"
+        }
+      } ],
+      "locationLeft" : 590.0,
+      "locationTop" : 240.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.entity\",\"type\":\"TCEntityArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.entity\",\"type\":\"TCEntityArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.observation\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.id\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.first_seen\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.date_added\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_observed\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_seen\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_modified\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.hosts.dns_active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_date_expires\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.rating\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_last_modified\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.files.size\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.false_positive\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.external_date_added\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value3\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.last_false_positive\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value2\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.value1\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.summary\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.owner_name\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.web_link\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.hosts.whois_active\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.type\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.json.raw\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.response.error_message\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.threat_assess_score\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.active_locked\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.indicators.confidence\",\"type\":\"StringArray\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"max_results\",\"tql\"]",
+      "layoutDisplayedInputParams" : "[\"tc_action\",\"max_results\",\"tql\",\"fail_on_no_results\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593924,
+      "appCatalogItem" : {
+        "id" : 1954,
+        "programName" : "TCPB - ThreatConnect API v3",
+        "displayName" : "ThreatConnect API",
+        "programVersion" : "3.0.2",
+        "runLevels" : [ {
+          "id" : 2251799820000031,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "POST | v3 Indicators",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "body"
+        },
+        "value" : "#Trigger:10133099161584225:indicator_entity_json!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "urlencode_body"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "http_method"
+        },
+        "value" : "POST"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "url"
+        },
+        "value" : "/v3/indicators"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "exclude_null_parameters"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "multipart"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "headers"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "params"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 120.0,
+      "locationTop" : 200.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.url\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content_type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.ok\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.reason\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.content.binary\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"tc.api.headers\",\"type\":\"KeyValueArray\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"url\"]",
+      "layoutDisplayedInputParams" : "[\"url\",\"http_method\",\"params\",\"exclude_null_parameters\",\"headers\",\"body\",\"urlencode_body\",\"multipart\",\"fail_on_error\"]",
+      "playbookRetryDelayMinutes" : 1,
+      "playbookRetryMaxRetries" : 5,
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593878,
+      "appCatalogItem" : {
+        "id" : 2062,
+        "programName" : "TCPB - Regex Operations v2",
+        "displayName" : "Python Regex Operations",
+        "programVersion" : "2.0.8",
+        "runLevels" : [ {
+          "id" : 12384898976000023,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "Replace | JMES Expression | Normalize \"",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "flatteninput"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "input_ioc"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "tc_action"
+        },
+        "value" : "Replace"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "replace"
+        },
+        "value" : "\""
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_no_results"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "input_extract_string"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "stripnull"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "grep_mode"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "input_extract_stringarray"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "ioc_expression"
+        },
+        "value" : "[{\"key\":\"cve_array\",\"value\":\"default\"},{\"key\":\"email_address_array\",\"value\":\"default\"},{\"key\":\"host_array\",\"value\":\"default\"},{\"key\":\"ipv4_array\",\"value\":\"default\"},{\"key\":\"ipv6_array\",\"value\":\"default\"},{\"key\":\"md5_array\",\"value\":\"default\"},{\"key\":\"sha1_array\",\"value\":\"default\"},{\"key\":\"sha256_array\",\"value\":\"default\"},{\"key\":\"url_array\",\"value\":\"default\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "regex"
+        },
+        "value" : "\\\\\""
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "regex_mapping_string"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "input"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "input_replace"
+        },
+        "value" : "#App:10133099161593868:jmes.jmes_expression!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "regex_mapping_stringarray"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 1490.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.match.0\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.action\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.group\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.match.0\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.group.json\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.match.count\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.match\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"regex.groups.named.json\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"tc_action\",\"input_replace\",\"regex\"]",
+      "layoutDisplayedInputParams" : "[\"tc_action\",\"input_replace\",\"regex\",\"replace\",\"flatteninput\",\"stripnull\",\"fail_on_no_results\"]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593884,
+      "appCatalogItem" : {
+        "id" : 10133099161583623,
+        "programName" : "6ea814be935ed5b3b3523303b82941f3",
+        "displayName" : "[Doc Analysis] Module: PUT Import - IOC Enrichment",
+        "programVersion" : "4.1.0",
+        "runLevels" : [ {
+          "id" : 10133099161583782,
+          "runLevel" : "PlaybookPipe"
+        } ],
+        "pipeRunLevel" : true
+      },
+      "name" : "PUT Import | IOC Enrichment",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "owner_name"
+        },
+        "value" : "#App:10133099161593868:jmes.ioc.owner_name!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "content"
+        },
+        "value" : "#App:10133099161593877:jmes.iterator.outputs.http.content!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "enrich_ioc"
+        },
+        "value" : "#App:10133099161593871:pop.tcentity.result!TCEntity"
+      } ],
+      "locationLeft" : 2160.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[]",
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593879,
+      "appCatalogItem" : {
+        "id" : 1878,
+        "programName" : "TCPB - HTTP Client v3.0",
+        "displayName" : "HTTP Client",
+        "programVersion" : "3.0.9",
+        "runLevels" : [ {
+          "id" : 10133099161583741,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "i | POST | Polarity Integrations ID Lookup",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "urlencode_body"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "headers"
+        },
+        "value" : "[{\"key\":\"Authorization\",\"value\":\"Bearer ${USER:KEYCHAIN:Polarity API Key}\"},{\"key\":\"Content-Type\",\"value\":\"application/vnd.api+json\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy_host"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "body"
+        },
+        "value" : "#App:10133099161593872:jmes.iterator.polarity.payload!String"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "proxies_enabled"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy_user"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "multipart"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "verify_ssl"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "exclude_null_parameters"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy_pass"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "http_method"
+        },
+        "value" : "POST"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "advanced"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "url"
+        },
+        "value" : "${USER:TEXT:Polarity Base URL}/integrations/#App:10133099161593880:iterator.integration.id!String/lookup"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "params"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 1660.0,
+      "locationTop" : 380.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.reason\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.elapsed\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.reason\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.headers\",\"type\":\"KeyValueArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.ok\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.history.status_codes\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content_type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.url\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content.binary\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.encoding\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"url\"]",
+      "layoutDisplayedInputParams" : "[\"url\",\"http_method\",\"params\",\"exclude_null_parameters\",\"headers\",\"body\",\"urlencode_body\",\"multipart\",\"fail_on_error\",\"advanced\",\"verify_ssl\",\"proxies_enabled\",\"custom_proxy\"]",
+      "playbookRetryDelayMinutes" : 1,
+      "playbookRetryMaxRetries" : 10,
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    }, {
+      "id" : 10133099161593870,
+      "appCatalogItem" : {
+        "id" : 1878,
+        "programName" : "TCPB - HTTP Client v3.0",
+        "displayName" : "HTTP Client",
+        "programVersion" : "3.0.9",
+        "runLevels" : [ {
+          "id" : 10133099161583741,
+          "runLevel" : "Playbook"
+        } ]
+      },
+      "name" : "GET | Polarity Integrations",
+      "jobParameterList" : [ {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy_host"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "exclude_null_parameters"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "urlencode_body"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy_user"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "body"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy_pass"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "http_method"
+        },
+        "value" : "GET"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "proxies_enabled"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "fail_on_error"
+        },
+        "value" : "true"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "verify_ssl"
+        },
+        "value" : "false"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "headers"
+        },
+        "value" : "[{\"key\":\"Authorization\",\"value\":\"Bearer ${USER:KEYCHAIN:Polarity API Key}\"}]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "multipart"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "params"
+        },
+        "value" : "[]"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "url"
+        },
+        "value" : "${USER:TEXT:Polarity Base URL}/integrations"
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "custom_proxy"
+        }
+      }, {
+        "appCatalogItemParameter" : {
+          "paramName" : "advanced"
+        },
+        "value" : "[]"
+      } ],
+      "locationLeft" : 1310.0,
+      "locationTop" : 210.0,
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutDisplayOutputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.elapsed\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.reason\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.headers\",\"type\":\"KeyValueArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.status_code\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.ok\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.history.status_codes\",\"type\":\"StringArray\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content_type\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.url\",\"type\":\"String\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.content.binary\",\"type\":\"Binary\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"http.encoding\",\"type\":\"String\",\"encrypt\":false}]",
+      "layoutRequiredInputParams" : "[\"url\"]",
+      "layoutDisplayedInputParams" : "[\"url\",\"http_method\",\"params\",\"exclude_null_parameters\",\"headers\",\"body\",\"urlencode_body\",\"fail_on_error\",\"advanced\",\"verify_ssl\",\"proxies_enabled\",\"custom_proxy\"]",
+      "playbookRetryDelayMinutes" : 1,
+      "playbookRetryMaxRetries" : 10,
+      "agentTools" : [ ],
+      "toolsets" : [ ]
+    } ],
+    "blockList" : [ ],
+    "playbookConnectionList" : [ {
+      "type" : "StartLoop",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593880,
+      "targetJobId" : 10133099161593879
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593870,
+      "targetJobId" : 10133099161593878
+    }, {
+      "type" : "Fail",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593879,
+      "targetJobId" : 10133099161593883
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593875,
+      "targetJobId" : 10133099161593924
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 11258999068428278,
+      "targetJobId" : 10133099161593874
+    }, {
+      "type" : "Fail",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593875,
+      "targetJobId" : 10133099161593876
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593877,
+      "targetJobId" : 10133099161593884
+    }, {
+      "type" : "EndLoop",
+      "isCircularOnTarget" : true,
+      "sourceJobId" : 10133099161593873,
+      "targetJobId" : 10133099161593880
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593879,
+      "targetJobId" : 10133099161593873
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593882,
+      "targetJobId" : 10133099161593880
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593868,
+      "targetJobId" : 10133099161593870
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593880,
+      "targetJobId" : 10133099161593877
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593869,
+      "targetJobId" : 10133099161593871
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593872,
+      "targetJobId" : 10133099161593868
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593883,
+      "targetJobId" : 10133099161593873
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593871,
+      "targetJobId" : 10133099161593872
+    }, {
+      "type" : "Fail",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593869,
+      "targetJobId" : 11258999068428425
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593878,
+      "targetJobId" : 10133099161593882
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593874,
+      "targetJobId" : 10133099161593869
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593876,
+      "targetJobId" : 10133099161593874
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593884,
+      "targetJobId" : 10133099161593881
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "targetJobId" : 10133099161593875,
+      "sourceTriggerId" : 10133099161584225
+    }, {
+      "type" : "Pass",
+      "isCircularOnTarget" : false,
+      "sourceJobId" : 10133099161593924,
+      "targetJobId" : 11258999068428278
+    } ],
+    "playbookTriggerList" : [ {
+      "id" : 10133099161584225,
+      "name" : "Component Trigger",
+      "type" : "PipeConfig",
+      "eventType" : "External",
+      "locationLeft" : -210.0,
+      "locationTop" : 250.0,
+      "scheduleType" : "Daily",
+      "anyOrg" : true,
+      "playbookTriggerFilterList" : [ ],
+      "outputVariables" : "[{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"indicator_entity\",\"type\":\"TCEntity\",\"encrypt\":false},{\"sourceInputList\":[],\"loopVariables\":false,\"name\":\"indicator_entity_json\",\"type\":\"String\",\"encrypt\":false}]",
+      "pipeInputParams" : "[{\"uiHidden\":false,\"allowMultiple\":false,\"serviceConfig\":false,\"label\":\"Indicator Entity JSON\",\"dataType\":\"String\",\"playbookDataType\":\"String\",\"required\":false,\"name\":\"indicator_entity_json\",\"encrypted\":false,\"viewRows\":1,\"orderSequence\":1,\"hidden\":false,\"hasDollarVariables\":false,\"playbookVariable\":false,\"validValuesList\":[],\"variableTypes\":[]},{\"uiHidden\":false,\"allowMultiple\":false,\"serviceConfig\":false,\"note\":\"\",\"label\":\"Indicator Entity\",\"dataType\":\"String\",\"playbookDataType\":\"TCEntity\",\"required\":false,\"name\":\"indicator_entity\",\"encrypted\":false,\"defaultValue\":\"\",\"viewRows\":1,\"orderSequence\":0,\"hidden\":false,\"hasDollarVariables\":false,\"playbookVariable\":false,\"validValuesList\":[],\"variableTypes\":[]}]",
+      "pipeOutputParams" : "[]"
+    } ],
+    "playbookLabels" : [ {
+      "playbookLabelType" : {
+        "label" : "doc analysis"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "QA"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "capella"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "enrichment"
+      }
+    }, {
+      "playbookLabelType" : {
+        "label" : "polarity"
+      }
+    } ],
+    "playbookScopeVariables" : [ {
+      "id" : 10133099161583935,
+      "name" : "tag.polarity_enrichment",
+      "value" : "[\"enrichment:polarity\"]",
+      "dataType" : "StringArray",
+      "writable" : false
+    } ]
+  } ]
+}

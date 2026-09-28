@@ -1,0 +1,142 @@
+2026-07-22 16:31:50,313 - tcex -     INFO - app-name="PIR IOC Enrichment (Polarity)" (logger.py:_log_app_data:246:MainThread)
+2026-07-22 16:31:50,313 - tcex -     INFO - app-id=b8dd77ce-29f2-45ad-90ba-79b8ef73162b (logger.py:_log_app_data:248:MainThread)
+2026-07-22 16:31:50,313 - tcex -     INFO - app-features=aotExecutionEnabled,appBuilderCompliant,fileParams (logger.py:_log_app_data:250:MainThread)
+2026-07-22 16:31:50,314 - tcex -     INFO - app-minimum-threatconnect-version=7.2.0 (logger.py:_log_app_data:251:MainThread)
+2026-07-22 16:31:50,314 - tcex -     INFO - app-runtime-level=Organization (logger.py:_log_app_data:252:MainThread)
+2026-07-22 16:31:50,314 - tcex -     INFO - app-version=1.0.0 (logger.py:_log_app_data:256:MainThread)
+2026-07-22 16:31:50,340 - tcex -     INFO - platform="macOS-26.5.2-arm64-arm-64bit" (logger.py:_log_platform:275:MainThread)
+2026-07-22 16:31:50,340 - tcex -     INFO - pid=90694 (logger.py:_log_platform:276:MainThread)
+2026-07-22 16:31:50,341 - tcex -     INFO - python-version=3.11.15 (logger.py:_log_python_version:280:MainThread)
+2026-07-22 16:31:50,341 - tcex -     INFO - env-all-proxy=None (logger.py:_log_environment:262:MainThread)
+2026-07-22 16:31:50,341 - tcex -     INFO - env-http-proxy=None (logger.py:_log_environment:263:MainThread)
+2026-07-22 16:31:50,342 - tcex -     INFO - env-https-proxy=None (logger.py:_log_environment:264:MainThread)
+2026-07-22 16:31:50,342 - tcex -     INFO - env-no-proxy=None (logger.py:_log_environment:265:MainThread)
+2026-07-22 16:31:50,342 - tcex -     INFO - env-curl-ca-bundle=None (logger.py:_log_environment:266:MainThread)
+2026-07-22 16:31:50,343 - tcex -     INFO - env-request-ca-bundle=None (logger.py:_log_environment:267:MainThread)
+2026-07-22 16:31:50,343 - tcex -     INFO - env-ssl-cert-file=None (logger.py:_log_environment:268:MainThread)
+2026-07-22 16:31:50,343 - tcex -     INFO - certifi-where=/Users/david.capella/.venv/lib/python3.11/site-packages/certifi/cacert.pem (logger.py:_log_environment:271:MainThread)
+2026-07-22 16:31:50,344 - tcex -     INFO - tcex-version=4.0.10 (logger.py:_log_tcex_version:298:MainThread)
+2026-07-22 16:31:50,350 - tcex -     INFO - feature=external-session, action=applying-retry, retries=3, backoff-factor=0.3, status-forcelist=None, url=https:// (external_session.py:retry:374:MainThread)
+2026-07-22 16:31:50,351 - tcex -    DEBUG - feature=token, action=token-register, key=MainThread, token=A****=, expiration=1942435910 (token.py:register_token:154:MainThread)
+2026-07-22 16:31:50,352 - tcex -    DEBUG - feature=token, event=renewal-monitor-started (token.py:token_renewal_monitor:258:token-renewal)
+2026-07-22 16:31:50,667 - tcex -    DEBUG - curl -X GET -H 'Accept: */*' -H 'Accept-Encoding: deflate' -H 'Authorization: T****=' -H 'Connection: keep-alive' -H 'Timestamp: 1784755910' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --insecure https://uat-1.threatconnect.com/api/v3/indicators?tql=%28ownerName+in+%28%22CTI+Lifecycle%22%29%29+and+tag+%3D+%22enrichment%3Apolarity%22&resultLimit=100 (tc_session.py:_log_curl:76:MainThread)
+2026-07-22 16:31:50,668 - tcex -    DEBUG - feature=tc-session, method=GET, request-url=https://uat-1.threatconnect.com/api/v3/indicators?tql=%28ownerName+in+%28%22CTI+Lifecycle%22%29%29+and+tag+%3D+%22enrichment%3Apolarity%22&resultLimit=100, status-code=200, elapsed=0:00:00.307977 (tc_session.py:request:100:MainThread)
+2026-07-22 16:31:50,669 - tcex -     INFO - Found 12 already-enriched summar(ies) in owner CTI Lifecycle (app.py:run:35:MainThread)
+2026-07-22 16:31:51,839 - tcex -    DEBUG - curl -X GET -H 'Accept: */*' -H 'Accept-Encoding: deflate' -H 'Authorization: T****=' -H 'Connection: keep-alive' -H 'Timestamp: 1784755910' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --insecure https://uat-1.threatconnect.com/api/v3/indicators?tql=%28hasGroup%28hasIntelRequirement%28id%3D13510798885004707%29%29%29+and+%28not+hasIntelRequirement%28id%3D13510798885004707%29%29+and+%28calScore+%3E+200%29+and+%28summary+not+in+%28%22014CDA697A053D39F0504F626CB4AA4B%22%2C%222915B3F8B703EB744FC54C81F4A9C67F%22%2C%222C214494FD0BAD31473CA8ADCE78A4F50847876584571E66AADEAE70827EC2DC%22%2C%223711004997A5EFC09E3EEFAB8B2FA91F%22%2C%22436CFCE71290C2FC2F2C362541DB68CED6847C66A73B55487E5E5C73B0636C85%22%2C%226A9AC6B3FFF7B695DBD4DF6FF7F6C516%22%2C%22A511BE5164DC1122FB5A7DAA3EEF9467E43D8458425B15A640235796006590C9%22%2C%22A997A7AAE727D2C12CCE80FE3607317775A4DF3E%22%2C%22BD1F381E5A3DB22E88776B7873D4D2835E9A1EC620571D2B1DA0C58F81C84A56%22%2C%22C1F278F88275E07CC03BD390FE1CBEEDD55933110C6FD16DE4187F4C4AAF42B9%22%2C%22D4A7E9F107FE40C1A5D0139C6C6E25BF6BF57F61FEFF090BEE28F476BB3CC3C2%22%2C%22F08B17856616D66492A24DCED27F788E235F35F42FA7CD10F315000D3A2F4C03%22%29%29&sorting=calScore+DESC&fields=tags%2CassociatedGroups&resultLimit=100 (tc_session.py:_log_curl:76:MainThread)
+2026-07-22 16:31:51,840 - tcex -    DEBUG - feature=tc-session, method=GET, request-url=https://uat-1.threatconnect.com/api/v3/indicators?tql=%28hasGroup%28hasIntelRequirement%28id%3D13510798885004707%29%29%29+and+%28not+hasIntelRequirement%28id%3D13510798885004707%29%29+and+%28calScore+%3E+200%29+and+%28summary+not+in+%28%22014CDA697A053D39F0504F626CB4AA4B%22%2C%222915B3F8B703EB744FC54C81F4A9C67F%22%2C%222C214494FD0BAD31473CA8ADCE78A4F50847876584571E66AADEAE70827EC2DC%22%2C%223711004997A5EFC09E3EEFAB8B2FA91F%22%2C%22436CFCE71290C2FC2F2C362541DB68CED6847C66A73B55487E5E5C73B0636C85%22%2C%226A9AC6B3FFF7B695DBD4DF6FF7F6C516%22%2C%22A511BE5164DC1122FB5A7DAA3EEF9467E43D8458425B15A640235796006590C9%22%2C%22A997A7AAE727D2C12CCE80FE3607317775A4DF3E%22%2C%22BD1F381E5A3DB22E88776B7873D4D2835E9A1EC620571D2B1DA0C58F81C84A56%22%2C%22C1F278F88275E07CC03BD390FE1CBEEDD55933110C6FD16DE4187F4C4AAF42B9%22%2C%22D4A7E9F107FE40C1A5D0139C6C6E25BF6BF57F61FEFF090BEE28F476BB3CC3C2%22%2C%22F08B17856616D66492A24DCED27F788E235F35F42FA7CD10F315000D3A2F4C03%22%29%29&sorting=calScore+DESC&fields=tags%2CassociatedGroups&resultLimit=100, status-code=200, elapsed=0:00:01.166814 (tc_session.py:request:100:MainThread)
+2026-07-22 16:31:51,843 - tcex -     INFO - Fetched 100 indicator(s) for PIR 13510798885004707 (app.py:run:48:MainThread)
+2026-07-22 16:31:52,731 - tcex -    DEBUG - curl -X GET -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Type: application/vnd.api+json' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' https://polaritydm.polarity.io/api/integrations (external_session.py:request:295:MainThread)
+2026-07-22 16:31:52,732 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations, status_code=200, elapsed=0:00:00.689299 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:52,876 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/google_threat_intelligence_3_1_2_node_18_bf9adae49f_1764076419232/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:52,878 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/google_threat_intelligence_3_1_2_node_18_bf9adae49f_1764076419232/lookup, status_code=200, elapsed=0:00:00.133943 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:53,387 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/jira_3_7_7_node_18_932bc9b8be_1762374692208/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:53,389 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/jira_3_7_7_node_18_932bc9b8be_1762374692208/lookup, status_code=200, elapsed=0:00:00.506233 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:53,505 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/hybrid_analysis_3_2_1_node_18_1762946587850/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:53,506 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/hybrid_analysis_3_2_1_node_18_1762946587850/lookup, status_code=200, elapsed=0:00:00.110447 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:53,627 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/threatconnect_3_8_1_node_18_06df33889f_1760462039519/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:53,628 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/threatconnect_3_8_1_node_18_06df33889f_1760462039519/lookup, status_code=200, elapsed=0:00:00.116790 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:53,706 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/google_bigquery_3_0_0_node_18_c150bfc242_1770110718833/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:53,708 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/google_bigquery_3_0_0_node_18_c150bfc242_1770110718833/lookup, status_code=422, elapsed=0:00:00.074064 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:53,709 - tcex -  WARNING - Polarity lookup failed integration=google_bigquery_3_0_0_node_18_c150bfc242_1770110718833 status=422 reason=Unprocessable Entity (polarity.py:lookup_all:87:MainThread)
+2026-07-22 16:31:53,808 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/threatconnect_cal_3_1_0_node_18_76b8af3998_1760462030015/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:53,809 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/threatconnect_cal_3_1_0_node_18_76b8af3998_1760462030015/lookup, status_code=200, elapsed=0:00:00.095464 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:53,898 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/virustotal_3_7_5_node_18_f251499708_1764076469677/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:53,899 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/virustotal_3_7_5_node_18_f251499708_1764076469677/lookup, status_code=200, elapsed=0:00:00.085580 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:54,009 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/dataminr_pulse_3_1_15_node_18_1768600069595/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:54,011 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/dataminr_pulse_3_1_15_node_18_1768600069595/lookup, status_code=200, elapsed=0:00:00.106042 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,387 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/threatconnect_ioc_submission_3_3_1_node_18_330d3bd51b_1760462054029/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:55,388 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/threatconnect_ioc_submission_3_3_1_node_18_330d3bd51b_1760462054029/lookup, status_code=200, elapsed=0:00:01.372723 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,474 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/recorded_future_3_5_3_node_18_625687d3d3_1764076628769/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:55,476 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/recorded_future_3_5_3_node_18_625687d3d3_1764076628769/lookup, status_code=200, elapsed=0:00:00.082337 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,553 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/circl_hashlookup_3_0_3_node_18_1762946118407/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:55,554 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/circl_hashlookup_3_0_3_node_18_1762946118407/lookup, status_code=200, elapsed=0:00:00.073424 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,652 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/cyberchef_3_2_13_node_18_300498cdf1_1762946863609/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:55,653 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/cyberchef_3_2_13_node_18_300498cdf1_1762946863609/lookup, status_code=200, elapsed=0:00:00.094970 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,835 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/flashpoint_3_4_0_node_18_f7fea5e788_1764076480068/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:55,836 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/flashpoint_3_4_0_node_18_f7fea5e788_1764076480068/lookup, status_code=422, elapsed=0:00:00.178514 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,837 - tcex -  WARNING - Polarity lookup failed integration=flashpoint_3_4_0_node_18_f7fea5e788_1764076480068 status=422 reason=Unprocessable Entity (polarity.py:lookup_all:87:MainThread)
+2026-07-22 16:31:55,974 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/slack_3_3_0_node_18_988647b68b_1764077250224/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:55,975 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/slack_3_3_0_node_18_988647b68b_1764077250224/lookup, status_code=422, elapsed=0:00:00.134613 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:55,976 - tcex -  WARNING - Polarity lookup failed integration=slack_3_3_0_node_18_988647b68b_1764077250224 status=422 reason=Unprocessable Entity (polarity.py:lookup_all:87:MainThread)
+2026-07-22 16:31:56,142 - tcex -    DEBUG - curl -X POST -H 'Accept: application/vnd.api+json' -H 'Accept-Encoding: deflate' -H 'Authorization: B****Q' -H 'Connection: keep-alive' -H 'Content-Length: 168' -H 'Content-Type: application/vnd.api+json' -H 'Cookie: _****k' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file https://polaritydm.polarity.io/api/integrations/dataminr_3_0_0_node_18_b529fb7417_1760461895651/lookup (external_session.py:request:295:MainThread)
+2026-07-22 16:31:56,143 - tcex -    DEBUG - feature=external-session, request-url=https://polaritydm.polarity.io/api/integrations/dataminr_3_0_0_node_18_b529fb7417_1760461895651/lookup, status_code=200, elapsed=0:00:00.163378 (external_session.py:request:306:MainThread)
+2026-07-22 16:31:56,756 - tcex -    DEBUG - curl -X POST -H 'Accept: */*' -H 'Accept-Encoding: deflate' -H 'Authorization: T****=' -H 'Connection: keep-alive' -H 'Content-Length: 147511' -H 'Content-Type: application/json' -H 'Timestamp: 1784755916' -H 'User-Agent: TcEx/4.0.10, PIR IOC Enrichment (Polarity)/1.0.0' --data-binary @/tmp/body-file --insecure https://uat-1.threatconnect.com/api/v3/indicators (tc_session.py:_log_curl:76:MainThread)
+2026-07-22 16:31:56,757 - tcex -    DEBUG - feature=tc-session, method=POST, request-url=https://uat-1.threatconnect.com/api/v3/indicators, status-code=400, elapsed=0:00:00.607904 (tc_session.py:request:100:MainThread)
+2026-07-22 16:31:56,759 - tcex -    ERROR - Generic Error.  See logs for more details (400 Client Error: Bad Request for url: https://uat-1.threatconnect.com/api/v3/indicators). (__init__.py:exception:1524:MainThread)
+Traceback (most recent call last):
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/run.py", line 42, in launch
+    self.app.run()
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/app.py", line 78, in run
+    create_indicator(self.tcex.session.tc, ioc, owner, content)
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/helper/writeback.py", line 67, in create_indicator
+    response.raise_for_status()
+  File "/Users/david.capella/.venv/lib/python3.11/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://uat-1.threatconnect.com/api/v3/indicators
+2026-07-22 16:31:56,763 - tcex -    DEBUG - Token renewal barrier enabled. (token.py:token_renewal_monitor:265:token-renewal)
+2026-07-22 16:31:56,765 - tcex -    ERROR - exit-message="Generic Error.  See logs for more details (400 Client Error: Bad Request for url: https://uat-1.threatconnect.com/api/v3/indicators)." (exit.py:_exit_msg_handler:149:MainThread)
+2026-07-22 16:31:56,766 - tcex -    DEBUG - Token renewal barrier disabled. (token.py:token_renewal_monitor:301:token-renewal)
+2026-07-22 16:31:56,767 - tcex -    DEBUG - Token renewal monitor shutdown signal received (token.py:token_renewal_monitor:309:token-renewal)
+2026-07-22 16:31:56,767 - tcex -     INFO - exit-code=1 (Failure) (exit.py:_exit:66:MainThread)
+2026-07-22 16:49:07,509 - tcex -     INFO - app-name="PIR IOC Enrichment (Polarity)" (logger.py:_log_app_data:246:MainThread)
+2026-07-22 16:49:07,509 - tcex -     INFO - app-id=1814ffd6-1202-42a4-aea6-6e348c4ad310 (logger.py:_log_app_data:248:MainThread)
+2026-07-22 16:49:07,510 - tcex -     INFO - app-features=aotExecutionEnabled,appBuilderCompliant,CALSettings,fileParams (logger.py:_log_app_data:250:MainThread)
+2026-07-22 16:49:07,510 - tcex -     INFO - app-minimum-threatconnect-version=7.2.0 (logger.py:_log_app_data:251:MainThread)
+2026-07-22 16:49:07,510 - tcex -     INFO - app-runtime-level=Organization (logger.py:_log_app_data:252:MainThread)
+2026-07-22 16:49:07,511 - tcex -     INFO - app-version=1.0.0 (logger.py:_log_app_data:256:MainThread)
+2026-07-22 16:49:07,535 - tcex -     INFO - platform="macOS-26.5.2-arm64-arm-64bit" (logger.py:_log_platform:275:MainThread)
+2026-07-22 16:49:07,535 - tcex -     INFO - pid=91805 (logger.py:_log_platform:276:MainThread)
+2026-07-22 16:49:07,535 - tcex -     INFO - python-version=3.11.15 (logger.py:_log_python_version:280:MainThread)
+2026-07-22 16:49:07,536 - tcex -     INFO - env-all-proxy=None (logger.py:_log_environment:262:MainThread)
+2026-07-22 16:49:07,536 - tcex -     INFO - env-http-proxy=None (logger.py:_log_environment:263:MainThread)
+2026-07-22 16:49:07,536 - tcex -     INFO - env-https-proxy=None (logger.py:_log_environment:264:MainThread)
+2026-07-22 16:49:07,537 - tcex -     INFO - env-no-proxy=None (logger.py:_log_environment:265:MainThread)
+2026-07-22 16:49:07,537 - tcex -     INFO - env-curl-ca-bundle=None (logger.py:_log_environment:266:MainThread)
+2026-07-22 16:49:07,537 - tcex -     INFO - env-request-ca-bundle=None (logger.py:_log_environment:267:MainThread)
+2026-07-22 16:49:07,538 - tcex -     INFO - env-ssl-cert-file=None (logger.py:_log_environment:268:MainThread)
+2026-07-22 16:49:07,538 - tcex -     INFO - certifi-where=/Users/david.capella/.venv/lib/python3.11/site-packages/certifi/cacert.pem (logger.py:_log_environment:271:MainThread)
+2026-07-22 16:49:07,538 - tcex -     INFO - tcex-version=4.0.10 (logger.py:_log_tcex_version:298:MainThread)
+2026-07-22 16:49:07,541 - tcex -    ERROR - Generic Error.  See logs for more details (3 validation errors for InputModel
+tc_cal_host
+  field required (type=value_error.missing)
+tc_cal_token
+  field required (type=value_error.missing)
+tc_cal_timestamp
+  field required (type=value_error.missing)). (__init__.py:exception:1524:MainThread)
+Traceback (most recent call last):
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/run.py", line 39, in launch
+    self.app.setup()
+    ^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.15/Frameworks/Python.framework/Versions/3.11/lib/python3.11/functools.py", line 1001, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/run.py", line 22, in app
+    return App(self.tcex)
+           ^^^^^^^^^^^^^^
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/job_app.py", line 20, in __init__
+    self.in_unresolved = self.tcex.inputs.model_unresolved
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/deps/tcex/pleb/cached_property.py", line 23, in __get__
+    return super().__get__(instance, owner)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.15/Frameworks/Python.framework/Versions/3.11/lib/python3.11/functools.py", line 1001, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/Users/david.capella/Github/org-apps/pir-enrichment/deps/tcex/input/input.py", line 295, in model_unresolved
+    return input_model(self.models)(**self.contents)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pydantic/main.py", line 364, in pydantic.main.BaseModel.__init__
+pydantic.error_wrappers.ValidationError: 3 validation errors for InputModel
+tc_cal_host
+  field required (type=value_error.missing)
+tc_cal_token
+  field required (type=value_error.missing)
+tc_cal_timestamp
+  field required (type=value_error.missing)
+2026-07-22 16:49:07,543 - tcex -    DEBUG - feature=token, action=token-register, key=MainThread, token=A****=, expiration=1942436947 (token.py:register_token:154:MainThread)
+2026-07-22 16:49:07,543 - tcex -    ERROR - exit-message="Generic Error.  See logs for more details (3 validation errors for InputModel,tc_cal_host,  field required (type=value_error.missing),tc_cal_token,  field required (type=value_error.missing),tc_cal_timestamp,  field required (type=value_error.missing))." (exit.py:_exit_msg_handler:149:MainThread)
+2026-07-22 16:49:07,543 - tcex -    DEBUG - feature=token, event=renewal-monitor-started (token.py:token_renewal_monitor:258:token-renewal)
+2026-07-22 16:49:07,544 - tcex -    DEBUG - Token renewal barrier enabled. (token.py:token_renewal_monitor:265:token-renewal)
+2026-07-22 16:49:07,544 - tcex -     INFO - exit-code=1 (Failure) (exit.py:_exit:66:MainThread)
+2026-07-22 16:49:07,545 - tcex -    DEBUG - Token renewal barrier disabled. (token.py:token_renewal_monitor:301:token-renewal)
+2026-07-22 16:49:07,546 - tcex -    DEBUG - Token renewal monitor shutdown signal received (token.py:token_renewal_monitor:309:token-renewal)

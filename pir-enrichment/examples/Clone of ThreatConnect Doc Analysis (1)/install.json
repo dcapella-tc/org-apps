@@ -1,0 +1,606 @@
+{
+  "appId": "450a7097-7a03-4639-9821-efa2fe26cabc",
+  "programName": "TCAB_-_2d5812e5-d28c-4ac7-ae58-50e41c941241",
+  "displayName": "Clone of ThreatConnect Doc Analysis",
+  "programVersion": "0.1.0",
+  "minServerVersion": "7.2.0",
+  "programLanguage": "PYTHON",
+  "programMain": "run.py",
+  "languageVersion": "3.11.0",
+  "listDelimiter": "|",
+  "runtimeLevel": "Playbook",
+  "allowOnDemand": true,
+  "allowRunAsUser": false,
+  "apiUserTokenParam": false,
+  "note": "Use the CAL Document Analysis API to identify and extract Indicators, MITRE ATT\u0026CK patterns, Intrusion Sets, and Malware families that are potentially referenced within a document.\u003cbr /\u003e This application specifically requires **TEXT** input for its analysis process.\u003cbr /\u003e\u003cbr /\u003e Therefore, if you have binary files as input, such as PDFs, DOCX files, or other formats, you must first convert these files into plain text.\u003cbr /\u003e To do this, use a separate text extraction application (such as a \\\"Content Parser\\\" Playbook App) to extract the readable text from the binary file, and only then can the document be analyzed using the CAL Document Analysis API.\u003cbr /\u003e\u003cbr /\u003e Some Apps have binary outputs that contain text, this App will accept these binary inputs and process them.\u003cbr /\u003e\u003cbr /\u003eThe ThreatConnect Doc Analysis App has an initial limit of 1000 API calls per day per instance. Please reach out to your Customer Success Manager if additional calls are needed. \u003cbr /\u003e\u003cbr /\u003eIf a document is larger than 100 000 characters, the first 100 000 will be used. \u003cbr /\u003e\u003cbr /\u003eThere are five features available for analysis:\u003cbr /\u003e\u003cbr /\u003e* **Alias Extraction**  - Extracts explicit \u003ca href\u003d\"https://attack.mitre.org/matrices/enterprise/\" target\u003d\"_blank\"\u003eMITRE ATT\u0026CK Enterprise techniques\u003c/a\u003e, sub-techniques, tactics, malware, tools, intrusion sets, and courses of action, as well as CVEs, from the provided content.\u003cbr /\u003e * **IOC Extraction** - Extracts explicit indicators within the content, including addresses, file hashes (MD5, SHA256, and SHA1), CIDRs, email addresses, ASNs, hosts, and URLs. To reduce noise, items from the CAL Safelist (that is, items marked with the \u003ca href\u003d\"https://knowledge.threatconnect.com/docs/cal-classifiers-glossary\" target\u003d\"_blank\"\u003eStatus.Safelist CAL classifier\u003c/a\u003e) are excluded. Only hosts and email addresses with valid top-level domains (TLDs) from the Internet Assigned Numbers Authority (IANA) are included.\u003cbr /\u003e * **AI MITRE ATT\u0026CK Classification** - Labels report text identified as MITRE ATT\u0026CK techniques and sub-techniques by \u003ca href\u003d\"https://knowledge.threatconnect.com/docs/mitre-attack-ai-classification-in-threatconnect\" targe\u003d\"_blank\"\u003eThreatConnect MITRE ATT\u0026CK AI classification feature\u003c/a\u003e.\u003cbr /\u003e * **AI Summary Generation** - Uses an artificial intelligence (AI) large language model (LLM) to summarize reports into 200-word summaries and three to five bullet points.\u003cbr /\u003e * **AI NAICS Industry Classification** - Uses \u003ca href\u003d\"https://knowledge.threatconnect.com/docs/cal-atl-industry-classification\"\u003eThreatConnect MITRE ATT\u0026CK AI classification\u003c/a\u003e feature to classify subsector-related industries and their related sectors based on document content.\n\nThe following actions are included:\n\n-   **Analyze Document** - Use CAL Document Analysis API in order to identify Indicators, MITRE Attack Patterns, Intrusion Sets and Malware families that might be referenced within a document.\n",
+  "sdkVersion": "4.0.0",
+  "playbook": {
+    "type": "Utility",
+    "outputVariables": [
+      {
+        "name": "tc.tc_action",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.json.raw",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.input_length",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.input_truncated",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.summary",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.naics.codes",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.summary.bullets",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.address_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.address_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.email_address_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.email_address_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.file_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.file_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.host_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.host_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.url_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.url_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.asn_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.asn_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.cidr_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.cidr_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.email_subject_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.email_subject_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.hashtag_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.hashtag_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.mutex_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.mutex_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.registry_key_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.registry_key_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.user_agent_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.user_agent_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.cve_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.cve_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.malware_descriptions",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.malware_descriptions.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.malware_names",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.malware_names.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_descriptions",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_descriptions.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_tags",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_tags.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_descriptions.attackanalyzer",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_descriptions.attackanalyzer.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_tags.attackanalyzer",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_tags.attackanalyzer.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_descriptions.aliasextractor",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_descriptions.aliasextractor.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_tags.aliasextractor",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.attack_pattern_tags.aliasextractor.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.intrusion_set_names",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.intrusion_set_names.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.intrusion_set_descriptions",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.intrusion_set_descriptions.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tactic_names",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tactic_names.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tactic_descriptions",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tactic_descriptions.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tools_names",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tools_names.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tools_descriptions",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.tools_descriptions.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.course_of_action_names",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.course_of_action_names.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.course_of_action_descriptions",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.course_of_action_descriptions.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.md5_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.md5_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.sha1_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.sha1_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.sha256_array",
+        "type": "StringArray",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.sha256_array.count",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.zeroday.topic",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      },
+      {
+        "name": "tc.parsed.zeroday.summary",
+        "type": "String",
+        "intelType": [],
+        "encrypt": false
+      }
+    ]
+  },
+  "params": [
+    {
+      "name": "tc_action",
+      "type": "Choice",
+      "label": "Action",
+      "allowMultiple": false,
+      "encrypt": false,
+      "required": true,
+      "hidden": false,
+      "feedDeployer": false,
+      "note": "Use CAL Document Analysis API in order to identify Indicators, MITRE Attack Patterns, Intrusion Sets and Malware families that might be referenced within a document. The output consists of arrays of IOCs, CVEs and arrays of names and descriptions based on MITRE to support downstream creation of the following Group types: Malware, Attack Patterns, Intrusion Sets and Tactics.",
+      "sequence": 1,
+      "serviceConfig": false,
+      "setup": false,
+      "validValues": [
+        "Analyze Document"
+      ],
+      "playbookDataType": [],
+      "intelType": []
+    },
+    {
+      "name": "document",
+      "type": "String",
+      "label": "Document",
+      "allowMultiple": false,
+      "encrypt": false,
+      "required": true,
+      "hidden": false,
+      "feedDeployer": false,
+      "note": "The document to analyze in order to identify Indicators, MITRE Attack Patterns, Intrusion Sets, Malware families and Text Industries, as well as an A.I. summary",
+      "sequence": 2,
+      "serviceConfig": false,
+      "setup": false,
+      "validValues": [
+        "${TEXT}"
+      ],
+      "playbookDataType": [
+        "Binary",
+        "String",
+        "TCEntity"
+      ],
+      "intelType": []
+    },
+    {
+      "name": "features",
+      "type": "MultiChoice",
+      "label": "Features",
+      "default": "Alias Extraction|IOC Extraction|AI Summary Generation",
+      "allowMultiple": false,
+      "encrypt": false,
+      "required": true,
+      "hidden": false,
+      "feedDeployer": false,
+      "note": "The features that will be used to analyze the document. At least one is required.",
+      "sequence": 3,
+      "serviceConfig": false,
+      "setup": false,
+      "validValues": [
+        "Alias Extraction",
+        "IOC Extraction",
+        "AI MITRE ATT\u0026CK Classification",
+        "AI NAICS Industry Classification",
+        "AI Summary Generation"
+      ],
+      "playbookDataType": [
+        "StringArray"
+      ],
+      "intelType": []
+    },
+    {
+      "name": "additional_features",
+      "type": "Choice",
+      "label": "Additional Features",
+      "default": "None",
+      "allowMultiple": false,
+      "encrypt": false,
+      "required": false,
+      "hidden": false,
+      "feedDeployer": false,
+      "note": "Additional features for Doc Analysis",
+      "sequence": 4,
+      "serviceConfig": false,
+      "setup": false,
+      "validValues": [
+        "None",
+        "Zero Day (topic detector)",
+        "Zero Day Summary (includes topic detector)"
+      ],
+      "playbookDataType": [],
+      "intelType": []
+    },
+    {
+      "name": "fail_on_error",
+      "type": "Boolean",
+      "label": "Fail on error",
+      "default": "false",
+      "allowMultiple": false,
+      "encrypt": false,
+      "required": false,
+      "hidden": false,
+      "feedDeployer": false,
+      "note": "If not selected, the app will attempt to continue when an error is encountered.",
+      "sequence": 5,
+      "serviceConfig": false,
+      "setup": false,
+      "validValues": [],
+      "playbookDataType": [],
+      "intelType": []
+    },
+    {
+      "name": "auto_ingest",
+      "type": "Boolean",
+      "label": "Auto Ingest",
+      "default": "false",
+      "allowMultiple": false,
+      "encrypt": false,
+      "required": false,
+      "hidden": false,
+      "feedDeployer": false,
+      "viewRows": 1,
+      "note": "Do you want the groups and indicators to auto ingest along with enrichment?",
+      "sequence": 5,
+      "serviceConfig": false,
+      "setup": false,
+      "validValues": [],
+      "playbookDataType": [],
+      "intelType": []
+    }
+  ],
+  "feeds": [],
+  "repeatingMinutes": [],
+  "publishOutFiles": [],
+  "runtimeContext": [],
+  "deprecatesApps": [],
+  "features": [
+    "CALSettings",
+    "appBuilderCompliant",
+    "fileParams",
+    "layoutEnabledApp",
+    "redisPasswordSupport",
+    "runtimeVariables",
+    "secureParams"
+  ],
+  "labels": [
+    "analysis"
+  ]
+}

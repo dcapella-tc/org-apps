@@ -1,0 +1,334 @@
+{
+  "inputs": [
+    {
+      "parameters": [
+        {
+          "name": "tc_action"
+        }
+      ],
+      "sequence": 1,
+      "title": "Action"
+    },
+    {
+      "parameters": [
+        {
+          "display": "tc_action in ('Analyze Document')",
+          "name": "document"
+        },
+        {
+          "display": "tc_action in ('Analyze Document')",
+          "name": "features"
+        },
+        {
+          "display": "1",
+          "name": "additional_features"
+        }
+      ],
+      "sequence": 2,
+      "title": "Configure"
+    },
+    {
+      "parameters": [
+        {
+          "name": "fail_on_error"
+        }
+      ],
+      "sequence": 3,
+      "title": "Advanced"
+    }
+  ],
+  "outputs": [
+    {
+      "display": "1",
+      "name": "tc.tc_action"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.json.raw"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.input_length"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.input_truncated"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.summary"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.naics.codes"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.summary.bullets"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.address_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.address_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.email_address_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.email_address_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.file_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.file_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.host_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.host_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.url_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.url_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.asn_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.asn_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.cidr_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.cidr_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.email_subject_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.email_subject_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.hashtag_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.hashtag_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.mutex_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.mutex_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.registry_key_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.registry_key_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.user_agent_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.user_agent_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.cve_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.cve_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.malware_descriptions"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.malware_descriptions.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.malware_names"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.malware_names.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_descriptions"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_descriptions.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_tags"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_tags.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_descriptions.attackanalyzer"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_descriptions.attackanalyzer.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_tags.attackanalyzer"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_tags.attackanalyzer.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_descriptions.aliasextractor"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_descriptions.aliasextractor.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_tags.aliasextractor"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.attack_pattern_tags.aliasextractor.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.intrusion_set_names"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.intrusion_set_names.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.intrusion_set_descriptions"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.intrusion_set_descriptions.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tactic_names"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tactic_names.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tactic_descriptions"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tactic_descriptions.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tools_names"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tools_names.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tools_descriptions"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.tools_descriptions.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.course_of_action_names"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.course_of_action_names.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.course_of_action_descriptions"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.course_of_action_descriptions.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.md5_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.md5_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.sha1_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.sha1_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.sha256_array"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.sha256_array.count"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.zeroday.topic"
+    },
+    {
+      "display": "tc_action in ('Analyze Document')",
+      "name": "tc.parsed.zeroday.summary"
+    }
+  ]
+}
