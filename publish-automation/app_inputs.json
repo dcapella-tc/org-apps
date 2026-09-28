@@ -1,0 +1,6 @@
+{
+  "inputs": {
+    "request_json": "{\"excludedSecurityLabels\":[\"TLP:RED\"],\"owners\":[\"Capella Community\",\"Capella Source\"],\"updateIfExists\":true,\"includeTags\":true,\"includeAttributes\":true,\"includeAssociatedIndicators\":true,\"includeAssociatedGroups\":true,\"custom\":{\"source\":\"security-export-form\",\"group_id\":2251799821773808}}"
+  },
+  "stage": {}
+}

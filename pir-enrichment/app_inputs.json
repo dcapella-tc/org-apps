@@ -1,0 +1,11 @@
+{
+  "inputs": {
+    "tc_log_level": "debug",
+    "pir_id": "13510798885004707",
+    "tc_owner": "CTI Lifecycle",
+    "polarity_base_url": "https://polaritydm.polarity.io/api",
+    "polarity_api_key": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJQb2xhcml0eVdlYi5wcm9kIiwiZXhwIjoxNzg1NTE1MDQwLCJpYXQiOjE3ODA1MzI2ODIsImlzcyI6IlBvbGFyaXR5V2ViLnByb2QiLCJqdGkiOiJiMWExMTY3Yi0yYzVkLTQxYTAtODVkZC03YTA0ZDU5OWY3MDciLCJuYmYiOjE3ODA1MzI2ODEsInN1YiI6IlVzZXI6MTEyIiwidHlwIjoiYXBpIn0.bMfo6tH9ZYOzR8u1WqsCpWzhkfEYeGmYQgnFxyb_XGnZourR5GQ7nBaHBoPUv5Z-l6CvN8ruM179-qdWdrhpcQ",
+    "result_limit": "100"
+  },
+  "stage": {}
+}

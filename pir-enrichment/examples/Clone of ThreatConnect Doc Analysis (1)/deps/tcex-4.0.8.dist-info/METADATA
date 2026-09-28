@@ -1,0 +1,104 @@
+Metadata-Version: 2.4
+Name: tcex
+Version: 4.0.8
+Summary: ThreatConnect Exchange App Framework
+Author-email: ThreatConnect <support@threatconnect.com>
+License: Apache-2.0
+Project-URL: Documentation, https://threatconnect.readme.io/docs/overview
+Project-URL: Release Notes, https://threatconnect.readme.io/docs/release-notes
+Project-URL: Source, https://github.com/ThreatConnect-Inc/tcex
+Keywords: exchange,tcex,threatconnect
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Security
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: arrow>=1.3.0
+Requires-Dist: black>=25.1.0
+Requires-Dist: inflection>=0.5.1
+Requires-Dist: isort>=6.0.0
+Requires-Dist: jmespath>=1.0.1
+Requires-Dist: paho-mqtt<2.0.0
+Requires-Dist: pyaes>=1.6.1
+Requires-Dist: pydantic<2.0.0
+Requires-Dist: python-dateutil>=2.9.0.post0
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: redis<5.0.0
+Requires-Dist: requests>=2.32.3
+Requires-Dist: rich>=13.9.4
+Requires-Dist: semantic-version>=2.10.0
+Requires-Dist: wrapt>=1.17.2
+
+# tcex - ThreatConnect Exchange App Framework
+
+The ThreatConnect&trade; TcEx App Framework provides functionality for writing ThreatConnect Exchange Apps.
+
+## Requirements
+
+ * arrow (https://pypi.python.org/pypi/arrow/)
+ * black (https://pypi.org/project/black/)
+ * inflection (https://pypi.org/project/inflection/)
+ * isort (https://pypi.org/project/isort/)
+ * jmespath (https://pypi.org/project/jmespath/)
+ * paho-mqtt (https://pypi.org/project/paho-mqtt/)
+ * pyaes (https://pypi.org/project/pyaes/)
+ * pydantic (https://pypi.org/project/pydantic/)
+ * python-dateutil (https://pypi.python.org/pypi/python-dateutil/)
+ * pyyaml (https://pypi.python.org/pypi/pyyaml/)
+ * redis (https://pypi.python.org/pypi/redis/)
+ * requests (https://pypi.python.org/pypi/requests/)
+ * rich (https://pypi.python.org/pypi/rich/)
+ * semantic_version (https://pypi.org/project/semantic-version/)
+ * wrapt (https://pypi.org/project/wrapt/)
+
+### Development Requirements
+
+ * bandit (https://pypi.org/project/bandit/)
+ * pre-commit (https://pypi.org/project/pre-commit/)
+ * pyright (https://pypi.org/project/pyright/)
+ * pyupgrade (https://pypi.org/project/pyupgrade/)
+ * ruff (https://pypi.org/project/ruff/)
+ * typer (https://pypi.python.org/pypi/typer/)
+
+### Test Requirements
+
+ * deepdiff (https://pypi.org/project/deepdiff/)
+ * fakeredis (https://pypi.org/project/fakeredis/)
+ * pytest (https://pypi.org/project/pytest/)
+ * pytest-cov (https://pypi.org/project/pytest-cov/)
+ * pytest-html (https://pypi.org/project/pytest-html/)
+ * pytest-ordering (https://pypi.org/project/pytest-ordering/)
+ * pytest-xdist (https://pypi.org/project/pytest-xdist/)
+
+## Installation
+
+```bash
+pip install tcex
+```
+
+### Development / Testing
+
+ * uv (https://pypi.python.org/pypi/uv/)
+
+```bash
+uv sync
+```
+
+## Documentation
+
+https://threatconnect.readme.io/docs/overview
+
+## Release Notes
+
+https://threatconnect.readme.io/docs/release-notes
+
+## Contact
+
+If you have any questions, bugs, or requests please contact support@threatconnect.com

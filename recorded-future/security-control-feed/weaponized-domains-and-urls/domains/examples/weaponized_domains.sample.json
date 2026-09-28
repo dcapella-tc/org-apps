@@ -1,0 +1,91 @@
+{
+  "count": 133479,
+  "top_keys": [
+    "count",
+    "results"
+  ],
+  "n_records": 133479,
+  "field_presence": {
+    "domain": 133479,
+    "last_seen": 133479,
+    "service_provider": 133479,
+    "detection_strings": 133479
+  },
+  "results": [
+    {
+      "domain": "account63324.1337.cx",
+      "last_seen": "2026-09-13",
+      "service_provider": "Afraid.org",
+      "detection_strings": {
+        "phishing site": true,
+        "spam site": false,
+        "spam image": false,
+        "mining site": false,
+        "suspicious site": false,
+        "malware site": false,
+        "malware hd site": false,
+        "fraudulent site": true
+      }
+    },
+    {
+      "domain": "crelan.24-7.ro",
+      "last_seen": "2026-09-10",
+      "service_provider": "Afraid.org",
+      "detection_strings": {
+        "phishing site": true,
+        "spam site": false,
+        "spam image": false,
+        "mining site": false,
+        "suspicious site": false,
+        "malware site": false,
+        "malware hd site": false,
+        "fraudulent site": false
+      }
+    },
+    {
+      "domain": "spatlfy.404.mn",
+      "last_seen": "2026-09-13",
+      "service_provider": "Afraid.org",
+      "detection_strings": {
+        "phishing site": true,
+        "spam site": false,
+        "spam image": false,
+        "mining site": false,
+        "suspicious site": false,
+        "malware site": false,
+        "malware hd site": false,
+        "fraudulent site": true
+      }
+    },
+    {
+      "domain": "membership.404.mn",
+      "last_seen": "2026-09-11",
+      "service_provider": "Afraid.org",
+      "detection_strings": {
+        "phishing site": true,
+        "spam site": false,
+        "spam image": false,
+        "mining site": false,
+        "suspicious site": false,
+        "malware site": false,
+        "malware hd site": false,
+        "fraudulent site": true
+      }
+    },
+    {
+      "domain": "update415663.4040.idv.tw",
+      "last_seen": "2026-09-13",
+      "service_provider": "Afraid.org",
+      "detection_strings": {
+        "phishing site": true,
+        "spam site": false,
+        "spam image": false,
+        "mining site": false,
+        "suspicious site": false,
+        "malware site": false,
+        "malware hd site": false,
+        "fraudulent site": true
+      }
+    }
+  ]
+}

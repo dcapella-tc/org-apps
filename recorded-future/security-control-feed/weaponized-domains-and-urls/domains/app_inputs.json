@@ -1,0 +1,10 @@
+{
+  "inputs": {
+    "tc_logging_level": "debug",
+    "tc_owner": "Recorded Future - Security Control Feeds",
+    "rf_token": "f032dee2c3e448f5a059966fc409625a",
+    "rating": "3.0",
+    "confidence": "50"
+  },
+  "stage": {}
+}

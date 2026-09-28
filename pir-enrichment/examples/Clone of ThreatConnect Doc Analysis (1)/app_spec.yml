@@ -1,0 +1,252 @@
+allowOnDemand: true
+appId: 450a7097-7a03-4639-9821-efa2fe26cabc
+category: Utility
+displayName: ThreatConnect Doc Analysis
+features:
+- CALSettings
+- appBuilderCompliant
+- fileParams
+- layoutEnabledApp
+- redisPasswordSupport
+- runtimeVariables
+labels:
+- analysis
+languageVersion: '3.11'
+listDelimiter: '|'
+minServerVersion: 7.2.0
+note: Use the CAL Document Analysis API to identify and extract Indicators, MITRE
+  ATT&CK patterns, Intrusion Sets, and Malware families that are potentially referenced
+  within a document.<br /> This application specifically requires **TEXT** input for
+  its analysis process.<br /><br /> Therefore, if you have binary files as input,
+  such as PDFs, DOCX files, or other formats, you must first convert these files into
+  plain text.<br /> To do this, use a separate text extraction application (such as
+  a \"Content Parser\" Playbook App) to extract the readable text from the binary
+  file, and only then can the document be analyzed using the CAL Document Analysis
+  API.<br /><br /> Some Apps have binary outputs that contain text, this App will
+  accept these binary inputs and process them.<br /><br />The ThreatConnect Doc Analysis
+  App has an initial limit of 1000 API calls per day per instance. Please reach out
+  to your Customer Success Manager if additional calls are needed. <br /><br />If
+  a document is larger than 100 000 characters, the first 100 000 will be used. <br
+  /><br />There are five features available for analysis:<br /><br />* **Alias Extraction**  -
+  Extracts explicit <a href="https://attack.mitre.org/matrices/enterprise/" target="_blank">MITRE
+  ATT&CK Enterprise techniques</a>, sub-techniques, tactics, malware, tools, intrusion
+  sets, and courses of action, as well as CVEs, from the provided content.<br /> *
+  **IOC Extraction** - Extracts explicit indicators within the content, including
+  addresses, file hashes (MD5, SHA256, and SHA1), CIDRs, email addresses, ASNs, hosts,
+  and URLs. To reduce noise, items from the CAL Safelist (that is, items marked with
+  the <a href="https://knowledge.threatconnect.com/docs/cal-classifiers-glossary"
+  target="_blank">Status.Safelist CAL classifier</a>) are excluded. Only hosts and
+  email addresses with valid top-level domains (TLDs) from the Internet Assigned Numbers
+  Authority (IANA) are included.<br /> * **AI MITRE ATT&CK Classification** - Labels
+  report text identified as MITRE ATT&CK techniques and sub-techniques by <a href="https://knowledge.threatconnect.com/docs/mitre-attack-ai-classification-in-threatconnect"
+  targe="_blank">ThreatConnect MITRE ATT&CK AI classification feature</a>.<br /> *
+  **AI Summary Generation** - Uses an artificial intelligence (AI) large language
+  model (LLM) to summarize reports into 200-word summaries and three to five bullet
+  points.<br /> * **AI NAICS Industry Classification** - Uses <a href="https://knowledge.threatconnect.com/docs/cal-atl-industry-classification">ThreatConnect
+  MITRE ATT&CK AI classification</a> feature to classify subsector-related industries
+  and their related sectors based on document content.
+notePerAction:
+- action: Analyze Document
+  note: Use CAL Document Analysis API in order to identify Indicators, MITRE Attack
+    Patterns, Intrusion Sets and Malware families that might be referenced within
+    a document.
+outputData:
+- display: '1'
+  outputVariables:
+  - name: tc.tc_action
+- display: tc_action in ('Analyze Document')
+  outputVariables:
+  - name: tc.json.raw
+  - name: tc.input_length
+  - name: tc.input_truncated
+  - name: tc.summary
+  - name: tc.naics.codes
+    type: StringArray
+  - name: tc.summary.bullets
+    type: StringArray
+  - name: tc.parsed.address_array
+    type: StringArray
+  - name: tc.parsed.address_array.count
+  - name: tc.parsed.email_address_array
+    type: StringArray
+  - name: tc.parsed.email_address_array.count
+  - name: tc.parsed.file_array
+    type: StringArray
+  - name: tc.parsed.file_array.count
+  - name: tc.parsed.host_array
+    type: StringArray
+  - name: tc.parsed.host_array.count
+  - name: tc.parsed.url_array
+    type: StringArray
+  - name: tc.parsed.url_array.count
+  - name: tc.parsed.asn_array
+    type: StringArray
+  - name: tc.parsed.asn_array.count
+  - name: tc.parsed.cidr_array
+    type: StringArray
+  - name: tc.parsed.cidr_array.count
+  - name: tc.parsed.email_subject_array
+    type: StringArray
+  - name: tc.parsed.email_subject_array.count
+  - name: tc.parsed.hashtag_array
+    type: StringArray
+  - name: tc.parsed.hashtag_array.count
+  - name: tc.parsed.mutex_array
+    type: StringArray
+  - name: tc.parsed.mutex_array.count
+  - name: tc.parsed.registry_key_array
+    type: StringArray
+  - name: tc.parsed.registry_key_array.count
+  - name: tc.parsed.user_agent_array
+    type: StringArray
+  - name: tc.parsed.user_agent_array.count
+  - name: tc.parsed.cve_array
+    type: StringArray
+  - name: tc.parsed.cve_array.count
+  - name: tc.parsed.malware_descriptions
+    type: StringArray
+  - name: tc.parsed.malware_descriptions.count
+  - name: tc.parsed.malware_names
+    type: StringArray
+  - name: tc.parsed.malware_names.count
+  - name: tc.parsed.attack_pattern_descriptions
+    type: StringArray
+  - name: tc.parsed.attack_pattern_descriptions.count
+  - name: tc.parsed.attack_pattern_tags
+    type: StringArray
+  - name: tc.parsed.attack_pattern_tags.count
+  - name: tc.parsed.attack_pattern_descriptions.attackanalyzer
+    type: StringArray
+  - name: tc.parsed.attack_pattern_descriptions.attackanalyzer.count
+  - name: tc.parsed.attack_pattern_tags.attackanalyzer
+    type: StringArray
+  - name: tc.parsed.attack_pattern_tags.attackanalyzer.count
+  - name: tc.parsed.attack_pattern_descriptions.aliasextractor
+    type: StringArray
+  - name: tc.parsed.attack_pattern_descriptions.aliasextractor.count
+  - name: tc.parsed.attack_pattern_tags.aliasextractor
+    type: StringArray
+  - name: tc.parsed.attack_pattern_tags.aliasextractor.count
+  - name: tc.parsed.intrusion_set_names
+    type: StringArray
+  - name: tc.parsed.intrusion_set_names.count
+  - name: tc.parsed.intrusion_set_descriptions
+    type: StringArray
+  - name: tc.parsed.intrusion_set_descriptions.count
+  - name: tc.parsed.tactic_names
+    type: StringArray
+  - name: tc.parsed.tactic_names.count
+  - name: tc.parsed.tactic_descriptions
+    type: StringArray
+  - name: tc.parsed.tactic_descriptions.count
+  - name: tc.parsed.tools_names
+    type: StringArray
+  - name: tc.parsed.tools_names.count
+  - name: tc.parsed.tools_descriptions
+    type: StringArray
+  - name: tc.parsed.tools_descriptions.count
+  - name: tc.parsed.course_of_action_names
+    type: StringArray
+  - name: tc.parsed.course_of_action_names.count
+  - name: tc.parsed.course_of_action_descriptions
+    type: StringArray
+  - name: tc.parsed.course_of_action_descriptions.count
+  - name: tc.parsed.md5_array
+    type: StringArray
+  - name: tc.parsed.md5_array.count
+  - name: tc.parsed.sha1_array
+    type: StringArray
+  - name: tc.parsed.sha1_array.count
+  - name: tc.parsed.sha256_array
+    type: StringArray
+  - name: tc.parsed.sha256_array.count
+  - name: tc.parsed.zeroday.topic
+  - name: tc.parsed.zeroday.summary
+packageName: TCPB_-_ThreatConnect_Doc_Analysis
+programLanguage: PYTHON
+programMain: run.py
+programVersion: 1.0.6
+releaseNotes:
+- notes:
+  - APP-5083 - Additional features null check
+  version: 1.0.6 (2026-01-29)
+- notes:
+  - APP-4847 - Zero-Day topic detector and summary
+  version: 1.0.5 (2026-01-14)
+- notes:
+  - APP-4842 - Add default values for Features
+  version: 1.0.4 (2025-05-27)
+- notes:
+  - APP-4767 - Text Summary and Industry Extractor features added.
+  version: 1.0.3 (2025-04-28)
+- notes:
+  - APP-4631 - File Array output by MD5, SHA1, SHA256
+  version: 1.0.2 (2024-11-01)
+- notes:
+  - APP-4630 - Update CAL dev URL to production URL
+  version: 1.0.1 (2024-10-10)
+- notes:
+  - Initial release with support for Analyze Document action.
+  version: 1.0.0 (2024-04-12)
+runtimeLevel: Playbook
+schemaVersion: 1.1.0
+sdkVersion: 4.0.8
+sections:
+- params:
+  - label: Action
+    name: tc_action
+    note: 'Use CAL Document Analysis API in order to identify Indicators, MITRE Attack
+      Patterns, Intrusion Sets and Malware families that might be referenced within
+      a document. The output consists of arrays of IOCs, CVEs and arrays of names
+      and descriptions based on MITRE to support downstream creation of the following
+      Group types: Malware, Attack Patterns, Intrusion Sets and Tactics.'
+    required: true
+    type: Choice
+    validValues:
+    - Analyze Document
+  sectionName: Action
+- params:
+  - display: tc_action in ('Analyze Document')
+    label: Document
+    name: document
+    note: The document to analyze in order to identify Indicators, MITRE Attack Patterns,
+      Intrusion Sets, Malware families and Text Industries, as well as an A.I. summary
+    playbookDataType:
+    - Binary
+    - String
+    - TCEntity
+    required: true
+  - default: Alias Extraction|IOC Extraction|AI Summary Generation
+    display: tc_action in ('Analyze Document')
+    label: Features
+    name: features
+    note: The features that will be used to analyze the document. At least one is
+      required.
+    playbookDataType:
+    - StringArray
+    required: true
+    type: MultiChoice
+    validValues:
+    - Alias Extraction
+    - IOC Extraction
+    - AI MITRE ATT&CK Classification
+    - AI NAICS Industry Classification
+    - AI Summary Generation
+  - default: None
+    display: '1'
+    label: Additional Features
+    name: additional_features
+    note: Additional features for Doc Analysis
+    type: Choice
+    validValues:
+    - None
+    - Zero Day (topic detector)
+    - Zero Day Summary (includes topic detector)
+  sectionName: Configure
+- params:
+  - default: false
+    label: Fail on error
+    name: fail_on_error
+    note: If not selected, the app will attempt to continue when an error is encountered.
+    type: Boolean
+  sectionName: Advanced
