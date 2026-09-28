@@ -28,10 +28,16 @@ class App(JobApp):
 
         This method should contain the core logic of the App.
         """
+        tql = (self.in_.tql or '').strip()
+        if not tql:
+            tql = 'vtLastUpdated is null'
+        elif 'vtLastUpdated' not in tql:
+            tql = f'({tql}) and (vtLastUpdated is null)'
+
         indicators = []
         url = '/v3/indicators'
         params = {
-            'tql': self.in_.tql,
+            'tql': tql,
             'resultLimit': 10000,
         }
         while url:
