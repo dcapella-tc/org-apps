@@ -16,7 +16,7 @@ class App(PlaybookApp):
         try:
             self._results = publish(
                 self.tcex.session.tc,
-                self.tcex.batch,
+                self.tcex.api.tc.v2.batch,
                 self.in_.request_json,
                 Batch.generate_xid2,
             )

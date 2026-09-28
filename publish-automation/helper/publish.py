@@ -102,19 +102,22 @@ def publish(
             continue
 
         batch = batch_factory(owner)
-        batch.file_merge_mode('Merge')
-        stage_group(
-            batch,
-            source,
-            owner,
-            request,
-            generate_xid,
-            session,
-            xid=xid,
-            parent_xid=None,
-        )
-        _raise_batch_errors(batch.submit_all())
-        results.append({'owner': owner, 'xid': xid, 'status': 'published'})
+        try:
+            batch.file_merge_mode('Merge')
+            stage_group(
+                batch,
+                source,
+                owner,
+                request,
+                generate_xid,
+                session,
+                xid=xid,
+                parent_xid=None,
+            )
+            _raise_batch_errors(batch.submit_all())
+            results.append({'owner': owner, 'xid': xid, 'status': 'published'})
+        finally:
+            batch.close()
     return results
 
 
