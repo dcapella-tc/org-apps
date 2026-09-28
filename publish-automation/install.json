@@ -1,7 +1,7 @@
 {
   "allowOnDemand": true,
   "appId": "dbedd600-8815-42ce-9077-18d1cc8f1f13",
-  "category": "Utility",
+  "category": "Unsupported",
   "displayName": "Publish Automation",
   "features": [
     "aotExecutionEnabled",
