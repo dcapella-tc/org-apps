@@ -224,6 +224,9 @@ class App(JobApp):
 
     def _submit(self) -> None:
         """Submit the current batch job."""
+        if not bool(getattr(self.in_, 'log_batch_errors', False)):
+            self._queue_batch()
+            return
         batch_response = self.batch.submit_all()
         self.batch.close()
         errors = []
@@ -235,3 +238,15 @@ class App(JobApp):
             self.log.error('batch submission reported %d errors', len(errors))
             self.log.error('batch submission error: %s', errors[0])
         self.log.info('batch submission successful with %d items', success)
+
+    def _queue_batch(self) -> None:
+        """Upload batch chunks without waiting for indicator errors."""
+        batch_response = self.batch.submit_all(poll=False, errors=False)
+        self.batch.close()
+        ids = []
+        for item in batch_response or []:
+            batch_id = item.get('id') if isinstance(item, dict) else None
+            if not batch_id:
+                self.tcex.exit.exit(ExitCode.FAILURE, 'Batch upload was not accepted.')
+            ids.append(batch_id)
+        self.log.info('batch queued without waiting ids=%s', ids)

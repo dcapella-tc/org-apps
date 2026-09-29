@@ -39,8 +39,13 @@ Map the previous job `feed_hash` output into the `feed_hash` input for the next 
 | **Recorded Future API Token** | Token for `X-RFToken` (use Keychain or TEXT in production) |
 | **Rating** / **Confidence** | Passed to batch Host indicators |
 | **Feed Hash** | Optional. Leave empty on first run. Map the previous job `feed_hash` output into this input. An identical Fusion file skips UUID TQL and batch. |
+| **Log Batch Errors** | Off by default. When off, each batch is queued and the job continues; a rejected upload still fails the job immediately. When on, the job waits for each batch to finish and logs indicator errors. |
 
 ## Release notes
+
+### 1.1.0
+
+- Add **Log Batch Errors**. When unchecked, batch uploads are queued without waiting for indicator errors. A rejected upload still fails the job immediately.
 
 ### 1.0.0
 

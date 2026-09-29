@@ -62,6 +62,15 @@
       "type": "String"
     },
     {
+      "default": false,
+      "label": "Log Batch Errors",
+      "name": "log_batch_errors",
+      "note": "When off, queue each batch and continue. The job still fails immediately if ThreatConnect rejects the upload. When on, wait for each batch to finish and log indicator errors.",
+      "required": false,
+      "sequence": 6,
+      "type": "Boolean"
+    },
+    {
       "default": "warning",
       "label": "Logging Level",
       "name": "tc_log_level",
@@ -77,7 +86,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.0.0",
+  "programVersion": "1.1.0",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }

@@ -13,6 +13,7 @@ class AppBaseModel(AppOrganizationModel):
     rating: String = String('3.0')
     confidence: String = String('50')
     feed_hash: String = String('')
+    log_batch_errors: bool = False
 
 
 class AppInputs:
