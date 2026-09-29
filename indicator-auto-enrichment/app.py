@@ -16,10 +16,19 @@ class App(JobApp):
         except ValueError:
             data = {"message": response.text}
         if not response.ok:
-            if "exclusion list" not in str(data).lower():
-                print(data)
-                self.tcex.exit.exit(1, "See output log for more details...")
-            return {}
+            if "exclusion list" in str(data).lower():
+                return {}
+            messages = data.get('messages') if isinstance(data, dict) else None
+            if (
+                isinstance(messages, list)
+                and messages
+                and all('No enrichment data found' in str(message) for message in messages)
+            ):
+                count = data.get('unableEnrich', len(messages))
+                self.tcex.log.info(f'Enrichment returned no data for {count} indicators')
+                return data
+            print(data)
+            self.tcex.exit.exit(1, "See output log for more details...")
 
         return data
 
@@ -28,10 +37,16 @@ class App(JobApp):
 
         This method should contain the core logic of the App.
         """
+        tql = (self.in_.tql or '').strip()
+        if not tql:
+            tql = 'vtLastUpdated is null'
+        elif 'vtLastUpdated' not in tql:
+            tql = f'({tql}) and (vtLastUpdated is null)'
+
         indicators = []
         url = '/v3/indicators'
         params = {
-            'tql': self.in_.tql,
+            'tql': tql,
             'resultLimit': 10000,
         }
         while url:
