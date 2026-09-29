@@ -14,7 +14,7 @@
   ],
   "languageVersion": "3.11",
   "listDelimiter": "|",
-  "note": "Ingests weaponized domains from Recorded Future Fusion public prevent file weaponized_domains.json as Host indicators. Unchanged files are skipped via feed_hash; known rows are skipped via the UUID attribute.",
+  "note": "Ingests weaponized domains from Recorded Future Fusion public prevent file weaponized_domains.json as Host indicators. Unchanged files are skipped via feed_hash; known rows are skipped via the UUID attribute. Batches are queued without waiting unless Log Batch Errors is on. A rejected upload still fails the job.",
   "params": [
     {
       "label": "ThreatConnect Owner",
@@ -86,7 +86,7 @@
   ],
   "programLanguage": "PYTHON",
   "programMain": "run.py",
-  "programVersion": "1.1.0",
+  "programVersion": "1.0.0",
   "runtimeLevel": "Organization",
   "sdkVersion": "4.0.0"
 }

@@ -27,7 +27,7 @@ Fixed tags: `Weaponized Domain`, `prevent`, `Weaponized Domains and URLs: Domain
 ## Incremental import
 
 1. After download, SHA-256 of the Fusion file is compared to optional input `feed_hash`. If it matches, the job writes `results.tc` and exits (no UUID TQL, no batch).
-2. Otherwise each row is fingerprinted. Rows whose `UUID` already exists in the owner are skipped; new or changed rows are batched.
+2. Otherwise each row is fingerprinted. Rows whose `UUID` already exists in the owner are skipped; new or changed rows are uploaded in batch. Unless **Log Batch Errors** is checked, the job does not wait for indicator errors. A rejected upload still fails the job immediately.
 
 Map the previous job `feed_hash` output into the `feed_hash` input for the next run. Leave it empty on first run.
 
@@ -43,11 +43,8 @@ Map the previous job `feed_hash` output into the `feed_hash` input for the next 
 
 ## Release notes
 
-### 1.1.0
-
-- Add **Log Batch Errors**. When unchecked, batch uploads are queued without waiting for indicator errors. A rejected upload still fails the job immediately.
-
 ### 1.0.0
 
 - Initial release: Fusion `weaponized_domains.json` ingest via batch Host API.
 - Incremental import: skip an unchanged Fusion file via `feed_hash`; otherwise skip records whose `UUID` attribute already exists in the owner.
+- **Log Batch Errors** is off by default. When unchecked, batch uploads are queued without waiting for indicator errors. A rejected upload still fails the job immediately.
